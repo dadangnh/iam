@@ -52,7 +52,9 @@
         ]
     },
     "conflict": {
-        "symfony/symfony": "*"
+        "symfony/symfony": "*",
+        "doctrine/common": ">=3.0",
+        "doctrine/persistence": "<1.3"
     },
     "extra": {
         "symfony": {
