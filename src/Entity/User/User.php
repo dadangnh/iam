@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Pegawai\Pegawai;
 use App\Repository\User\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -65,6 +66,11 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=UserTwoFactor::class, mappedBy="user", orphanRemoval=true)
      */
     private $userTwoFactors;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Pegawai::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $pegawai;
 
     public function __construct()
     {
@@ -218,6 +224,23 @@ class User implements UserInterface
             if ($userTwoFactor->getUser() === $this) {
                 $userTwoFactor->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getPegawai(): ?Pegawai
+    {
+        return $this->pegawai;
+    }
+
+    public function setPegawai(Pegawai $pegawai): self
+    {
+        $this->pegawai = $pegawai;
+
+        // set the owning side of the relation if necessary
+        if ($pegawai->getUser() !== $this) {
+            $pegawai->setUser($this);
         }
 
         return $this;
