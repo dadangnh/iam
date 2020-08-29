@@ -78,11 +78,17 @@ class User implements UserInterface
      */
     private $ownedGroups;
 
+    /**
+     * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $groupMembers;
+
     public function __construct()
     {
         $this->userTwoFactors = new ArrayCollection();
         $this->roles = new ArrayCollection();
         $this->ownedGroups = new ArrayCollection();
+        $this->groupMembers = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -290,6 +296,37 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($ownedGroup->getOwner() === $this) {
                 $ownedGroup->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupMember[]
+     */
+    public function getGroupMembers(): Collection
+    {
+        return $this->groupMembers;
+    }
+
+    public function addGroupMember(GroupMember $groupMember): self
+    {
+        if (!$this->groupMembers->contains($groupMember)) {
+            $this->groupMembers[] = $groupMember;
+            $groupMember->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupMember(GroupMember $groupMember): self
+    {
+        if ($this->groupMembers->contains($groupMember)) {
+            $this->groupMembers->removeElement($groupMember);
+            // set the owning side to null (unless already changed)
+            if ($groupMember->getUser() === $this) {
+                $groupMember->setUser(null);
             }
         }
 

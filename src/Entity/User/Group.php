@@ -4,6 +4,8 @@ namespace App\Entity\User;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\User\GroupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -55,6 +57,16 @@ class Group
      * @ORM\Column(type="boolean")
      */
     private $status;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="groupId", orphanRemoval=true)
+     */
+    private $groupMembers;
+
+    public function __construct()
+    {
+        $this->groupMembers = new ArrayCollection();
+    }
 
     public function getId(): UuidInterface
     {
@@ -129,6 +141,37 @@ class Group
     public function setStatus(bool $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GroupMember[]
+     */
+    public function getGroupMembers(): Collection
+    {
+        return $this->groupMembers;
+    }
+
+    public function addGroupMember(GroupMember $groupMember): self
+    {
+        if (!$this->groupMembers->contains($groupMember)) {
+            $this->groupMembers[] = $groupMember;
+            $groupMember->setGroupId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupMember(GroupMember $groupMember): self
+    {
+        if ($this->groupMembers->contains($groupMember)) {
+            $this->groupMembers->removeElement($groupMember);
+            // set the owning side to null (unless already changed)
+            if ($groupMember->getGroupId() === $this) {
+                $groupMember->setGroupId(null);
+            }
+        }
 
         return $this;
     }
