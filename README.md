@@ -4,7 +4,7 @@ Source code service Identity and Access Management DJP.
 
 ## Canonical source
 
-The canonical source of Wordlist Tool where all development takes place is [hosted on GitLab.com](https://gitlab.com/dadangnh/djp-iam).
+The canonical source of DJP IAM where all development takes place is [hosted on GitLab.com](https://gitlab.com/dadangnh/djp-iam).
 
 ## Requirements
 
