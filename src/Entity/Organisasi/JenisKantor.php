@@ -66,9 +66,15 @@ class JenisKantor
      */
     private $kantors;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="jenisKantor")
+     */
+    private $units;
+
     public function __construct()
     {
         $this->kantors = new ArrayCollection();
+        $this->units = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -185,6 +191,37 @@ class JenisKantor
             // set the owning side to null (unless already changed)
             if ($kantor->getJenisKantor() === $this) {
                 $kantor->setJenisKantor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Unit[]
+     */
+    public function getUnits(): Collection
+    {
+        return $this->units;
+    }
+
+    public function addUnit(Unit $unit): self
+    {
+        if (!$this->units->contains($unit)) {
+            $this->units[] = $unit;
+            $unit->setJenisKantor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnit(Unit $unit): self
+    {
+        if ($this->units->contains($unit)) {
+            $this->units->removeElement($unit);
+            // set the owning side to null (unless already changed)
+            if ($unit->getJenisKantor() === $this) {
+                $unit->setJenisKantor(null);
             }
         }
 

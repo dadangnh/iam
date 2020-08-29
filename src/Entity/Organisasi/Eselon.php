@@ -4,6 +4,8 @@ namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Organisasi\EselonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -43,6 +45,16 @@ class Eselon
      * @ORM\Column(type="integer", nullable=true)
      */
     private $legacyKode;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="eselon")
+     */
+    private $units;
+
+    public function __construct()
+    {
+        $this->units = new ArrayCollection();
+    }
 
     public function getId(): UuidInterface
     {
@@ -93,6 +105,37 @@ class Eselon
     public function setLegacyKode(?int $legacyKode): self
     {
         $this->legacyKode = $legacyKode;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Unit[]
+     */
+    public function getUnits(): Collection
+    {
+        return $this->units;
+    }
+
+    public function addUnit(Unit $unit): self
+    {
+        if (!$this->units->contains($unit)) {
+            $this->units[] = $unit;
+            $unit->setEselon($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnit(Unit $unit): self
+    {
+        if ($this->units->contains($unit)) {
+            $this->units->removeElement($unit);
+            // set the owning side to null (unless already changed)
+            if ($unit->getEselon() === $this) {
+                $unit->setEselon(null);
+            }
+        }
 
         return $this;
     }
