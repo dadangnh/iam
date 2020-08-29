@@ -3,6 +3,8 @@
 namespace App\Entity\User;
 
 use App\Repository\User\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Ramsey\Uuid\UuidInterface;
@@ -58,6 +60,16 @@ class User implements UserInterface
      * @ORM\Column(type="datetime")
      */
     private $lastChange;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserTwoFactor::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $userTwoFactors;
+
+    public function __construct()
+    {
+        $this->userTwoFactors = new ArrayCollection();
+    }
 
     public function getId(): UuidInterface
     {
@@ -176,6 +188,37 @@ class User implements UserInterface
     public function setLastChange(\DateTimeInterface $lastChange): self
     {
         $this->lastChange = $lastChange;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserTwoFactor[]
+     */
+    public function getUserTwoFactors(): Collection
+    {
+        return $this->userTwoFactors;
+    }
+
+    public function addUserTwoFactor(UserTwoFactor $userTwoFactor): self
+    {
+        if (!$this->userTwoFactors->contains($userTwoFactor)) {
+            $this->userTwoFactors[] = $userTwoFactor;
+            $userTwoFactor->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserTwoFactor(UserTwoFactor $userTwoFactor): self
+    {
+        if ($this->userTwoFactors->contains($userTwoFactor)) {
+            $this->userTwoFactors->removeElement($userTwoFactor);
+            // set the owning side to null (unless already changed)
+            if ($userTwoFactor->getUser() === $this) {
+                $userTwoFactor->setUser(null);
+            }
+        }
 
         return $this;
     }
