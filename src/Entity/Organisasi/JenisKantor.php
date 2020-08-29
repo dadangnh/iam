@@ -57,7 +57,7 @@ class JenisKantor
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $legacyKodifikasi;
+    private $legacyKode;
 
     public function getId(): UuidInterface
     {
@@ -136,14 +136,14 @@ class JenisKantor
         return $this;
     }
 
-    public function getLegacyKodifikasi(): ?int
+    public function getLegacyKode(): ?int
     {
-        return $this->legacyKodifikasi;
+        return $this->legacyKode;
     }
 
-    public function setLegacyKodifikasi(?int $legacyKodifikasi): self
+    public function setLegacyKode(?int $legacyKode): self
     {
-        $this->legacyKodifikasi = $legacyKodifikasi;
+        $this->legacyKode = $legacyKode;
 
         return $this;
     }
