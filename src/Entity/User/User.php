@@ -73,10 +73,16 @@ class User implements UserInterface
      */
     private $pegawai;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Group::class, mappedBy="owner")
+     */
+    private $ownedGroups;
+
     public function __construct()
     {
         $this->userTwoFactors = new ArrayCollection();
         $this->roles = new ArrayCollection();
+        $this->ownedGroups = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -254,6 +260,37 @@ class User implements UserInterface
     {
         if ($this->roles->contains($role)) {
             $this->roles->removeElement($role);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Group[]
+     */
+    public function getOwnedGroups(): Collection
+    {
+        return $this->ownedGroups;
+    }
+
+    public function addOwnedGroup(Group $ownedGroup): self
+    {
+        if (!$this->ownedGroups->contains($ownedGroup)) {
+            $this->ownedGroups[] = $ownedGroup;
+            $ownedGroup->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOwnedGroup(Group $ownedGroup): self
+    {
+        if ($this->ownedGroups->contains($ownedGroup)) {
+            $this->ownedGroups->removeElement($ownedGroup);
+            // set the owning side to null (unless already changed)
+            if ($ownedGroup->getOwner() === $this) {
+                $ownedGroup->setOwner(null);
+            }
         }
 
         return $this;
