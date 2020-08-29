@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use App\Entity\Core\Role;
 use App\Entity\Pegawai\Pegawai;
 use App\Repository\User\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -32,9 +33,9 @@ class User implements UserInterface
     private $username;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="users")
      */
-    private $roles = [];
+    private $roles;
 
     /**
      * @var string The hashed password
@@ -75,6 +76,7 @@ class User implements UserInterface
     public function __construct()
     {
         $this->userTwoFactors = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -104,18 +106,11 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $roles = $this->roles->toArray();
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
     }
 
     /**
@@ -241,6 +236,24 @@ class User implements UserInterface
         // set the owning side of the relation if necessary
         if ($pegawai->getUser() !== $this) {
             $pegawai->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;

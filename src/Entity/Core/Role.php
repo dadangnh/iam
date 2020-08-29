@@ -3,6 +3,7 @@
 namespace App\Entity\Core;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\User\User;
 use App\Repository\Core\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -56,9 +57,15 @@ class Role
      */
     private $containRoles;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="roles")
+     */
+    private $users;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -152,6 +159,34 @@ class Role
             if ($containRole->getSubsOfRole() === $this) {
                 $containRole->setSubsOfRole(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+            $user->removeRole($this);
         }
 
         return $this;
