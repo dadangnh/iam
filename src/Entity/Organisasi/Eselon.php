@@ -51,9 +51,15 @@ class Eselon
      */
     private $units;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Jabatan::class, mappedBy="eselon")
+     */
+    private $jabatans;
+
     public function __construct()
     {
         $this->units = new ArrayCollection();
+        $this->jabatans = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -134,6 +140,37 @@ class Eselon
             // set the owning side to null (unless already changed)
             if ($unit->getEselon() === $this) {
                 $unit->setEselon(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Jabatan[]
+     */
+    public function getJabatans(): Collection
+    {
+        return $this->jabatans;
+    }
+
+    public function addJabatan(Jabatan $jabatan): self
+    {
+        if (!$this->jabatans->contains($jabatan)) {
+            $this->jabatans[] = $jabatan;
+            $jabatan->setEselon($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJabatan(Jabatan $jabatan): self
+    {
+        if ($this->jabatans->contains($jabatan)) {
+            $this->jabatans->removeElement($jabatan);
+            // set the owning side to null (unless already changed)
+            if ($jabatan->getEselon() === $this) {
+                $jabatan->setEselon(null);
             }
         }
 
