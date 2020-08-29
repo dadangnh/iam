@@ -3,7 +3,10 @@
 namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Pegawai\JabatanPegawai;
 use App\Repository\Organisasi\JabatanRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -73,6 +76,16 @@ class Jabatan
      * @ORM\Column(type="string", length=4, nullable=true)
      */
     private $legacyKodeGradeKeu;
+
+    /**
+     * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="jabatan", orphanRemoval=true)
+     */
+    private $jabatanPegawais;
+
+    public function __construct()
+    {
+        $this->jabatanPegawais = new ArrayCollection();
+    }
 
     public function getId(): UuidInterface
     {
@@ -195,6 +208,37 @@ class Jabatan
     public function setLegacyKodeGradeKeu(?string $legacyKodeGradeKeu): self
     {
         $this->legacyKodeGradeKeu = $legacyKodeGradeKeu;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|JabatanPegawai[]
+     */
+    public function getJabatanPegawais(): Collection
+    {
+        return $this->jabatanPegawais;
+    }
+
+    public function addJabatanPegawai(JabatanPegawai $jabatanPegawai): self
+    {
+        if (!$this->jabatanPegawais->contains($jabatanPegawai)) {
+            $this->jabatanPegawais[] = $jabatanPegawai;
+            $jabatanPegawai->setJabatan($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJabatanPegawai(JabatanPegawai $jabatanPegawai): self
+    {
+        if ($this->jabatanPegawais->contains($jabatanPegawai)) {
+            $this->jabatanPegawais->removeElement($jabatanPegawai);
+            // set the owning side to null (unless already changed)
+            if ($jabatanPegawai->getJabatan() === $this) {
+                $jabatanPegawai->setJabatan(null);
+            }
+        }
 
         return $this;
     }
