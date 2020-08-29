@@ -4,6 +4,8 @@ namespace App\Entity\Pegawai;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Pegawai\JenisKelaminRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -34,6 +36,16 @@ class JenisKelamin
      */
     private $legacyKode;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Pegawai::class, mappedBy="jenisKelamin")
+     */
+    private $pegawais;
+
+    public function __construct()
+    {
+        $this->pegawais = new ArrayCollection();
+    }
+
     public function getId(): UuidInterface
     {
         return $this->id;
@@ -59,6 +71,37 @@ class JenisKelamin
     public function setLegacyKode(?int $legacyKode): self
     {
         $this->legacyKode = $legacyKode;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Pegawai[]
+     */
+    public function getPegawais(): Collection
+    {
+        return $this->pegawais;
+    }
+
+    public function addPegawai(Pegawai $pegawai): self
+    {
+        if (!$this->pegawais->contains($pegawai)) {
+            $this->pegawais[] = $pegawai;
+            $pegawai->setJenisKelamin($this);
+        }
+
+        return $this;
+    }
+
+    public function removePegawai(Pegawai $pegawai): self
+    {
+        if ($this->pegawais->contains($pegawai)) {
+            $this->pegawais->removeElement($pegawai);
+            // set the owning side to null (unless already changed)
+            if ($pegawai->getJenisKelamin() === $this) {
+                $pegawai->setJenisKelamin(null);
+            }
+        }
 
         return $this;
     }

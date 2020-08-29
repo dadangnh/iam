@@ -4,6 +4,8 @@ namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Organisasi\JenisKantorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -58,6 +60,22 @@ class JenisKantor
      * @ORM\Column(type="integer", nullable=true)
      */
     private $legacyKode;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="jenisKantor")
+     */
+    private $kantors;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="jenisKantor")
+     */
+    private $units;
+
+    public function __construct()
+    {
+        $this->kantors = new ArrayCollection();
+        $this->units = new ArrayCollection();
+    }
 
     public function getId(): UuidInterface
     {
@@ -144,6 +162,68 @@ class JenisKantor
     public function setLegacyKode(?int $legacyKode): self
     {
         $this->legacyKode = $legacyKode;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Kantor[]
+     */
+    public function getKantors(): Collection
+    {
+        return $this->kantors;
+    }
+
+    public function addKantor(Kantor $kantor): self
+    {
+        if (!$this->kantors->contains($kantor)) {
+            $this->kantors[] = $kantor;
+            $kantor->setJenisKantor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeKantor(Kantor $kantor): self
+    {
+        if ($this->kantors->contains($kantor)) {
+            $this->kantors->removeElement($kantor);
+            // set the owning side to null (unless already changed)
+            if ($kantor->getJenisKantor() === $this) {
+                $kantor->setJenisKantor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Unit[]
+     */
+    public function getUnits(): Collection
+    {
+        return $this->units;
+    }
+
+    public function addUnit(Unit $unit): self
+    {
+        if (!$this->units->contains($unit)) {
+            $this->units[] = $unit;
+            $unit->setJenisKantor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnit(Unit $unit): self
+    {
+        if ($this->units->contains($unit)) {
+            $this->units->removeElement($unit);
+            // set the owning side to null (unless already changed)
+            if ($unit->getJenisKantor() === $this) {
+                $unit->setJenisKantor(null);
+            }
+        }
 
         return $this;
     }
