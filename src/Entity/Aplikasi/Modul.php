@@ -3,18 +3,16 @@
 namespace App\Entity\Aplikasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\Aplikasi\AplikasiRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\Aplikasi\ModulRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 
 /**
  * @ApiResource()
- * @ORM\Entity(repositoryClass=AplikasiRepository::class)
+ * @ORM\Entity(repositoryClass=ModulRepository::class)
  */
-class Aplikasi
+class Modul
 {
     /**
      * @var UuidInterface
@@ -25,6 +23,12 @@ class Aplikasi
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
      */
     private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Aplikasi::class, inversedBy="moduls")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $aplikasi;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -51,19 +55,21 @@ class Aplikasi
      */
     private $deskripsi;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Modul::class, mappedBy="aplikasi", orphanRemoval=true)
-     */
-    private $moduls;
-
-    public function __construct()
-    {
-        $this->moduls = new ArrayCollection();
-    }
-
     public function getId(): UuidInterface
     {
         return $this->id;
+    }
+
+    public function getAplikasi(): ?Aplikasi
+    {
+        return $this->aplikasi;
+    }
+
+    public function setAplikasi(?Aplikasi $aplikasi): self
+    {
+        $this->aplikasi = $aplikasi;
+
+        return $this;
     }
 
     public function getNama(): ?string
@@ -122,37 +128,6 @@ class Aplikasi
     public function setDeskripsi(?string $deskripsi): self
     {
         $this->deskripsi = $deskripsi;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Modul[]
-     */
-    public function getModuls(): Collection
-    {
-        return $this->moduls;
-    }
-
-    public function addModul(Modul $modul): self
-    {
-        if (!$this->moduls->contains($modul)) {
-            $this->moduls[] = $modul;
-            $modul->setAplikasi($this);
-        }
-
-        return $this;
-    }
-
-    public function removeModul(Modul $modul): self
-    {
-        if ($this->moduls->contains($modul)) {
-            $this->moduls->removeElement($modul);
-            // set the owning side to null (unless already changed)
-            if ($modul->getAplikasi() === $this) {
-                $modul->setAplikasi(null);
-            }
-        }
 
         return $this;
     }
