@@ -3,6 +3,7 @@
 namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Repository\Organisasi\JabatanRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -87,10 +88,16 @@ class Jabatan
      */
     private $units;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="jabatans")
+     */
+    private $roles;
+
     public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
         $this->units = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -270,6 +277,32 @@ class Jabatan
     {
         if ($this->units->contains($unit)) {
             $this->units->removeElement($unit);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;

@@ -3,6 +3,7 @@
 namespace App\Entity\Core;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Organisasi\Jabatan;
 use App\Entity\User\User;
 use App\Repository\Core\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -62,10 +63,16 @@ class Role
      */
     private $users;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Jabatan::class, mappedBy="roles")
+     */
+    private $jabatans;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->jabatans = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -187,6 +194,34 @@ class Role
         if ($this->users->contains($user)) {
             $this->users->removeElement($user);
             $user->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Jabatan[]
+     */
+    public function getJabatans(): Collection
+    {
+        return $this->jabatans;
+    }
+
+    public function addJabatan(Jabatan $jabatan): self
+    {
+        if (!$this->jabatans->contains($jabatan)) {
+            $this->jabatans[] = $jabatan;
+            $jabatan->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJabatan(Jabatan $jabatan): self
+    {
+        if ($this->jabatans->contains($jabatan)) {
+            $this->jabatans->removeElement($jabatan);
+            $jabatan->removeRole($this);
         }
 
         return $this;
