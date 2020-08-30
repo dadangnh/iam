@@ -98,6 +98,11 @@ class Role
      */
     private $groups;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="roles")
+     */
+    private $permissions;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
@@ -108,6 +113,7 @@ class Role
         $this->eselons = new ArrayCollection();
         $this->jenisKantors = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -397,6 +403,34 @@ class Role
         if ($this->groups->contains($group)) {
             $this->groups->removeElement($group);
             $group->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Permission[]
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(Permission $permission): self
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions[] = $permission;
+            $permission->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(Permission $permission): self
+    {
+        if ($this->permissions->contains($permission)) {
+            $this->permissions->removeElement($permission);
+            $permission->removeRole($this);
         }
 
         return $this;
