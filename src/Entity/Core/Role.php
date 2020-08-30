@@ -4,6 +4,7 @@ namespace App\Entity\Core;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Jabatan;
+use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\Unit;
 use App\Entity\User\User;
 use App\Repository\Core\RoleRepository;
@@ -74,12 +75,18 @@ class Role
      */
     private $units;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Kantor::class, mappedBy="roles")
+     */
+    private $kantors;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->jabatans = new ArrayCollection();
         $this->units = new ArrayCollection();
+        $this->kantors = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -257,6 +264,34 @@ class Role
         if ($this->units->contains($unit)) {
             $this->units->removeElement($unit);
             $unit->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Kantor[]
+     */
+    public function getKantors(): Collection
+    {
+        return $this->kantors;
+    }
+
+    public function addKantor(Kantor $kantor): self
+    {
+        if (!$this->kantors->contains($kantor)) {
+            $this->kantors[] = $kantor;
+            $kantor->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeKantor(Kantor $kantor): self
+    {
+        if ($this->kantors->contains($kantor)) {
+            $this->kantors->removeElement($kantor);
+            $kantor->removeRole($this);
         }
 
         return $this;

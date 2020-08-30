@@ -3,6 +3,7 @@
 namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Repository\Organisasi\KantorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -118,10 +119,16 @@ class Kantor
      */
     private $jabatanPegawais;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="kantors")
+     */
+    private $roles;
+
     public function __construct()
     {
         $this->childIds = new ArrayCollection();
         $this->jabatanPegawais = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -378,6 +385,32 @@ class Kantor
             if ($jabatanPegawai->getKantor() === $this) {
                 $jabatanPegawai->setKantor(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;
