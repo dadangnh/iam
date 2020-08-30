@@ -8,6 +8,7 @@ use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
 use App\Repository\Pegawai\JabatanPegawaiRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -148,24 +149,24 @@ class JabatanPegawai
         return $this;
     }
 
-    public function getTanggalMulai(): ?\DateTimeImmutable
+    public function getTanggalMulai(): ?DateTimeImmutable
     {
         return $this->tanggalMulai;
     }
 
-    public function setTanggalMulai(\DateTimeImmutable $tanggalMulai): self
+    public function setTanggalMulai(DateTimeImmutable $tanggalMulai): self
     {
         $this->tanggalMulai = $tanggalMulai;
 
         return $this;
     }
 
-    public function getTanggalSelesai(): ?\DateTimeImmutable
+    public function getTanggalSelesai(): ?DateTimeImmutable
     {
         return $this->tanggalSelesai;
     }
 
-    public function setTanggalSelesai(?\DateTimeImmutable $tanggalSelesai): self
+    public function setTanggalSelesai(?DateTimeImmutable $tanggalSelesai): self
     {
         $this->tanggalSelesai = $tanggalSelesai;
 

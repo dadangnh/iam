@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Repository\Organisasi\JabatanRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -141,24 +142,24 @@ class Jabatan
         return $this;
     }
 
-    public function getTanggalAktif(): ?\DateTimeImmutable
+    public function getTanggalAktif(): ?DateTimeImmutable
     {
         return $this->tanggalAktif;
     }
 
-    public function setTanggalAktif(\DateTimeImmutable $tanggalAktif): self
+    public function setTanggalAktif(DateTimeImmutable $tanggalAktif): self
     {
         $this->tanggalAktif = $tanggalAktif;
 
         return $this;
     }
 
-    public function getTanggalNonaktif(): ?\DateTimeImmutable
+    public function getTanggalNonaktif(): ?DateTimeImmutable
     {
         return $this->tanggalNonaktif;
     }
 
-    public function setTanggalNonaktif(?\DateTimeImmutable $tanggalNonaktif): self
+    public function setTanggalNonaktif(?DateTimeImmutable $tanggalNonaktif): self
     {
         $this->tanggalNonaktif = $tanggalNonaktif;
 
