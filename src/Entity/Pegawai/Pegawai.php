@@ -15,6 +15,11 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=PegawaiRepository::class)
+ * @ORM\Table(name="pegawai", indexes={
+ *     @ORM\Index(name="idx_pegawai_data", columns={"id", "nama", "pensiun", "nik", "nip9", "nip18"}),
+ *     @ORM\Index(name="idx_pegawai_legacy", columns={"id", "nip9"}),
+ *     @ORM\Index(name="idx_pegawai_relation", columns={"id", "user_id", "jenis_kelamin_id", "agama_id"}),
+ * })
  */
 class Pegawai
 {

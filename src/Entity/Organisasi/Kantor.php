@@ -16,6 +16,12 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=KantorRepository::class)
+ * @ORM\Table(name="kantor", indexes={
+ *     @ORM\Index(name="idx_kantor_nama_status", columns={"id", "nama", "level", "sk"}),
+ *     @ORM\Index(name="idx_kantor_legacy", columns={"id", "legacy_kode", "legacy_kode_kpp", "legacy_kode_kanwil"}),
+ *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id_id", "level"}),
+ *     @ORM\Index(name="idx_kantor_location", columns={"id", "latitude", "longitude"}),
+ * })
  */
 class Kantor
 {

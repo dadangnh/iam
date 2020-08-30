@@ -20,6 +20,10 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=RoleRepository::class)
+ * @ORM\Table(name="role", indexes={
+ *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name"}),
+ *     @ORM\Index(name="idx_role_relation", columns={"id", "level", "subs_of_role_id"}),
+ * })
  */
 class Role
 {

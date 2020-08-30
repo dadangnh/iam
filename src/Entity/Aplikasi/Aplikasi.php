@@ -14,6 +14,9 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=AplikasiRepository::class)
+ * @ORM\Table(name="aplikasi", indexes={
+ *     @ORM\Index(name="idx_aplikasi_nama_status", columns={"nama", "system_name", "status"}),
+ * })
  */
 class Aplikasi
 {

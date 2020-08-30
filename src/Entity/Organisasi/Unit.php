@@ -16,6 +16,11 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=UnitRepository::class)
+ * @ORM\Table(name="unit", indexes={
+ *     @ORM\Index(name="idx_unit_nama", columns={"id", "nama", "level"}),
+ *     @ORM\Index(name="idx_unit_legacy", columns={"id", "legacy_kode"}),
+ *     @ORM\Index(name="idx_unit_relation", columns={"id", "jenis_kantor_id", "eselon_id"}),
+ * })
  */
 class Unit
 {
