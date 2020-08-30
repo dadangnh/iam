@@ -3,6 +3,12 @@
 namespace App\Entity\Core;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Organisasi\Eselon;
+use App\Entity\Organisasi\Jabatan;
+use App\Entity\Organisasi\JenisKantor;
+use App\Entity\Organisasi\Kantor;
+use App\Entity\Organisasi\Unit;
+use App\Entity\User\Group;
 use App\Entity\User\User;
 use App\Repository\Core\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -62,10 +68,52 @@ class Role
      */
     private $users;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Jabatan::class, mappedBy="roles")
+     */
+    private $jabatans;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Unit::class, mappedBy="roles")
+     */
+    private $units;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Kantor::class, mappedBy="roles")
+     */
+    private $kantors;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Eselon::class, mappedBy="roles")
+     */
+    private $eselons;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=JenisKantor::class, mappedBy="roles")
+     */
+    private $jenisKantors;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Group::class, mappedBy="roles")
+     */
+    private $groups;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="roles")
+     */
+    private $permissions;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->jabatans = new ArrayCollection();
+        $this->units = new ArrayCollection();
+        $this->kantors = new ArrayCollection();
+        $this->eselons = new ArrayCollection();
+        $this->jenisKantors = new ArrayCollection();
+        $this->groups = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -187,6 +235,202 @@ class Role
         if ($this->users->contains($user)) {
             $this->users->removeElement($user);
             $user->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Jabatan[]
+     */
+    public function getJabatans(): Collection
+    {
+        return $this->jabatans;
+    }
+
+    public function addJabatan(Jabatan $jabatan): self
+    {
+        if (!$this->jabatans->contains($jabatan)) {
+            $this->jabatans[] = $jabatan;
+            $jabatan->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJabatan(Jabatan $jabatan): self
+    {
+        if ($this->jabatans->contains($jabatan)) {
+            $this->jabatans->removeElement($jabatan);
+            $jabatan->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Unit[]
+     */
+    public function getUnits(): Collection
+    {
+        return $this->units;
+    }
+
+    public function addUnit(Unit $unit): self
+    {
+        if (!$this->units->contains($unit)) {
+            $this->units[] = $unit;
+            $unit->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnit(Unit $unit): self
+    {
+        if ($this->units->contains($unit)) {
+            $this->units->removeElement($unit);
+            $unit->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Kantor[]
+     */
+    public function getKantors(): Collection
+    {
+        return $this->kantors;
+    }
+
+    public function addKantor(Kantor $kantor): self
+    {
+        if (!$this->kantors->contains($kantor)) {
+            $this->kantors[] = $kantor;
+            $kantor->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeKantor(Kantor $kantor): self
+    {
+        if ($this->kantors->contains($kantor)) {
+            $this->kantors->removeElement($kantor);
+            $kantor->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Eselon[]
+     */
+    public function getEselons(): Collection
+    {
+        return $this->eselons;
+    }
+
+    public function addEselon(Eselon $eselon): self
+    {
+        if (!$this->eselons->contains($eselon)) {
+            $this->eselons[] = $eselon;
+            $eselon->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEselon(Eselon $eselon): self
+    {
+        if ($this->eselons->contains($eselon)) {
+            $this->eselons->removeElement($eselon);
+            $eselon->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|JenisKantor[]
+     */
+    public function getJenisKantors(): Collection
+    {
+        return $this->jenisKantors;
+    }
+
+    public function addJenisKantor(JenisKantor $jenisKantor): self
+    {
+        if (!$this->jenisKantors->contains($jenisKantor)) {
+            $this->jenisKantors[] = $jenisKantor;
+            $jenisKantor->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJenisKantor(JenisKantor $jenisKantor): self
+    {
+        if ($this->jenisKantors->contains($jenisKantor)) {
+            $this->jenisKantors->removeElement($jenisKantor);
+            $jenisKantor->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Group[]
+     */
+    public function getGroups(): Collection
+    {
+        return $this->groups;
+    }
+
+    public function addGroup(Group $group): self
+    {
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+            $group->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(Group $group): self
+    {
+        if ($this->groups->contains($group)) {
+            $this->groups->removeElement($group);
+            $group->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Permission[]
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(Permission $permission): self
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions[] = $permission;
+            $permission->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(Permission $permission): self
+    {
+        if ($this->permissions->contains($permission)) {
+            $this->permissions->removeElement($permission);
+            $permission->removeRole($this);
         }
 
         return $this;

@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Entity\User;
+namespace App\Entity\Core;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Entity\Core\Role;
-use App\Repository\User\GroupRepository;
-use DateTimeImmutable;
+use App\Entity\Aplikasi\Modul;
+use App\Repository\Core\PermissionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,10 +13,9 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 
 /**
  * @ApiResource()
- * @ORM\Entity(repositoryClass=GroupRepository::class)
- * @ORM\Table(name="`group`")
+ * @ORM\Entity(repositoryClass=PermissionRepository::class)
  */
-class Group
+class Permission
 {
     /**
      * @var UuidInterface
@@ -45,34 +43,18 @@ class Group
     private $deskripsi;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ownedGroups")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToMany(targetEntity=Modul::class, inversedBy="permissions")
      */
-    private $owner;
+    private $modul;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
-     */
-    private $createDate;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $status;
-
-    /**
-     * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="groupId", orphanRemoval=true)
-     */
-    private $groupMembers;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="groups")
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="permissions")
      */
     private $roles;
 
     public function __construct()
     {
-        $this->groupMembers = new ArrayCollection();
+        $this->modul = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 
@@ -117,68 +99,27 @@ class Group
         return $this;
     }
 
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?User $owner): self
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    public function getCreateDate(): ?DateTimeImmutable
-    {
-        return $this->createDate;
-    }
-
-    public function setCreateDate(DateTimeImmutable $createDate): self
-    {
-        $this->createDate = $createDate;
-
-        return $this;
-    }
-
-    public function getStatus(): ?bool
-    {
-        return $this->status;
-    }
-
-    public function setStatus(bool $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
     /**
-     * @return Collection|GroupMember[]
+     * @return Collection|Modul[]
      */
-    public function getGroupMembers(): Collection
+    public function getModul(): Collection
     {
-        return $this->groupMembers;
+        return $this->modul;
     }
 
-    public function addGroupMember(GroupMember $groupMember): self
+    public function addModul(Modul $modul): self
     {
-        if (!$this->groupMembers->contains($groupMember)) {
-            $this->groupMembers[] = $groupMember;
-            $groupMember->setGroupId($this);
+        if (!$this->modul->contains($modul)) {
+            $this->modul[] = $modul;
         }
 
         return $this;
     }
 
-    public function removeGroupMember(GroupMember $groupMember): self
+    public function removeModul(Modul $modul): self
     {
-        if ($this->groupMembers->contains($groupMember)) {
-            $this->groupMembers->removeElement($groupMember);
-            // set the owning side to null (unless already changed)
-            if ($groupMember->getGroupId() === $this) {
-                $groupMember->setGroupId(null);
-            }
+        if ($this->modul->contains($modul)) {
+            $this->modul->removeElement($modul);
         }
 
         return $this;

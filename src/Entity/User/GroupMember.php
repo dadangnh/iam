@@ -4,6 +4,7 @@ namespace App\Entity\User;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\User\GroupMemberRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -75,12 +76,12 @@ class GroupMember
         return $this;
     }
 
-    public function getJoinDate(): ?\DateTimeImmutable
+    public function getJoinDate(): ?DateTimeImmutable
     {
         return $this->joinDate;
     }
 
-    public function setJoinDate(\DateTimeImmutable $joinDate): self
+    public function setJoinDate(DateTimeImmutable $joinDate): self
     {
         $this->joinDate = $joinDate;
 

@@ -4,6 +4,7 @@ namespace App\Entity\Aplikasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Aplikasi\AplikasiRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -102,12 +103,12 @@ class Aplikasi
         return $this;
     }
 
-    public function getCreateDate(): ?\DateTimeImmutable
+    public function getCreateDate(): ?DateTimeImmutable
     {
         return $this->createDate;
     }
 
-    public function setCreateDate(\DateTimeImmutable $createDate): self
+    public function setCreateDate(DateTimeImmutable $createDate): self
     {
         $this->createDate = $createDate;
 

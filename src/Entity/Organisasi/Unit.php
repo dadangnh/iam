@@ -3,8 +3,10 @@
 namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Repository\Organisasi\UnitRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -74,10 +76,16 @@ class Unit
      */
     private $jabatans;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="units")
+     */
+    private $roles;
+
     public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
         $this->jabatans = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -133,24 +141,24 @@ class Unit
         return $this;
     }
 
-    public function getTanggalAktif(): ?\DateTimeImmutable
+    public function getTanggalAktif(): ?DateTimeImmutable
     {
         return $this->tanggalAktif;
     }
 
-    public function setTanggalAktif(\DateTimeImmutable $tanggalAktif): self
+    public function setTanggalAktif(DateTimeImmutable $tanggalAktif): self
     {
         $this->tanggalAktif = $tanggalAktif;
 
         return $this;
     }
 
-    public function getTanggalNonaktif(): ?\DateTimeImmutable
+    public function getTanggalNonaktif(): ?DateTimeImmutable
     {
         return $this->tanggalNonaktif;
     }
 
-    public function setTanggalNonaktif(?\DateTimeImmutable $tanggalNonaktif): self
+    public function setTanggalNonaktif(?DateTimeImmutable $tanggalNonaktif): self
     {
         $this->tanggalNonaktif = $tanggalNonaktif;
 
@@ -223,6 +231,32 @@ class Unit
         if ($this->jabatans->contains($jabatan)) {
             $this->jabatans->removeElement($jabatan);
             $jabatan->removeUnit($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;

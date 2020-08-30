@@ -5,6 +5,7 @@ namespace App\Entity\User;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\Pegawai;
 use App\Repository\User\UserRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -193,12 +194,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getLastChange(): ?\DateTimeInterface
+    public function getLastChange(): ?DateTimeInterface
     {
         return $this->lastChange;
     }
 
-    public function setLastChange(\DateTimeInterface $lastChange): self
+    public function setLastChange(DateTimeInterface $lastChange): self
     {
         $this->lastChange = $lastChange;
 

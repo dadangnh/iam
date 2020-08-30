@@ -3,8 +3,10 @@
 namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Repository\Organisasi\KantorRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -118,10 +120,16 @@ class Kantor
      */
     private $jabatanPegawais;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="kantors")
+     */
+    private $roles;
+
     public function __construct()
     {
         $this->childIds = new ArrayCollection();
         $this->jabatanPegawais = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -208,24 +216,24 @@ class Kantor
         return $this;
     }
 
-    public function getTanggalAktif(): ?\DateTimeImmutable
+    public function getTanggalAktif(): ?DateTimeImmutable
     {
         return $this->tanggalAktif;
     }
 
-    public function setTanggalAktif(\DateTimeImmutable $tanggalAktif): self
+    public function setTanggalAktif(DateTimeImmutable $tanggalAktif): self
     {
         $this->tanggalAktif = $tanggalAktif;
 
         return $this;
     }
 
-    public function getTanggalNonaktif(): ?\DateTimeImmutable
+    public function getTanggalNonaktif(): ?DateTimeImmutable
     {
         return $this->tanggalNonaktif;
     }
 
-    public function setTanggalNonaktif(?\DateTimeImmutable $tanggalNonaktif): self
+    public function setTanggalNonaktif(?DateTimeImmutable $tanggalNonaktif): self
     {
         $this->tanggalNonaktif = $tanggalNonaktif;
 
@@ -378,6 +386,32 @@ class Kantor
             if ($jabatanPegawai->getKantor() === $this) {
                 $jabatanPegawai->setKantor(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;

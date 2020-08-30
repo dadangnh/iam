@@ -3,7 +3,9 @@
 namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Core\Role;
 use App\Repository\Organisasi\JenisKantorRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -71,10 +73,16 @@ class JenisKantor
      */
     private $units;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="jenisKantors")
+     */
+    private $roles;
+
     public function __construct()
     {
         $this->kantors = new ArrayCollection();
         $this->units = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -118,24 +126,24 @@ class JenisKantor
         return $this;
     }
 
-    public function getTanggalAktif(): ?\DateTimeImmutable
+    public function getTanggalAktif(): ?DateTimeImmutable
     {
         return $this->tanggalAktif;
     }
 
-    public function setTanggalAktif(\DateTimeImmutable $tanggalAktif): self
+    public function setTanggalAktif(DateTimeImmutable $tanggalAktif): self
     {
         $this->tanggalAktif = $tanggalAktif;
 
         return $this;
     }
 
-    public function getTanggalNonaktif(): ?\DateTimeImmutable
+    public function getTanggalNonaktif(): ?DateTimeImmutable
     {
         return $this->tanggalNonaktif;
     }
 
-    public function setTanggalNonaktif(?\DateTimeImmutable $tanggalNonaktif): self
+    public function setTanggalNonaktif(?DateTimeImmutable $tanggalNonaktif): self
     {
         $this->tanggalNonaktif = $tanggalNonaktif;
 
@@ -223,6 +231,32 @@ class JenisKantor
             if ($unit->getJenisKantor() === $this) {
                 $unit->setJenisKantor(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;
