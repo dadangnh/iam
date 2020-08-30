@@ -5,6 +5,7 @@ namespace App\Entity\Core;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
+use App\Entity\Organisasi\JenisKantor;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\Unit;
 use App\Entity\User\User;
@@ -86,6 +87,11 @@ class Role
      */
     private $eselons;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=JenisKantor::class, mappedBy="roles")
+     */
+    private $jenisKantors;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
@@ -94,6 +100,7 @@ class Role
         $this->units = new ArrayCollection();
         $this->kantors = new ArrayCollection();
         $this->eselons = new ArrayCollection();
+        $this->jenisKantors = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -327,6 +334,34 @@ class Role
         if ($this->eselons->contains($eselon)) {
             $this->eselons->removeElement($eselon);
             $eselon->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|JenisKantor[]
+     */
+    public function getJenisKantors(): Collection
+    {
+        return $this->jenisKantors;
+    }
+
+    public function addJenisKantor(JenisKantor $jenisKantor): self
+    {
+        if (!$this->jenisKantors->contains($jenisKantor)) {
+            $this->jenisKantors[] = $jenisKantor;
+            $jenisKantor->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJenisKantor(JenisKantor $jenisKantor): self
+    {
+        if ($this->jenisKantors->contains($jenisKantor)) {
+            $this->jenisKantors->removeElement($jenisKantor);
+            $jenisKantor->removeRole($this);
         }
 
         return $this;
