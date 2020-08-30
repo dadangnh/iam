@@ -3,6 +3,7 @@
 namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Core\Role;
 use App\Repository\Organisasi\EselonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -56,10 +57,16 @@ class Eselon
      */
     private $jabatans;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="eselons")
+     */
+    private $roles;
+
     public function __construct()
     {
         $this->units = new ArrayCollection();
         $this->jabatans = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -172,6 +179,32 @@ class Eselon
             if ($jabatan->getEselon() === $this) {
                 $jabatan->setEselon(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;

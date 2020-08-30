@@ -3,6 +3,7 @@
 namespace App\Entity\Core;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\Unit;
@@ -80,6 +81,11 @@ class Role
      */
     private $kantors;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Eselon::class, mappedBy="roles")
+     */
+    private $eselons;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
@@ -87,6 +93,7 @@ class Role
         $this->jabatans = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->kantors = new ArrayCollection();
+        $this->eselons = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -292,6 +299,34 @@ class Role
         if ($this->kantors->contains($kantor)) {
             $this->kantors->removeElement($kantor);
             $kantor->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Eselon[]
+     */
+    public function getEselons(): Collection
+    {
+        return $this->eselons;
+    }
+
+    public function addEselon(Eselon $eselon): self
+    {
+        if (!$this->eselons->contains($eselon)) {
+            $this->eselons[] = $eselon;
+            $eselon->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEselon(Eselon $eselon): self
+    {
+        if ($this->eselons->contains($eselon)) {
+            $this->eselons->removeElement($eselon);
+            $eselon->removeRole($this);
         }
 
         return $this;
