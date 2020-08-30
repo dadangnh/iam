@@ -82,9 +82,15 @@ class Jabatan
      */
     private $jabatanPegawais;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Unit::class, inversedBy="jabatans")
+     */
+    private $units;
+
     public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
+        $this->units = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -238,6 +244,32 @@ class Jabatan
             if ($jabatanPegawai->getJabatan() === $this) {
                 $jabatanPegawai->setJabatan(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Unit[]
+     */
+    public function getUnits(): Collection
+    {
+        return $this->units;
+    }
+
+    public function addUnit(Unit $unit): self
+    {
+        if (!$this->units->contains($unit)) {
+            $this->units[] = $unit;
+        }
+
+        return $this;
+    }
+
+    public function removeUnit(Unit $unit): self
+    {
+        if ($this->units->contains($unit)) {
+            $this->units->removeElement($unit);
         }
 
         return $this;

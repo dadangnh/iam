@@ -69,9 +69,15 @@ class Unit
      */
     private $jabatanPegawais;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Jabatan::class, mappedBy="units")
+     */
+    private $jabatans;
+
     public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
+        $this->jabatans = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -189,6 +195,34 @@ class Unit
             if ($jabatanPegawai->getUnit() === $this) {
                 $jabatanPegawai->setUnit(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Jabatan[]
+     */
+    public function getJabatans(): Collection
+    {
+        return $this->jabatans;
+    }
+
+    public function addJabatan(Jabatan $jabatan): self
+    {
+        if (!$this->jabatans->contains($jabatan)) {
+            $this->jabatans[] = $jabatan;
+            $jabatan->addUnit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJabatan(Jabatan $jabatan): self
+    {
+        if ($this->jabatans->contains($jabatan)) {
+            $this->jabatans->removeElement($jabatan);
+            $jabatan->removeUnit($this);
         }
 
         return $this;
