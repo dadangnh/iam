@@ -8,6 +8,7 @@ use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JenisKantor;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\Unit;
+use App\Entity\User\Group;
 use App\Entity\User\User;
 use App\Repository\Core\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -92,6 +93,11 @@ class Role
      */
     private $jenisKantors;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Group::class, mappedBy="roles")
+     */
+    private $groups;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
@@ -101,6 +107,7 @@ class Role
         $this->kantors = new ArrayCollection();
         $this->eselons = new ArrayCollection();
         $this->jenisKantors = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -362,6 +369,34 @@ class Role
         if ($this->jenisKantors->contains($jenisKantor)) {
             $this->jenisKantors->removeElement($jenisKantor);
             $jenisKantor->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Group[]
+     */
+    public function getGroups(): Collection
+    {
+        return $this->groups;
+    }
+
+    public function addGroup(Group $group): self
+    {
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+            $group->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(Group $group): self
+    {
+        if ($this->groups->contains($group)) {
+            $this->groups->removeElement($group);
+            $group->removeRole($this);
         }
 
         return $this;

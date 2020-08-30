@@ -3,6 +3,7 @@
 namespace App\Entity\User;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Entity\Core\Role;
 use App\Repository\User\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -63,9 +64,15 @@ class Group
      */
     private $groupMembers;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="groups")
+     */
+    private $roles;
+
     public function __construct()
     {
         $this->groupMembers = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -171,6 +178,32 @@ class Group
             if ($groupMember->getGroupId() === $this) {
                 $groupMember->setGroupId(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;
