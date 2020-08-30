@@ -4,6 +4,7 @@ namespace App\Entity\Core;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Jabatan;
+use App\Entity\Organisasi\Unit;
 use App\Entity\User\User;
 use App\Repository\Core\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -68,11 +69,17 @@ class Role
      */
     private $jabatans;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Unit::class, mappedBy="roles")
+     */
+    private $units;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->jabatans = new ArrayCollection();
+        $this->units = new ArrayCollection();
     }
 
     public function getId(): UuidInterface
@@ -222,6 +229,34 @@ class Role
         if ($this->jabatans->contains($jabatan)) {
             $this->jabatans->removeElement($jabatan);
             $jabatan->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Unit[]
+     */
+    public function getUnits(): Collection
+    {
+        return $this->units;
+    }
+
+    public function addUnit(Unit $unit): self
+    {
+        if (!$this->units->contains($unit)) {
+            $this->units[] = $unit;
+            $unit->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnit(Unit $unit): self
+    {
+        if ($this->units->contains($unit)) {
+            $this->units->removeElement($unit);
+            $unit->removeRole($this);
         }
 
         return $this;
