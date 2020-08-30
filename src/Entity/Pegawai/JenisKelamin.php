@@ -13,6 +13,10 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=JenisKelaminRepository::class)
+ * @ORM\Table(name="jenis_kelamin", indexes={
+ *     @ORM\Index(name="idx_jenis_kelamin_nama", columns={"id", "nama"}),
+ *     @ORM\Index(name="idx_jenis_kelamin_legacy", columns={"id", "legacy_kode"}),
+ * })
  */
 class JenisKelamin
 {

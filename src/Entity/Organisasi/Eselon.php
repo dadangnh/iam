@@ -14,6 +14,10 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=EselonRepository::class)
+ * @ORM\Table(name="eselon", indexes={
+ *     @ORM\Index(name="idx_eselon_nama_status", columns={"id", "nama", "tingkat"}),
+ *     @ORM\Index(name="idx_eselon_legacy", columns={"id", "legacy_kode"}),
+ * })
  */
 class Eselon
 {

@@ -15,6 +15,10 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Table(name="`user`", indexes={
+ *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
+ *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
+ * })
  */
 class User implements UserInterface
 {

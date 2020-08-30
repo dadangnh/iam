@@ -30,6 +30,12 @@ After that, from inside your project directory, install the required package:
 $ composer install
 ```
 
+Turn on the database (we use docker, skip if you use your own):
+```bash
+$ docker-compose up -d
+```
+
+
 Then, run (if database haven't created yet):
 ```bash
 $ symfony console doctrine:database:create

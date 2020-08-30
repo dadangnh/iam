@@ -15,7 +15,10 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=GroupRepository::class)
- * @ORM\Table(name="`group`")
+ * @ORM\Table(name="`group`", indexes={
+ *     @ORM\Index(name="idx_group_data", columns={"id", "nama", "system_name", "status"}),
+ *     @ORM\Index(name="idx_group_relation", columns={"id", "owner_id"}),
+ * })
  */
 class Group
 {

@@ -11,6 +11,10 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=UserTwoFactorRepository::class)
+ * @ORM\Table(name="user_two_factor", indexes={
+ *     @ORM\Index(name="idx_user_two_factor_data", columns={"id", "tfa_type"}),
+ *     @ORM\Index(name="idx_user_two_factor_relation", columns={"id", "user_id"}),
+ * })
  */
 class UserTwoFactor
 {

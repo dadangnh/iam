@@ -14,6 +14,9 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=PermissionRepository::class)
+ * @ORM\Table(name="permission", indexes={
+ *     @ORM\Index(name="idx_permission_nama_status", columns={"id", "nama", "system_name"}),
+ * })
  */
 class Permission
 {

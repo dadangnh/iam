@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: iam_db_dev
+      POSTGRES_PASSWORD: iam_db_dev
+      POSTGRES_DB: iam_db_dev
+    ports: [5432]
