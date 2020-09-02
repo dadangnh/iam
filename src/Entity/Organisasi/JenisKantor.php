@@ -5,7 +5,7 @@ namespace App\Entity\Organisasi;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Repository\Organisasi\JenisKantorRepository;
-use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -48,12 +48,12 @@ class JenisKantor
     private $klasifikasi;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
+     * @ORM\Column(type="datetime")
      */
     private $tanggalAktif;
 
     /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $tanggalNonaktif;
 
@@ -130,24 +130,24 @@ class JenisKantor
         return $this;
     }
 
-    public function getTanggalAktif(): ?DateTimeImmutable
+    public function getTanggalAktif(): ?DateTimeInterface
     {
         return $this->tanggalAktif;
     }
 
-    public function setTanggalAktif(DateTimeImmutable $tanggalAktif): self
+    public function setTanggalAktif(DateTimeInterface $tanggalAktif): self
     {
         $this->tanggalAktif = $tanggalAktif;
 
         return $this;
     }
 
-    public function getTanggalNonaktif(): ?DateTimeImmutable
+    public function getTanggalNonaktif(): ?DateTimeInterface
     {
         return $this->tanggalNonaktif;
     }
 
-    public function setTanggalNonaktif(?DateTimeImmutable $tanggalNonaktif): self
+    public function setTanggalNonaktif(?DateTimeInterface $tanggalNonaktif): self
     {
         $this->tanggalNonaktif = $tanggalNonaktif;
 
