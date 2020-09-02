@@ -12,6 +12,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=GroupMemberRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="group_member", indexes={
  *     @ORM\Index(name="idx_group_member_data", columns={"id", "status", "user_id"}),
  *     @ORM\Index(name="idx_group_member_relation", columns={"id", "group_id_id", "user_id"}),
@@ -90,6 +91,14 @@ class GroupMember
         $this->joinDate = $joinDate;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setJoinDateValue(): void
+    {
+        $this->joinDate = new DateTimeImmutable();
     }
 
     public function getStatus(): ?bool

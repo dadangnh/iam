@@ -15,6 +15,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=ModulRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="modul", indexes={
  *     @ORM\Index(name="idx_modul_nama_status", columns={"nama", "system_name", "status"}),
  *     @ORM\Index(name="idx_modul_nama_aplikasi", columns={"aplikasi_id", "nama", "system_name"}),
@@ -136,6 +137,14 @@ class Modul
         $this->createDate = $createDate;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setCreateDateValue(): void
+    {
+        $this->createDate = new DateTimeImmutable();
     }
 
     public function getDeskripsi(): ?string

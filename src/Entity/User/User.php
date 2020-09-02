@@ -15,6 +15,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="`user`", indexes={
  *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
  *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
@@ -208,6 +209,14 @@ class User implements UserInterface
         $this->lastChange = $lastChange;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setLastChangeValue(): void
+    {
+        $this->lastChange = new DateTimeImmutable();
     }
 
     /**

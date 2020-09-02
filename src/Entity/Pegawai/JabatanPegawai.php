@@ -16,6 +16,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=JabatanPegawaiRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="jabatan_pegawai", indexes={
  *     @ORM\Index(name="idx_jabatan_pegawai", columns={"id", "tanggal_mulai", "tanggal_selesai"}),
  *     @ORM\Index(name="idx_jabatan_pegawai_relation", columns={"id", "pegawai_id", "jabatan_id", "tipe_id", "kantor_id", "unit_id"}),
@@ -163,6 +164,14 @@ class JabatanPegawai
         $this->tanggalMulai = $tanggalMulai;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setTanggalMulaiValue(): void
+    {
+        $this->tanggalMulai = new DateTimeImmutable();
     }
 
     public function getTanggalSelesai(): ?DateTimeImmutable
