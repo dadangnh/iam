@@ -5,7 +5,7 @@ namespace App\Entity\Pegawai;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\User\User;
 use App\Repository\Pegawai\PegawaiRepository;
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -45,7 +45,7 @@ class Pegawai
     private $nama;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable")
      */
     private $tanggalLahir;
 
@@ -130,12 +130,12 @@ class Pegawai
         return $this;
     }
 
-    public function getTanggalLahir(): ?DateTimeInterface
+    public function getTanggalLahir(): ?DateTimeImmutable
     {
         return $this->tanggalLahir;
     }
 
-    public function setTanggalLahir(DateTimeInterface $tanggalLahir): self
+    public function setTanggalLahir(DateTimeImmutable $tanggalLahir): self
     {
         $this->tanggalLahir = $tanggalLahir;
 

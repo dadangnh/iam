@@ -5,7 +5,7 @@ namespace App\Entity\User;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Repository\User\GroupRepository;
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,7 +54,7 @@ class Group
     private $owner;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable")
      */
     private $createDate;
 
@@ -132,12 +132,12 @@ class Group
         return $this;
     }
 
-    public function getCreateDate(): ?DateTimeInterface
+    public function getCreateDate(): ?DateTimeImmutable
     {
         return $this->createDate;
     }
 
-    public function setCreateDate(DateTimeInterface $createDate): self
+    public function setCreateDate(DateTimeImmutable $createDate): self
     {
         $this->createDate = $createDate;
 

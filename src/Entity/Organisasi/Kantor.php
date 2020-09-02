@@ -6,7 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Repository\Organisasi\KantorRepository;
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -62,12 +62,12 @@ class Kantor
     private $childIds;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable")
      */
     private $tanggalAktif;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime_immutable", nullable=true)
      */
     private $tanggalNonaktif;
 
@@ -222,24 +222,24 @@ class Kantor
         return $this;
     }
 
-    public function getTanggalAktif(): ?DateTimeInterface
+    public function getTanggalAktif(): ?DateTimeImmutable
     {
         return $this->tanggalAktif;
     }
 
-    public function setTanggalAktif(DateTimeInterface $tanggalAktif): self
+    public function setTanggalAktif(DateTimeImmutable $tanggalAktif): self
     {
         $this->tanggalAktif = $tanggalAktif;
 
         return $this;
     }
 
-    public function getTanggalNonaktif(): ?DateTimeInterface
+    public function getTanggalNonaktif(): ?DateTimeImmutable
     {
         return $this->tanggalNonaktif;
     }
 
-    public function setTanggalNonaktif(?DateTimeInterface $tanggalNonaktif): self
+    public function setTanggalNonaktif(?DateTimeImmutable $tanggalNonaktif): self
     {
         $this->tanggalNonaktif = $tanggalNonaktif;
 

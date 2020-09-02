@@ -5,7 +5,7 @@ namespace App\Entity\Aplikasi;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Permission;
 use App\Repository\Aplikasi\ModulRepository;
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,7 +54,7 @@ class Modul
     private $status;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable")
      */
     private $createDate;
 
@@ -126,12 +126,12 @@ class Modul
         return $this;
     }
 
-    public function getCreateDate(): ?DateTimeInterface
+    public function getCreateDate(): ?DateTimeImmutable
     {
         return $this->createDate;
     }
 
-    public function setCreateDate(DateTimeInterface $createDate): self
+    public function setCreateDate(DateTimeImmutable $createDate): self
     {
         $this->createDate = $createDate;
 
