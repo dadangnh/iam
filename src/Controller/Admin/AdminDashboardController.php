@@ -7,6 +7,7 @@ use App\Entity\Aplikasi\Modul;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\JenisKantor;
 use App\Entity\Organisasi\Kantor;
+use App\Entity\Organisasi\TipeJabatan;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -39,6 +40,7 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Jenis Kantor', 'fa fa-university', JenisKantor::class);
         yield MenuItem::linkToCrud('Kantor', 'fa fa-building', Kantor::class);
         yield MenuItem::linkToCrud('Eselon', 'fa fa-signal', Eselon::class);
+        yield MenuItem::linkToCrud('Tipe Jabatan', 'fa fa-ticket', TipeJabatan::class);
         // yield MenuItem::linkToCrud('The Label', 'icon class', EntityClass::class);
     }
 }
