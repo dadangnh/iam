@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Aplikasi\Aplikasi;
 use App\Entity\Aplikasi\Modul;
+use App\Entity\Organisasi\JenisKantor;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -32,6 +33,8 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::section('Aplikasi');
         yield MenuItem::linkToCrud('Aplikasi', 'fa fa-desktop', Aplikasi::class);
         yield MenuItem::linkToCrud('Modul', 'fa fa-code', Modul::class);
+        yield MenuItem::section('Organisasi');
+        yield MenuItem::linkToCrud('Organisasi', 'fa fa-university', JenisKantor::class);
         // yield MenuItem::linkToCrud('The Label', 'icon class', EntityClass::class);
     }
 }
