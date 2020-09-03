@@ -5,6 +5,7 @@ namespace App\Entity\User;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\Pegawai;
 use App\Repository\User\UserRepository;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -199,6 +200,15 @@ class User implements UserInterface
         return $this;
     }
 
+    /**
+     * @ORM\PrePersist
+     * @return void
+     */
+    public function setTwoFactorEnabledValue(): void
+    {
+        $this->twoFactorEnabled = false;
+    }
+
     public function getLastChange(): ?DateTimeInterface
     {
         return $this->lastChange;
@@ -216,7 +226,7 @@ class User implements UserInterface
      */
     public function setLastChangeValue(): void
     {
-        $this->lastChange = new DateTimeImmutable();
+        $this->lastChange = new DateTime();
     }
 
     /**
