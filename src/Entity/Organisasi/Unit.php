@@ -94,6 +94,11 @@ class Unit
         $this->roles = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->nama;
+    }
+
     public function getId(): UuidInterface
     {
         return $this->id;
