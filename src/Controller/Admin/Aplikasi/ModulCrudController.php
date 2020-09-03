@@ -22,18 +22,24 @@ class ModulCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            FormField::addPanel('Aplikasi')->setIcon('fa fa-desktop'),
+            FormField::addPanel('Aplikasi')
+                ->setIcon('fa fa-desktop'),
             AssociationField::new('aplikasi')
                 ->setRequired(true)
                 ->setHelp('Silakan pilih nama aplikasi induk dari modul yang akan dibuat'),
-            FormField::addPanel('Modul')->setIcon('fa fa-code'),
-            TextField::new('nama', 'Nama Modul')->setRequired(true),
-            SlugField::new('systemName', 'Nama System')->setTargetFieldName('nama'),
+            FormField::addPanel('Modul')
+                ->setIcon('fa fa-code'),
+            TextField::new('nama', 'Nama Modul')
+                ->setRequired(true)
+                ->setMaxLength(255),
+            SlugField::new('systemName', 'Nama System')
+                ->setRequired(true)
+                ->setTargetFieldName('nama'),
             TextEditorField::new('deskripsi', 'Deskripsi Modul'),
             BooleanField::new('status', 'Status Produksi'),
             DateTimeField::new('createDate', 'Tanggal Dibuat')
                 ->hideOnForm()
-                ->renderAsNativeWidget()
+                ->renderAsNativeWidget(true)
         ];
     }
 }
