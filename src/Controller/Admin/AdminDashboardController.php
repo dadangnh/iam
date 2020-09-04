@@ -45,5 +45,8 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Kantor', 'fa fa-building', Kantor::class);
         yield MenuItem::linkToCrud('Unit Organisasi', 'fa fa-building-o', Unit::class);
         yield MenuItem::linkToCrud('Jabatan', 'fa fa-id-card', Jabatan::class);
+        yield MenuItem::section('Pegawai');
+        yield MenuItem::linkToCrud('Agama', 'fa fa-flag', Agama::class);
+        yield MenuItem::linkToCrud('Jenis Kelamin', 'fas fa-venus-mars', JenisKelamin::class);
     }
 }
