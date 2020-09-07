@@ -10,6 +10,9 @@ use App\Entity\Organisasi\JenisKantor;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
+use App\Entity\Pegawai\Agama;
+use App\Entity\Pegawai\JenisKelamin;
+use App\Entity\Pegawai\Pegawai;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -46,7 +49,8 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Unit Organisasi', 'fa fa-building-o', Unit::class);
         yield MenuItem::linkToCrud('Jabatan', 'fa fa-id-card', Jabatan::class);
         yield MenuItem::section('Pegawai');
-        yield MenuItem::linkToCrud('Agama', 'fa fa-flag', Agama::class);
+        yield MenuItem::linkToCrud('Agama', 'fa fa-flag', Agama::class) ;
         yield MenuItem::linkToCrud('Jenis Kelamin', 'fas fa-venus-mars', JenisKelamin::class);
+        yield MenuItem::linkToCrud('Pegawai','far fa-address-book',Pegawai::class);
     }
 }

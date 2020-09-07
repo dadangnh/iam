@@ -19,6 +19,18 @@ class AgamaRepository extends ServiceEntityRepository
         parent::__construct($registry, Agama::class);
     }
 
+    public function findMaxLegacyCode(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'select max(legacy_kode) maxid from agama';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
+
     // /**
     //  * @return Agama[] Returns an array of Agama objects
     //  */
