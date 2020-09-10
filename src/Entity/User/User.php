@@ -9,9 +9,11 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Monolog\DateTimeImmutable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -48,6 +50,12 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5, max=128)
+     */
+    private $plainPassword = null;
 
     /**
      * @ORM\Column(type="boolean")
@@ -163,6 +171,16 @@ class User implements UserInterface
         // $this->plainPassword = null;
     }
 
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $password): void
+    {
+        $this->plainPassword = $password;
+    }
+
     public function getStatus(): ?bool
     {
         return $this->status;
@@ -216,7 +234,7 @@ class User implements UserInterface
      */
     public function setLastChangeValue(): void
     {
-        $this->lastChange = new DateTimeImmutable();
+        $this->lastChange = new DateTimeImmutable(true);
     }
 
     /**

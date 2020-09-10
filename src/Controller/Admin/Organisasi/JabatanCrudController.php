@@ -33,9 +33,8 @@ class JabatanCrudController extends AbstractCrudController
                 ->setRequired(true)
                 ->setChoices([
                     'Jabatan Struktural' => 'STRUKTURAL',
-                    'Jabatan FUngsional' => 'FUNGSIONAL',
-                    'Jabatan Ad-hoc' => 'ADHOC',
-                    'Jabatan lainnya' => 'LAINNYA'
+                    'Jabatan Fungsional' => 'FUNGSIONAL',
+                    'Jabatan Ad-hoc' => 'ADHOC'
                 ]),
             AssociationField::new('eselon', 'Eselon')
                 ->setHelp('Untuk jabatan struktural, isi eselon'),

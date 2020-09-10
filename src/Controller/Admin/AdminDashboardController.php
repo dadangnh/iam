@@ -13,6 +13,7 @@ use App\Entity\Organisasi\Unit;
 use App\Entity\Pegawai\Agama;
 use App\Entity\Pegawai\JenisKelamin;
 use App\Entity\Pegawai\Pegawai;
+use App\Entity\User\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -52,5 +53,8 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Agama', 'fa fa-flag', Agama::class) ;
         yield MenuItem::linkToCrud('Jenis Kelamin', 'fas fa-venus-mars', JenisKelamin::class);
         yield MenuItem::linkToCrud('Pegawai','far fa-address-book',Pegawai::class);
+        yield MenuItem::section('User');
+        yield MenuItem::linkToCrud('User', 'fa fa-user', User::class) ;
+
     }
 }
