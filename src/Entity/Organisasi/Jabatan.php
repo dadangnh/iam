@@ -100,6 +100,11 @@ class Jabatan
      */
     private $roles;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=GroupJabatan::class, inversedBy="jabatans")
+     */
+    private $groupJabatan;
+
     public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
@@ -324,6 +329,18 @@ class Jabatan
         if ($this->roles->contains($role)) {
             $this->roles->removeElement($role);
         }
+
+        return $this;
+    }
+
+    public function getGroupJabatan(): ?GroupJabatan
+    {
+        return $this->groupJabatan;
+    }
+
+    public function setGroupJabatan(?GroupJabatan $groupJabatan): self
+    {
+        $this->groupJabatan = $groupJabatan;
 
         return $this;
     }
