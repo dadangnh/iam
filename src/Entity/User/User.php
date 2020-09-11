@@ -43,7 +43,13 @@ class User implements UserInterface
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="users")
      */
-    private $roles;
+    private $role;
+
+    /**
+     * Default Symfony Guard Role
+     * This is a virtual attributes
+     */
+    private $roles = [];
 
     /**
      * @var string The hashed password
@@ -100,9 +106,14 @@ class User implements UserInterface
     public function __construct()
     {
         $this->userTwoFactors = new ArrayCollection();
-        $this->roles = new ArrayCollection();
+        $this->role = new ArrayCollection();
         $this->ownedGroups = new ArrayCollection();
         $this->groupMembers = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return (string) $this->username;
     }
 
     public function getId(): UuidInterface
@@ -132,9 +143,23 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles->toArray();
+        $roles = $this->getRole();
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $plainRoles[] = 'ROLE_USER';
+        /** @var Role $role */
+        foreach ($roles as $role) {
+            $plainRoles[] = $role->getNama();
+        }
+
+        return array_unique($plainRoles);
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRole(): array
+    {
+        $roles = $this->role->toArray();
 
         return array_unique($roles);
     }
@@ -288,8 +313,8 @@ class User implements UserInterface
 
     public function addRole(Role $role): self
     {
-        if (!$this->roles->contains($role)) {
-            $this->roles[] = $role;
+        if (!$this->role->contains($role)) {
+            $this->role[] = $role;
         }
 
         return $this;
@@ -297,8 +322,8 @@ class User implements UserInterface
 
     public function removeRole(Role $role): self
     {
-        if ($this->roles->contains($role)) {
-            $this->roles->removeElement($role);
+        if ($this->role->contains($role)) {
+            $this->role->removeElement($role);
         }
 
         return $this;

@@ -4,6 +4,7 @@ namespace App\Controller\Admin\User;
 
 use App\Entity\User\User;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -26,6 +27,7 @@ class UserCrudController extends AbstractCrudController
                 ->setRequired(true)
                 ->setFormType(PasswordType::class)
                 ->onlyOnForms(),
+            AssociationField::new('role'),
             BooleanField::new('status', 'Status Akun'),
             BooleanField::new('locked', 'Akun terkunci?'),
             BooleanField::new('twoFactorEnabled', '2FA')

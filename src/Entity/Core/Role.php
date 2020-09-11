@@ -21,7 +21,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
  * @ApiResource()
  * @ORM\Entity(repositoryClass=RoleRepository::class)
  * @ORM\Table(name="role", indexes={
- *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name"}),
+ *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name", "jenis"}),
  *     @ORM\Index(name="idx_role_relation", columns={"id", "level", "subs_of_role_id"}),
  * })
  */
@@ -68,7 +68,7 @@ class Role
     private $containRoles;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="role")
      */
     private $users;
 
@@ -107,6 +107,14 @@ class Role
      */
     private $permissions;
 
+    /**
+     * @ORM\Column(type="integer", options={
+     *     "comment":"Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
+     *          6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
+     *          10 => jabatan + unit + kantor"})
+     */
+    private $jenis;
+
     public function __construct()
     {
         $this->containRoles = new ArrayCollection();
@@ -118,6 +126,11 @@ class Role
         $this->jenisKantors = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->permissions = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->nama;
     }
 
     public function getId(): UuidInterface
@@ -436,6 +449,18 @@ class Role
             $this->permissions->removeElement($permission);
             $permission->removeRole($this);
         }
+
+        return $this;
+    }
+
+    public function getJenis(): ?int
+    {
+        return $this->jenis;
+    }
+
+    public function setJenis(int $jenis): self
+    {
+        $this->jenis = $jenis;
 
         return $this;
     }

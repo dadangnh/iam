@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Aplikasi\Aplikasi;
 use App\Entity\Aplikasi\Modul;
+use App\Entity\Core\Role;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JenisKantor;
@@ -55,6 +56,7 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Pegawai','far fa-address-book',Pegawai::class);
         yield MenuItem::section('User');
         yield MenuItem::linkToCrud('User', 'fa fa-user', User::class) ;
-
+        yield MenuItem::section('Core');
+        yield MenuItem::linkToCrud('Role', 'fa fa-user-secret', Role::class) ;
     }
 }
