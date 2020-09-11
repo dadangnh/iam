@@ -15,6 +15,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=PegawaiRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="pegawai", indexes={
  *     @ORM\Index(name="idx_pegawai_data", columns={"id", "nama", "pensiun", "nik", "nip9", "nip18"}),
  *     @ORM\Index(name="idx_pegawai_legacy", columns={"id", "nip9"}),
@@ -77,7 +78,7 @@ class Pegawai
     private $npwp;
 
     /**
-     * @ORM\Column(type="string", length=15, nullable=true)
+     * @ORM\Column(type="string", length=16, nullable=true)
      */
     private $nik;
 
@@ -236,6 +237,14 @@ class Pegawai
         $this->nip18 = $nip18;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setPensiunValue(): void
+    {
+        $this->pensiun = false;
     }
 
     /**

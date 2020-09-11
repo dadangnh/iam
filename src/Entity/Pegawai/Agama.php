@@ -50,6 +50,11 @@ class Agama
         $this->pegawais = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->nama;
+    }
+
     public function getId(): UuidInterface
     {
         return $this->id;
