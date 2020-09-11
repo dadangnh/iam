@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Aplikasi\Aplikasi;
 use App\Entity\Aplikasi\Modul;
+use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
@@ -34,7 +35,7 @@ class AdminDashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Iam');
+            ->setTitle('DJP<i>connect</i>');
     }
 
     public function configureMenuItems(): iterable
@@ -58,5 +59,6 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('User', 'fa fa-user', User::class) ;
         yield MenuItem::section('Core');
         yield MenuItem::linkToCrud('Role', 'fa fa-user-secret', Role::class) ;
+        yield MenuItem::linkToCrud('Permissions', 'fa fa-terminal', Permission::class) ;
     }
 }
