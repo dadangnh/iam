@@ -16,6 +16,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=KantorRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="kantor", indexes={
  *     @ORM\Index(name="idx_kantor_nama_status", columns={"id", "nama", "level", "sk"}),
  *     @ORM\Index(name="idx_kantor_legacy", columns={"id", "legacy_kode", "legacy_kode_kpp", "legacy_kode_kanwil"}),
@@ -138,6 +139,11 @@ class Kantor
         $this->roles = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->nama;
+    }
+
     public function getId(): UuidInterface
     {
         return $this->id;
@@ -232,6 +238,14 @@ class Kantor
         $this->tanggalAktif = $tanggalAktif;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setTanggalAktifValue(): void
+    {
+        $this->tanggalAktif = new DateTimeImmutable();
     }
 
     public function getTanggalNonaktif(): ?DateTimeImmutable

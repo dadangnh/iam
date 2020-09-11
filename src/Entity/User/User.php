@@ -9,12 +9,15 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Monolog\DateTimeImmutable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="`user`", indexes={
  *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
  *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
@@ -40,13 +43,25 @@ class User implements UserInterface
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="users")
      */
-    private $roles;
+    private $role;
+
+    /**
+     * Default Symfony Guard Role
+     * This is a virtual attributes
+     */
+    private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5, max=128)
+     */
+    private $plainPassword = null;
 
     /**
      * @ORM\Column(type="boolean")
@@ -91,9 +106,14 @@ class User implements UserInterface
     public function __construct()
     {
         $this->userTwoFactors = new ArrayCollection();
-        $this->roles = new ArrayCollection();
+        $this->role = new ArrayCollection();
         $this->ownedGroups = new ArrayCollection();
         $this->groupMembers = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return (string) $this->username;
     }
 
     public function getId(): UuidInterface
@@ -123,9 +143,23 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles->toArray();
+        $roles = $this->getRole();
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $plainRoles[] = 'ROLE_USER';
+        /** @var Role $role */
+        foreach ($roles as $role) {
+            $plainRoles[] = $role->getNama();
+        }
+
+        return array_unique($plainRoles);
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRole(): array
+    {
+        $roles = $this->role->toArray();
 
         return array_unique($roles);
     }
@@ -160,6 +194,16 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $password): void
+    {
+        $this->plainPassword = $password;
     }
 
     public function getStatus(): ?bool
@@ -208,6 +252,15 @@ class User implements UserInterface
         $this->lastChange = $lastChange;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function setLastChangeValue(): void
+    {
+        $this->lastChange = new DateTimeImmutable(true);
     }
 
     /**
@@ -260,8 +313,8 @@ class User implements UserInterface
 
     public function addRole(Role $role): self
     {
-        if (!$this->roles->contains($role)) {
-            $this->roles[] = $role;
+        if (!$this->role->contains($role)) {
+            $this->role[] = $role;
         }
 
         return $this;
@@ -269,8 +322,8 @@ class User implements UserInterface
 
     public function removeRole(Role $role): self
     {
-        if ($this->roles->contains($role)) {
-            $this->roles->removeElement($role);
+        if ($this->role->contains($role)) {
+            $this->role->removeElement($role);
         }
 
         return $this;

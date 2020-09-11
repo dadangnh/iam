@@ -16,6 +16,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=UnitRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="unit", indexes={
  *     @ORM\Index(name="idx_unit_nama", columns={"id", "nama", "level"}),
  *     @ORM\Index(name="idx_unit_legacy", columns={"id", "legacy_kode"}),
@@ -93,6 +94,11 @@ class Unit
         $this->roles = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->nama;
+    }
+
     public function getId(): UuidInterface
     {
         return $this->id;
@@ -156,6 +162,14 @@ class Unit
         $this->tanggalAktif = $tanggalAktif;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setTanggalAktifValue(): void
+    {
+        $this->tanggalAktif = new DateTimeImmutable();
     }
 
     public function getTanggalNonaktif(): ?DateTimeImmutable

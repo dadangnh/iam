@@ -15,6 +15,7 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=GroupRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="`group`", indexes={
  *     @ORM\Index(name="idx_group_data", columns={"id", "nama", "system_name", "status"}),
  *     @ORM\Index(name="idx_group_relation", columns={"id", "owner_id"}),
@@ -142,6 +143,14 @@ class Group
         $this->createDate = $createDate;
 
         return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function setCreateDateValue(): void
+    {
+        $this->createDate = new DateTimeImmutable();
     }
 
     public function getStatus(): ?bool
