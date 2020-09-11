@@ -102,6 +102,11 @@ class Pegawai
         $this->jabatanPegawais = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->nama;
+    }
+
     public function getId(): UuidInterface
     {
         return $this->id;

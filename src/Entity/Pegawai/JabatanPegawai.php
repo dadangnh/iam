@@ -4,6 +4,7 @@ namespace App\Entity\Pegawai;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Jabatan;
+use App\Entity\Organisasi\JabatanAtribut;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
@@ -76,6 +77,11 @@ class JabatanPegawai
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
     private $tanggalSelesai;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=JabatanAtribut::class, inversedBy="jabatanPegawais")
+     */
+    private $atribut;
 
     public function getId(): UuidInterface
     {
@@ -182,6 +188,18 @@ class JabatanPegawai
     public function setTanggalSelesai(?DateTimeImmutable $tanggalSelesai): self
     {
         $this->tanggalSelesai = $tanggalSelesai;
+
+        return $this;
+    }
+
+    public function getAtribut(): ?JabatanAtribut
+    {
+        return $this->atribut;
+    }
+
+    public function setAtribut(?JabatanAtribut $atribut): self
+    {
+        $this->atribut = $atribut;
 
         return $this;
     }

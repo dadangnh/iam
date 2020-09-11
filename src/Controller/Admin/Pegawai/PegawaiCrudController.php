@@ -25,24 +25,33 @@ class PegawaiCrudController extends AbstractCrudController
             AssociationField::new('user')
                 ->setRequired(true)
                 ->setHelp('Silakan pilih nama user yang telah didaftarkan'),
-            DateField::new('tanggalLahir', 'Tanggal Lahir')
-                ->renderAsNativeWidget(true),
             TextField::new('tempatLahir', 'Tempat lahir')
                 ->setRequired(true)
-                ->setMaxLength(255),
+                ->setMaxLength(255)
+                ->hideOnIndex(),
+            DateField::new('tanggalLahir', 'Tanggal Lahir')
+                ->renderAsNativeWidget(true)
+                ->hideOnIndex(),
             AssociationField::new('jenisKelamin')
                 ->setRequired(true)
                 ->setHelp('Silakan pilih salah satu'),
             AssociationField::new('agama')
                 ->setRequired(true)
                 ->setHelp('Silakan pilih salah satu'),
-            TextField::new('npwp','NPWP'),
+            TextField::new('npwp','NPWP')
+                ->hideOnIndex(),
             TextField::new('nik','NIK')
                 ->setRequired(true)
-                ->setMaxLength(15),
+                ->setMaxLength(16)
+                ->hideOnIndex(),
             TextField::new('nip9','IP SIKKA')
                 ->setRequired(true)
-                ->setMaxLength(9),
+                ->setMaxLength(9)
+                ->hideOnIndex(),
+            TextField::new('nip18','NIP')
+                ->setRequired(true)
+                ->setMaxLength(18)
+                ->hideOnIndex(),
         ];
     }
 }
