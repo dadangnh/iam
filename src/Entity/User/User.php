@@ -230,7 +230,8 @@ class User implements UserInterface
     }
 
     /**
-     * @ORM\PrePersist()
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
      */
     public function setLastChangeValue(): void
     {
