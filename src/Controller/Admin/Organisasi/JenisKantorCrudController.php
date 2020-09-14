@@ -38,14 +38,17 @@ class JenisKantorCrudController extends AbstractCrudController
                     '1' => '1',
                     '2' => '2'
                 ])
-                ->setRequired(true),
+                ->setRequired(true)
+                ->hideOnIndex(),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
                 ->renderAsNativeWidget(true)
                 ->setRequired(true),
             DateTimeField::new('tanggalNonaktif', 'Tanggal Non aktif')
                 ->renderAsNativeWidget(true),
-            IntegerField::new('legacyId', 'ID pada DB SIKKA Lama'),
+            IntegerField::new('legacyId', 'ID pada DB SIKKA Lama')
+                ->hideOnIndex(),
             IntegerField::new('legacyKode', 'Kodifikasi pada DB SIKKA Lama')
+                ->hideOnIndex()
         ];
     }
 }
