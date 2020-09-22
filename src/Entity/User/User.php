@@ -2,6 +2,7 @@
 
 namespace App\Entity\User;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\Pegawai;
 use App\Repository\User\UserRepository;
@@ -13,9 +14,14 @@ use Monolog\DateTimeImmutable;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ApiResource(
+ *     normalizationContext={"groups"={"read"}},
+ *     denormalizationContext={"groups"={"write"}}
+ * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="`user`", indexes={
@@ -32,28 +38,34 @@ class User implements UserInterface
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @Groups({"read", "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"read", "write"})
      */
     private $username;
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="users")
+     * @Groups({"write"})
      */
     private $role;
 
     /**
      * Default Symfony Guard Role
      * This is a virtual attributes
+     * @var array
+     * @Groups({"read"})
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Groups({"write"})
      */
     private $password;
 
@@ -65,41 +77,49 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"read", "write"})
      */
     private $status;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"read", "write"})
      */
     private $locked;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"write"})
      */
     private $twoFactorEnabled;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"write"})
      */
     private $lastChange;
 
     /**
      * @ORM\OneToMany(targetEntity=UserTwoFactor::class, mappedBy="user", orphanRemoval=true)
+     * @Groups({"write"})
      */
     private $userTwoFactors;
 
     /**
      * @ORM\OneToOne(targetEntity=Pegawai::class, mappedBy="user", cascade={"persist", "remove"})
+     * @Groups({"read", "write"})
      */
     private $pegawai;
 
     /**
      * @ORM\OneToMany(targetEntity=Group::class, mappedBy="owner")
+     * @Groups({"read", "write"})
      */
     private $ownedGroups;
 
     /**
      * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="user", orphanRemoval=true)
+     * @Groups({"read", "write"})
      */
     private $groupMembers;
 
