@@ -67,8 +67,8 @@ class KantorCrudController extends AbstractCrudController
                 ->setMaxLength(3),
             TextField::new('legacyKodeKanwil', 'Kode Kanwil di SIDJP')
                 ->hideOnIndex()
-                ->setMaxLength(3)
-
+                ->setMaxLength(3),
+            AssociationField::new('roles', 'Roles')
         ];
     }
 }

@@ -57,7 +57,8 @@ class JabatanCrudController extends AbstractCrudController
                 ->hideOnIndex(),
             TextField::new('legacyKodeGradeKeu', 'Kode Jabatan Grade di SIKKA Lama')
                 ->setMaxLength(4)
-                ->hideOnIndex()
+                ->hideOnIndex(),
+            AssociationField::new('roles', 'Roles')
         ];
     }
 }

@@ -40,7 +40,8 @@ class UnitCrudController extends AbstractCrudController
                 ->renderAsNativeWidget(true)
                 ->hideOnIndex(),
             TextField::new('legacyKode', 'Kode Unit Lama di SIKKA')
-                ->setMaxLength(10)
+                ->setMaxLength(10),
+            AssociationField::new('roles', 'Roles')
         ];
     }
 }
