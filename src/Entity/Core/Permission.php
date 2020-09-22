@@ -51,7 +51,7 @@ class Permission
     private $modul;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="permissions")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="permissions")
      */
     private $roles;
 

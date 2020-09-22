@@ -96,7 +96,7 @@ class Jabatan
     private $units;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="jabatans")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="jabatans")
      */
     private $roles;
 

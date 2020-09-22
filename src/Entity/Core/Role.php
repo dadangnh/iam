@@ -68,42 +68,114 @@ class Role
     private $containRoles;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="role")
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="role", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_user",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $users;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Jabatan::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Jabatan::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_jabatan",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="jabatan_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $jabatans;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Unit::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Unit::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_unit",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $units;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Kantor::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Kantor::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_kantor",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="kantor_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $kantors;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Eselon::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Eselon::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_eselon",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="eselon_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $eselons;
 
     /**
-     * @ORM\ManyToMany(targetEntity=JenisKantor::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=JenisKantor::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_jenis_kantor",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="jenis_kantor_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $jenisKantors;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Group::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Group::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_group",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Permission::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_permission",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $permissions;
 

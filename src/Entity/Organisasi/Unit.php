@@ -83,7 +83,7 @@ class Unit
     private $jabatans;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="units")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="units")
      */
     private $roles;
 

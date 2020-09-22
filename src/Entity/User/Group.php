@@ -70,7 +70,7 @@ class Group
     private $groupMembers;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="groups")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="groups")
      */
     private $roles;
 

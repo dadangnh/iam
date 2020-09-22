@@ -59,6 +59,7 @@ class JabatanCrudController extends AbstractCrudController
                 ->setMaxLength(4)
                 ->hideOnIndex(),
             AssociationField::new('roles', 'Roles')
+                ->onlyOnDetail()
         ];
     }
 }

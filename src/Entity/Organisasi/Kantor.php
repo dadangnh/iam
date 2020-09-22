@@ -128,7 +128,7 @@ class Kantor
     private $jabatanPegawais;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="kantors")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="kantors")
      */
     private $roles;
 

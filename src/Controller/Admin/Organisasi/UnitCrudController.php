@@ -42,6 +42,7 @@ class UnitCrudController extends AbstractCrudController
             TextField::new('legacyKode', 'Kode Unit Lama di SIKKA')
                 ->setMaxLength(10),
             AssociationField::new('roles', 'Roles')
+                ->onlyOnDetail()
         ];
     }
 }

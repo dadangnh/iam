@@ -69,6 +69,7 @@ class KantorCrudController extends AbstractCrudController
                 ->hideOnIndex()
                 ->setMaxLength(3),
             AssociationField::new('roles', 'Roles')
+                ->onlyOnDetail()
         ];
     }
 }

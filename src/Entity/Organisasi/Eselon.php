@@ -62,7 +62,7 @@ class Eselon
     private $jabatans;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="eselons")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="eselons")
      */
     private $roles;
 

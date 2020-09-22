@@ -41,7 +41,7 @@ class User implements UserInterface
     private $username;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="users")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="users")
      */
     private $role;
 

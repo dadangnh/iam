@@ -79,7 +79,7 @@ class JenisKantor
     private $units;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="jenisKantors")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="jenisKantors")
      */
     private $roles;
 
