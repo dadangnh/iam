@@ -1,15 +1,18 @@
 <?php
 
-namespace App\DataFixtures\User;
+namespace App\DataFixtures\Core;
 
-use App\DataFixtures\Core\RoleFixtures;
 use App\Entity\User\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
-class UserFixtures extends Fixture
+class NewUserFixtures extends Fixture
 {
+    public const USER_SUPER_ADMIN = 'super';
+    public const USER_ADMIN = 'admin';
+    public const USER_UPK_PUSAT = 'upk';
+
     /**
      * @var EncoderFactoryInterface
      */
@@ -28,8 +31,6 @@ class UserFixtures extends Fixture
         $superAdmin->setPassword(
             $this->encoderFactory->getEncoder(User::class)->encodePassword('toor', null)
         );
-        $superAdmin->addRole($this->getReference(RoleFixtures::ROLE_SUPER_ADMIN));
-        $superAdmin->addRole($this->getReference(RoleFixtures::ROLE_ADMIN));
         $superAdmin->setStatus(true);
         $superAdmin->setLocked(false);
         $superAdmin->setTwoFactorEnabled(false);
@@ -40,7 +41,6 @@ class UserFixtures extends Fixture
         $admin->setPassword(
             $this->encoderFactory->getEncoder(User::class)->encodePassword('admin', null)
         );
-        $admin->addRole($this->getReference(RoleFixtures::ROLE_ADMIN));
         $admin->setStatus(true);
         $admin->setLocked(false);
         $admin->setTwoFactorEnabled(false);
@@ -51,19 +51,14 @@ class UserFixtures extends Fixture
         $upkPusat->setPassword(
             $this->encoderFactory->getEncoder(User::class)->encodePassword('upk_pusat', null)
         );
-        $upkPusat->addRole($this->getReference(RoleFixtures::ROLE_UPK_PUSAT));
         $upkPusat->setStatus(true);
         $upkPusat->setLocked(false);
         $upkPusat->setTwoFactorEnabled(false);
         $manager->persist($upkPusat);
 
         $manager->flush();
-    }
-
-    public function getDependencies()
-    {
-        return [
-            RoleFixtures::class
-        ];
+        $this->addReference(self::USER_SUPER_ADMIN, $superAdmin);
+        $this->addReference(self::USER_ADMIN, $admin);
+        $this->addReference(self::USER_UPK_PUSAT, $upkPusat);
     }
 }

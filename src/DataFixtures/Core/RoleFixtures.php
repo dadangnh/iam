@@ -8,9 +8,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class RoleFixtures extends Fixture
 {
-    public const ROLE_SUPER_ADMIN = 'super-admin';
-    public const ROLE_ADMIN = 'admin';
-    public const ROLE_UPK_PUSAT = 'upk-pusat';
+    public const ROLE_SUPER_ADMIN = 'super-admin-role';
+    public const ROLE_ADMIN = 'admin-role';
+    public const ROLE_UPK_PUSAT = 'upk-pusat-role';
 
     public function load(ObjectManager $manager)
     {
@@ -20,6 +20,7 @@ class RoleFixtures extends Fixture
         $superAdminRole->setDeskripsi('Default Super Admin Role');
         $superAdminRole->setJenis(1);
         $superAdminRole->setLevel(0);
+        $superAdminRole->addUser($this->getReference(NewUserFixtures::USER_SUPER_ADMIN));
         $manager->persist($superAdminRole);
 
         $adminRole = new Role();
@@ -28,6 +29,8 @@ class RoleFixtures extends Fixture
         $adminRole->setDeskripsi('Default Admin Role');
         $adminRole->setJenis(1);
         $adminRole->setLevel(1);
+        $adminRole->addUser($this->getReference(NewUserFixtures::USER_SUPER_ADMIN));
+        $adminRole->addUser($this->getReference(NewUserFixtures::USER_ADMIN));
         $adminRole->setSubsOfRole($superAdminRole);
         $manager->persist($adminRole);
 
@@ -45,6 +48,7 @@ class RoleFixtures extends Fixture
         $upkPusatRole->setDeskripsi('Default UPK Pusat Role');
         $upkPusatRole->setJenis(10);
         $upkPusatRole->setLevel(0);
+        $upkPusatRole->addUser($this->getReference(NewUserFixtures::USER_UPK_PUSAT));
         $manager->persist($upkPusatRole);
 
         $upkWilayahRole = new Role();
@@ -70,4 +74,12 @@ class RoleFixtures extends Fixture
         $this->addReference(self::ROLE_ADMIN, $adminRole);
         $this->addReference(self::ROLE_UPK_PUSAT, $upkPusatRole);
     }
+
+    public function getDependencies()
+    {
+        return [
+            NewUserFixtures::class
+        ];
+    }
+
 }
