@@ -72,10 +72,10 @@ class Role
      * @ORM\JoinTable(
      *     name="role_user",
      *     joinColumns={
-     *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
      *     },
      *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *     }
      * )
      */
@@ -86,10 +86,10 @@ class Role
      * @ORM\JoinTable(
      *     name="role_jabatan",
      *     joinColumns={
-     *          @ORM\JoinColumn(name="jabatan_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
      *     },
      *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="jabatan_id", referencedColumnName="id")
      *     }
      * )
      */
@@ -100,10 +100,10 @@ class Role
      * @ORM\JoinTable(
      *     name="role_unit",
      *     joinColumns={
-     *          @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
      *     },
      *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
      *     }
      * )
      */
@@ -114,10 +114,10 @@ class Role
      * @ORM\JoinTable(
      *     name="role_kantor",
      *     joinColumns={
-     *          @ORM\JoinColumn(name="kantor_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
      *     },
      *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="kantor_id", referencedColumnName="id")
      *     }
      * )
      */
@@ -128,10 +128,10 @@ class Role
      * @ORM\JoinTable(
      *     name="role_eselon",
      *     joinColumns={
-     *          @ORM\JoinColumn(name="eselon_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
      *     },
      *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="eselon_id", referencedColumnName="id")
      *     }
      * )
      */
@@ -142,10 +142,10 @@ class Role
      * @ORM\JoinTable(
      *     name="role_jenis_kantor",
      *     joinColumns={
-     *          @ORM\JoinColumn(name="jenis_kantor_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
      *     },
      *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="jenis_kantor_id", referencedColumnName="id")
      *     }
      * )
      */
@@ -156,10 +156,10 @@ class Role
      * @ORM\JoinTable(
      *     name="role_group",
      *     joinColumns={
-     *          @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
      *     },
      *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *          @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      *     }
      * )
      */
