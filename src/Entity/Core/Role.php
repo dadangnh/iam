@@ -166,16 +166,7 @@ class Role
     private $groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Permission::class, inversedBy="roles", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="role_permission",
-     *     joinColumns={
-     *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
-     *     },
-     *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     *     }
-     * )
+     * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="roles")
      */
     private $permissions;
 

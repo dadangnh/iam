@@ -51,7 +51,16 @@ class Permission
     private $modul;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="permissions")
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="permissions", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_permission",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     }
+     * )
      */
     private $roles;
 

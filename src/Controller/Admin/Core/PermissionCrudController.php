@@ -33,8 +33,7 @@ class PermissionCrudController extends AbstractCrudController
                 ->setRequired(true),
             TextEditorField::new('deskripsi'),
             FormField::addPanel('Role'),
-            AssociationField::new('roles', 'ROLE')
-                ->hideOnIndex()
+            AssociationField::new('roles', 'Role')
                 ->setHelp('Masukkan nama ROLE yang dapat menggunakan permission ini')
         ];
     }
