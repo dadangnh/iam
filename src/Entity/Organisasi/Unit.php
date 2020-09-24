@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -39,6 +40,7 @@ class Unit
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"pegawai:read"})
      */
     private $nama;
 
@@ -52,6 +54,7 @@ class Unit
     /**
      * @ORM\Column(type="integer")
      * @Assert\NotNull()
+     * @Groups({"pegawai:read"})
      */
     private $level;
 

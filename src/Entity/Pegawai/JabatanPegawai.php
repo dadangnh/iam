@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -47,12 +48,14 @@ class JabatanPegawai
      * @ORM\ManyToOne(targetEntity=Jabatan::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Groups({"pegawai:read"})
      */
     private $jabatan;
 
     /**
      * @ORM\ManyToOne(targetEntity=TipeJabatan::class, inversedBy="jabatanPegawais")
      * @Assert\NotNull()
+     * @Groups({"pegawai:read"})
      */
     private $tipe;
 
@@ -60,31 +63,37 @@ class JabatanPegawai
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Groups({"pegawai:read"})
      */
     private $kantor;
 
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="jabatanPegawais")
+     * @Groups({"pegawai:read"})
      */
     private $unit;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"pegawai:read"})
      */
     private $referensi;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"pegawai:read"})
      */
     private $tanggalMulai;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"pegawai:read"})
      */
     private $tanggalSelesai;
 
     /**
      * @ORM\ManyToOne(targetEntity=JabatanAtribut::class, inversedBy="jabatanPegawais")
+     * @Groups({"pegawai:read"})
      */
     private $atribut;
 
