@@ -44,7 +44,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"user:read", "user:write"})
+     * @Groups({"user:read", "user:write", "pegawai:read"})
      * @Assert\NotBlank()
      */
     private $username;
@@ -65,11 +65,11 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Groups({"user:write"})
      */
     private $password;
 
     /**
+     * @var string plain password
      * @Assert\NotBlank()
      * @Assert\Length(min=5, max=128)
      */
@@ -224,7 +224,7 @@ class User implements UserInterface
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(string $password): void
+    public function setPlainPassword(?string $password): void
     {
         $this->plainPassword = $password;
     }

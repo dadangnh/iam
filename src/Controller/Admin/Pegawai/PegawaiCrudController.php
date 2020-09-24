@@ -5,6 +5,7 @@ namespace App\Controller\Admin\Pegawai;
 use App\Entity\Pegawai\Pegawai;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -38,6 +39,9 @@ class PegawaiCrudController extends AbstractCrudController
             AssociationField::new('agama')
                 ->setRequired(true)
                 ->setHelp('Silakan pilih salah satu'),
+            BooleanField::new('pensiun', 'Pensiun')
+                ->setHelp('Pegawai Pensiun?')
+                ->hideOnIndex(),
             TextField::new('npwp','NPWP')
                 ->hideOnIndex(),
             TextField::new('nik','NIK')
