@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -45,18 +46,21 @@ class Pegawai
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"user:read"})
      */
     private $nama;
 
     /**
      * @ORM\Column(type="datetime_immutable")
      * @Assert\NotNull()
+     * @Groups({"user:read"})
      */
     private $tanggalLahir;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"user:read"})
      */
     private $tempatLahir;
 
@@ -64,6 +68,7 @@ class Pegawai
      * @ORM\ManyToOne(targetEntity=JenisKelamin::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Groups({"user:read"})
      */
     private $jenisKelamin;
 
@@ -71,12 +76,14 @@ class Pegawai
      * @ORM\ManyToOne(targetEntity=Agama::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Groups({"user:read"})
      */
     private $agama;
 
     /**
      * @ORM\Column(type="boolean")
      * @Assert\NotNull()
+     * @Groups({"user:read"})
      */
     private $pensiun;
 
@@ -92,16 +99,19 @@ class Pegawai
 
     /**
      * @ORM\Column(type="string", length=9, nullable=true)
+     * @Groups({"user:read"})
      */
     private $nip9;
 
     /**
      * @ORM\Column(type="string", length=18, nullable=true)
+     * @Groups({"user:read"})
      */
     private $nip18;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="pegawai", orphanRemoval=true)
+     * @Groups({"user:read"})
      */
     private $jabatanPegawais;
 

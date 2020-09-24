@@ -19,8 +19,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *     normalizationContext={"groups"={"read"}},
- *     denormalizationContext={"groups"={"write"}}
+ *     normalizationContext={"groups"={"user:read"}, "swagger_definition_name"="Read"},
+ *     denormalizationContext={"groups"={"user:write"}, "swagger_definition_name"="Write"}
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\HasLifecycleCallbacks()
@@ -38,20 +38,20 @@ class User implements UserInterface
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @Groups({"read", "write"})
+     * @Groups({"user:read", "user:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"read", "write"})
+     * @Groups({"user:read", "user:write"})
      * @Assert\NotBlank()
      */
     private $username;
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="users")
-     * @Groups({"write"})
+     * @Groups({"user:write"})
      */
     private $role;
 
@@ -59,14 +59,14 @@ class User implements UserInterface
      * Default Symfony Guard Role
      * This is a virtual attributes
      * @var array
-     * @Groups({"read"})
+     * @Groups({"user:read"})
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Groups({"write"})
+     * @Groups({"user:write"})
      */
     private $password;
 
@@ -78,52 +78,52 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"read", "write"})
+     * @Groups({"user:read", "user:write"})
      * @Assert\NotNull()
      */
     private $status;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"read", "write"})
+     * @Groups({"user:read", "user:write"})
      * @Assert\NotNull()
      */
     private $locked;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"write"})
+     * @Groups({"user:write"})
      * @Assert\NotNull()
      */
     private $twoFactorEnabled;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"write"})
+     * @Groups({"user:write"})
      */
     private $lastChange;
 
     /**
      * @ORM\OneToMany(targetEntity=UserTwoFactor::class, mappedBy="user", orphanRemoval=true)
-     * @Groups({"write"})
+     * @Groups({"user:write"})
      */
     private $userTwoFactors;
 
     /**
      * @ORM\OneToOne(targetEntity=Pegawai::class, mappedBy="user", cascade={"persist", "remove"})
-     * @Groups({"read", "write"})
+     * @Groups({"user:read", "user:write"})
      */
     private $pegawai;
 
     /**
      * @ORM\OneToMany(targetEntity=Group::class, mappedBy="owner")
-     * @Groups({"read", "write"})
+     * @Groups({"user:read", "user:write"})
      */
     private $ownedGroups;
 
     /**
      * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="user", orphanRemoval=true)
-     * @Groups({"read", "write"})
+     * @Groups({"user:read", "user:write"})
      */
     private $groupMembers;
 
