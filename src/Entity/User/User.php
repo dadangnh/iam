@@ -51,7 +51,6 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="users")
-     * @Groups({"user:write"})
      */
     private $role;
 
