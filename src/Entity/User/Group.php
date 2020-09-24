@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -35,11 +36,13 @@ class Group
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $systemName;
 
@@ -51,6 +54,7 @@ class Group
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ownedGroups")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $owner;
 
@@ -61,6 +65,7 @@ class Group
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotNull()
      */
     private $status;
 

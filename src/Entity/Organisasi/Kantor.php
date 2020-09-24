@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -38,12 +39,14 @@ class Kantor
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="kantors")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $jenisKantor;
 
@@ -64,6 +67,7 @@ class Kantor
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Assert\NotNull
      */
     private $tanggalAktif;
 

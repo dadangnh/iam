@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -36,21 +37,25 @@ class Modul
     /**
      * @ORM\ManyToOne(targetEntity=Aplikasi::class, inversedBy="moduls")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $aplikasi;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $systemName;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotNull()
      */
     private $status;
 

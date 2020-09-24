@@ -22,6 +22,8 @@ class JabatanPegawaiCrudController extends AbstractCrudController
                 ->setRequired(true),
             AssociationField::new('jabatan', 'Jabatan')
                 ->setRequired(true),
+            AssociationField::new('tipe', 'Tipe Jabatan')
+                ->setRequired(true),
             AssociationField::new('atribut', 'Jabatan Atribut')
                 ->setHelp('Khusus jabatan AR/ PK/ Pelaksana yang memiliki atribut 1-100')
                 ->hideOnIndex(),

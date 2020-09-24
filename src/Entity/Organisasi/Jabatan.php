@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -37,21 +38,25 @@ class Jabatan
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotNull()
      */
     private $level;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull()
      */
     private $jenis;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Assert\NotNull()
      */
     private $tanggalAktif;
 

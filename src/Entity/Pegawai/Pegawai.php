@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -37,38 +38,45 @@ class Pegawai
     /**
      * @ORM\OneToOne(targetEntity=User::class, inversedBy="pegawai", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $user;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Assert\NotNull()
      */
     private $tanggalLahir;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $tempatLahir;
 
     /**
      * @ORM\ManyToOne(targetEntity=JenisKelamin::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $jenisKelamin;
 
     /**
      * @ORM\ManyToOne(targetEntity=Agama::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $agama;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotNull()
      */
     private $pensiun;
 

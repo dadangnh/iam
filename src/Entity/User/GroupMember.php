@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -33,12 +34,14 @@ class GroupMember
     /**
      * @ORM\ManyToOne(targetEntity=Group::class, inversedBy="groupMembers")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $groupId;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="groupMembers")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $user;
 

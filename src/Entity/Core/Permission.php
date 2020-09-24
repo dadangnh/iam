@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -32,11 +33,13 @@ class Permission
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $systemName;
 
@@ -47,6 +50,7 @@ class Permission
 
     /**
      * @ORM\ManyToMany(targetEntity=Modul::class, inversedBy="permissions")
+     * @Assert\NotNull()
      */
     private $modul;
 
@@ -61,6 +65,7 @@ class Permission
      *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\NotNull()
      */
     private $roles;
 

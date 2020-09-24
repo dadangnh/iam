@@ -45,6 +45,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"read", "write"})
+     * @Assert\NotBlank()
      */
     private $username;
 
@@ -78,18 +79,21 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"read", "write"})
+     * @Assert\NotNull()
      */
     private $status;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"read", "write"})
+     * @Assert\NotNull()
      */
     private $locked;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"write"})
+     * @Assert\NotNull()
      */
     private $twoFactorEnabled;
 

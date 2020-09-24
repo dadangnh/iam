@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -38,23 +39,27 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=Pegawai::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $pegawai;
 
     /**
      * @ORM\ManyToOne(targetEntity=Jabatan::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $jabatan;
 
     /**
      * @ORM\ManyToOne(targetEntity=TipeJabatan::class, inversedBy="jabatanPegawais")
+     * @Assert\NotNull()
      */
     private $tipe;
 
     /**
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $kantor;
 

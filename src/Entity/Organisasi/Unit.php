@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -37,28 +38,33 @@ class Unit
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="units")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $jenisKantor;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotNull()
      */
     private $level;
 
     /**
      * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="units")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $eselon;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Assert\NotNull()
      */
     private $tanggalAktif;
 
