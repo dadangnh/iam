@@ -46,6 +46,7 @@ class JabatanPegawai
      * @ORM\ManyToOne(targetEntity=Pegawai::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid
      */
     private $pegawai;
 
@@ -53,6 +54,7 @@ class JabatanPegawai
      * @ORM\ManyToOne(targetEntity=Jabatan::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"pegawai:read"})
      */
     private $jabatan;
@@ -60,6 +62,7 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=TipeJabatan::class, inversedBy="jabatanPegawais")
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"pegawai:read"})
      */
     private $tipe;
@@ -68,6 +71,7 @@ class JabatanPegawai
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"pegawai:read"})
      */
     private $kantor;
@@ -75,6 +79,7 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="jabatanPegawais")
      * @Groups({"pegawai:read"})
+     * @Assert\Valid()
      */
     private $unit;
 

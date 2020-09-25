@@ -65,6 +65,7 @@ class Permission
     /**
      * @ORM\ManyToMany(targetEntity=Modul::class, inversedBy="permissions")
      * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $modul;
 
@@ -80,6 +81,7 @@ class Permission
      *     }
      * )
      * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $roles;
 

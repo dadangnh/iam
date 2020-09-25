@@ -53,6 +53,7 @@ class Pegawai
      * @ORM\OneToOne(targetEntity=User::class, inversedBy="pegawai", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"pegawai:read", "pegawai:write"})
      */
     private $user;
@@ -85,6 +86,7 @@ class Pegawai
      * @ORM\ManyToOne(targetEntity=JenisKelamin::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
@@ -94,6 +96,7 @@ class Pegawai
      * @ORM\ManyToOne(targetEntity=Agama::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */

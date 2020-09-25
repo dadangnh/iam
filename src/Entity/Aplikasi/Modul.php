@@ -56,6 +56,7 @@ class Modul
      * @ORM\ManyToOne(targetEntity=Aplikasi::class, inversedBy="moduls")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $aplikasi;
 

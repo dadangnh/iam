@@ -62,6 +62,7 @@ class Unit
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="units")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $jenisKantor;
 
@@ -76,6 +77,7 @@ class Unit
      * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="units")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $eselon;
 

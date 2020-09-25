@@ -93,6 +93,7 @@ class Jabatan
 
     /**
      * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="jabatans")
+     * @Assert\Valid()
      */
     private $eselon;
 
@@ -118,6 +119,7 @@ class Jabatan
 
     /**
      * @ORM\ManyToMany(targetEntity=Unit::class, inversedBy="jabatans")
+     * @Assert\Valid()
      */
     private $units;
 

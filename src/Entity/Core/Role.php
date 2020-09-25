@@ -78,6 +78,7 @@ class Role
 
     /**
      * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="containRoles")
+     * @Assert\Valid()
      */
     private $subsOfRole;
 
@@ -97,6 +98,7 @@ class Role
      *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $users;
 
@@ -111,6 +113,7 @@ class Role
      *          @ORM\JoinColumn(name="jabatan_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $jabatans;
 
@@ -125,6 +128,7 @@ class Role
      *          @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $units;
 
@@ -139,6 +143,7 @@ class Role
      *          @ORM\JoinColumn(name="kantor_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $kantors;
 
@@ -153,6 +158,7 @@ class Role
      *          @ORM\JoinColumn(name="eselon_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $eselons;
 
@@ -167,6 +173,7 @@ class Role
      *          @ORM\JoinColumn(name="jenis_kantor_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $jenisKantors;
 
@@ -181,6 +188,7 @@ class Role
      *          @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $groups;
 

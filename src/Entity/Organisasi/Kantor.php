@@ -66,6 +66,7 @@ class Kantor
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="kantors")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $jenisKantor;
 
@@ -76,6 +77,7 @@ class Kantor
 
     /**
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="childIds")
+     * @Assert\Valid()
      */
     private $parentId;
 
