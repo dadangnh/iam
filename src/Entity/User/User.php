@@ -37,7 +37,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
  * })
  * @ApiFilter(BooleanFilter::class, properties={"status", "locked"})
- * @ApiFilter(SearchFilter::class, properties={"username": "ipartial"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "username": "ipartial",
+ *     "pegawai.nama": "ipartial",
+ *     "pegawai.nip9": "partial",
+ *     "pegawai.nip18": "partial"
+ * })
  * @ApiFilter(DateFilter::class, properties={"lastChange"})
  * @ApiFilter(PropertyFilter::class)
  */

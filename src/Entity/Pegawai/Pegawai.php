@@ -32,7 +32,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_pegawai_relation", columns={"id", "user_id", "jenis_kelamin_id", "agama_id"}),
  * })
  * @ApiFilter(BooleanFilter::class, properties={"pensiun"})
- * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "nip9": "partial", "nip18": "partial"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "nip9": "partial",
+ *     "nip18": "partial",
+ *     "user.username": "ipartial",
+ *     "agama.nama": "ipartial",
+ *     "jenisKelamin.nama": "ipartial",
+ * })
  * @ApiFilter(DateFilter::class, properties={"tanggalLahir"})
  * @ApiFilter(PropertyFilter::class)
  */
