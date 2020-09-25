@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,12 +38,10 @@ class SecurityController extends AbstractController
     /**
      * @Route("/json_login", name="app_json_login", methods={"POST"})
      */
-    public function json_login()
+    public function json_login(IriConverterInterface $iriConverter)
     {
-        return $this->json([
-            'user' => $this->getUser() ? $this->getUser()->getUsername() : null,
-            'role' => $this->getUser() ? $this->getUser()->getRoles() : null,
-            'message' => $this->getUser() ? 'success' : 'failed',
+        return new Response(null, 204, [
+            'Location' => $iriConverter->getIriFromItem($this->getUser())
         ]);
     }
 }
