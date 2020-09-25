@@ -2,6 +2,9 @@
 
 namespace App\Entity\Pegawai;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Pegawai\JenisKelaminRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,6 +21,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jenis_kelamin_nama", columns={"id", "nama"}),
  *     @ORM\Index(name="idx_jenis_kelamin_legacy", columns={"id", "legacy_kode"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
+ * @ApiFilter(NumericFilter::class, properties={"legacyKode"})
  */
 class JenisKelamin
 {

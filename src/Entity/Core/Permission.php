@@ -2,6 +2,8 @@
 
 namespace App\Entity\Core;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Aplikasi\Modul;
 use App\Repository\Core\PermissionRepository;
@@ -13,10 +15,17 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=PermissionRepository::class)
  * @ORM\Table(name="permission", indexes={
  *     @ORM\Index(name="idx_permission_nama_status", columns={"id", "nama", "system_name"}),
+ * })
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "systemName": "ipartial",
+ *     "deskripsi": "ipartial",
  * })
  */
 class Permission

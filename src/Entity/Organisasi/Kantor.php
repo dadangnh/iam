@@ -2,6 +2,10 @@
 
 namespace App\Entity\Organisasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
@@ -16,7 +20,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"level": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=KantorRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="kantor", indexes={
@@ -25,6 +31,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id_id", "level"}),
  *     @ORM\Index(name="idx_kantor_location", columns={"id", "latitude", "longitude"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "sk": "ipartial",
+ *     "legacyKode": "partial",
+ *     "legacyKodeKpp": "partial",
+ *     "legacyKodeKanwil": "partial"
+ * })
+ * @ApiFilter(DateFilter::class, properties={"tanggalAktif", "tanggalNonaktif"})
+ * @ApiFilter(NumericFilter::class, properties={"level"})
  */
 class Kantor
 {

@@ -2,6 +2,10 @@
 
 namespace App\Entity\Aplikasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Permission;
 use App\Repository\Aplikasi\ModulRepository;
@@ -14,13 +18,22 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"createDate": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=ModulRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="modul", indexes={
  *     @ORM\Index(name="idx_modul_nama_status", columns={"nama", "system_name", "status"}),
  *     @ORM\Index(name="idx_modul_nama_aplikasi", columns={"aplikasi_id", "nama", "system_name"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "systemName": "ipartial",
+ *     "deskripsi": "ipartial",
+ * })
+ * @ApiFilter(DateFilter::class, properties={"createDate"})
+ * @ApiFilter(BooleanFilter::class, properties={"status"})
  */
 class Modul
 {

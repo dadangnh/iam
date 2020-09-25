@@ -2,6 +2,10 @@
 
 namespace App\Entity\Aplikasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Aplikasi\AplikasiRepository;
 use DateTimeImmutable;
@@ -13,12 +17,21 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"createDate": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=AplikasiRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="aplikasi", indexes={
  *     @ORM\Index(name="idx_aplikasi_nama_status", columns={"nama", "system_name", "status"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "systemName": "ipartial",
+ *     "deskripsi": "ipartial",
+ * })
+ * @ApiFilter(DateFilter::class, properties={"createDate"})
+ * @ApiFilter(BooleanFilter::class, properties={"status"})
  */
 class Aplikasi
 {

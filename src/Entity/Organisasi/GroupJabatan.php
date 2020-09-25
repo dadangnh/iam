@@ -2,6 +2,8 @@
 
 namespace App\Entity\Organisasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Organisasi\GroupJabatanRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -14,6 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=GroupJabatanRepository::class)
+ * @ORM\Table(name="group_jabatan", indexes={
+ *     @ORM\Index(name="idx_group_jabatan_nama", columns={"id", "nama"}),
+ *     @ORM\Index(name="idx_group_jabatan_legacy", columns={"id", "legacy_kode"}),
+ * })
+ * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "legacyKode": "iexact"})
  */
 class GroupJabatan
 {

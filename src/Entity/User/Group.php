@@ -2,6 +2,10 @@
 
 namespace App\Entity\User;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Repository\User\GroupRepository;
@@ -14,13 +18,22 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"createDate": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=GroupRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="`group`", indexes={
  *     @ORM\Index(name="idx_group_data", columns={"id", "nama", "system_name", "status"}),
  *     @ORM\Index(name="idx_group_relation", columns={"id", "owner_id"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "systemName": "ipartial",
+ *     "deskripsi": "ipartial",
+ * })
+ * @ApiFilter(DateFilter::class, properties={"createDate"})
+ * @ApiFilter(BooleanFilter::class, properties={"status"})
  */
 class Group
 {

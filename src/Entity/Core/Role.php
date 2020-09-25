@@ -2,6 +2,9 @@
 
 namespace App\Entity\Core;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
@@ -19,12 +22,20 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"level": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=RoleRepository::class)
  * @ORM\Table(name="role", indexes={
  *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name", "jenis"}),
  *     @ORM\Index(name="idx_role_relation", columns={"id", "level", "subs_of_role_id"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "systemName": "ipartial",
+ *     "deskripsi": "ipartial",
+ * })
+ * @ApiFilter(NumericFilter::class, properties={"level", "jenis"})
  */
 class Role
 {

@@ -2,6 +2,10 @@
 
 namespace App\Entity\User;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\Pegawai;
@@ -20,7 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
  *     normalizationContext={"groups"={"user:read"}, "swagger_definition_name"="Read"},
- *     denormalizationContext={"groups"={"user:write"}, "swagger_definition_name"="Write"}
+ *     denormalizationContext={"groups"={"user:write"}, "swagger_definition_name"="Write"},
+ *     attributes={"order"={"username": "ASC"}}
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\HasLifecycleCallbacks()
@@ -28,6 +33,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
  *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
  * })
+ * @ApiFilter(BooleanFilter::class, properties={"status", "locked"})
+ * @ApiFilter(SearchFilter::class, properties={"username": "ipartial"})
+ * @ApiFilter(DateFilter::class, properties={"lastChange"})
  */
 class User implements UserInterface
 {
