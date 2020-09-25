@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Repository\Organisasi\JenisKantorRepository;
@@ -28,6 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "tipe": "ipartial"})
  * @ApiFilter(NumericFilter::class, properties={"klasifikasi", "legacyId", "legacyKode"})
  * @ApiFilter(DateFilter::class, properties={"tanggalAktif", "tanggalNonaktif"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class JenisKantor
 {

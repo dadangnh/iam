@@ -5,6 +5,7 @@ namespace App\Entity\Pegawai;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Pegawai\AgamaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -23,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
  * @ApiFilter(NumericFilter::class, properties={"legacyKode"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Agama
 {

@@ -4,6 +4,7 @@ namespace App\Entity\Pegawai;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JabatanAtribut;
@@ -27,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jabatan_pegawai_relation", columns={"id", "pegawai_id", "jabatan_id", "tipe_id", "kantor_id", "unit_id"}),
  * })
  * @ApiFilter(SearchFilter::class, properties={"referensi": "ipartial"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class JabatanPegawai
 {

@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\Pegawai;
@@ -36,6 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(BooleanFilter::class, properties={"status", "locked"})
  * @ApiFilter(SearchFilter::class, properties={"username": "ipartial"})
  * @ApiFilter(DateFilter::class, properties={"lastChange"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class User implements UserInterface
 {

@@ -5,6 +5,7 @@ namespace App\Entity\Core;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
@@ -36,6 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "deskripsi": "ipartial",
  * })
  * @ApiFilter(NumericFilter::class, properties={"level", "jenis"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Role
 {

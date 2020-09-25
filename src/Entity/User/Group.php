@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Repository\User\GroupRepository;
@@ -34,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * @ApiFilter(DateFilter::class, properties={"createDate"})
  * @ApiFilter(BooleanFilter::class, properties={"status"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Group
 {

@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\User\User;
 use App\Repository\Pegawai\PegawaiRepository;
@@ -33,6 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiFilter(BooleanFilter::class, properties={"pensiun"})
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "nip9": "partial", "nip18": "partial"})
  * @ApiFilter(DateFilter::class, properties={"tanggalLahir"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Pegawai
 {
