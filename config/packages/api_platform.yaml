@@ -2,7 +2,9 @@ api_platform:
     title: DJPConnect API Docs
     version: 1.0.0
     mapping:
-        paths: ['%kernel.project_dir%/src/Entity']
+        paths:
+            - '%kernel.project_dir%/src/Entity'
+            - '%kernel.project_dir%/src/Api/Resource'
     patch_formats:
         json: ['application/merge-patch+json']
         jsonapi: ['application/vnd.api+json']

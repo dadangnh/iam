@@ -92,7 +92,6 @@ class Pegawai
 
     /**
      * @ORM\Column(type="boolean")
-     * @Assert\NotNull()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
