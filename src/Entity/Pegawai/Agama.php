@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -22,6 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_agama_nama", columns={"id", "nama"}),
  *     @ORM\Index(name="idx_agama_legacy", columns={"id", "legacy_kode"}),
  * })
+ * @UniqueEntity(fields={"nama"})
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
  * @ApiFilter(NumericFilter::class, properties={"legacyKode"})
  * @ApiFilter(PropertyFilter::class)

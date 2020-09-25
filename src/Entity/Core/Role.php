@@ -20,6 +20,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -31,6 +32,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name", "jenis"}),
  *     @ORM\Index(name="idx_role_relation", columns={"id", "level", "subs_of_role_id"}),
  * })
+ * @UniqueEntity(fields={"nama"})
+ * @UniqueEntity(fields={"systemName"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "nama": "ipartial",
  *     "systemName": "ipartial",

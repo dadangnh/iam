@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -23,6 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="permission", indexes={
  *     @ORM\Index(name="idx_permission_nama_status", columns={"id", "nama", "system_name"}),
  * })
+ * @UniqueEntity(fields={"nama"})
+ * @UniqueEntity(fields={"systemName"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "nama": "ipartial",
  *     "systemName": "ipartial",

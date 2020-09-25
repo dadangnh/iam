@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Monolog\DateTimeImmutable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -30,6 +31,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(fields={"username"})
  * @ORM\Table(name="`user`", indexes={
  *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
  *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
@@ -56,6 +58,11 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"user:read", "user:write", "pegawai:read"})
      * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min="3",
+     *     max="150",
+     *     maxMessage="username tidak boleh kurang dari 3 dan lebih dari 150 karakter"
+     * )
      */
     private $username;
 

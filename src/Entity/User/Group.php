@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -28,6 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_group_data", columns={"id", "nama", "system_name", "status"}),
  *     @ORM\Index(name="idx_group_relation", columns={"id", "owner_id"}),
  * })
+ * @UniqueEntity(fields={"nama"})
+ * @UniqueEntity(fields={"systemName"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "nama": "ipartial",
  *     "systemName": "ipartial",
