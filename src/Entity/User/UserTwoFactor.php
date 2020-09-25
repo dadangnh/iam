@@ -7,6 +7,7 @@ use App\Repository\User\UserTwoFactorRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -31,6 +32,7 @@ class UserTwoFactor
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userTwoFactors")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $user;
 

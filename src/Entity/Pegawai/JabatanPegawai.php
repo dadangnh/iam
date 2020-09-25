@@ -2,8 +2,12 @@
 
 namespace App\Entity\Pegawai;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Jabatan;
+use App\Entity\Organisasi\JabatanAtribut;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
@@ -12,6 +16,8 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -21,6 +27,8 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
  *     @ORM\Index(name="idx_jabatan_pegawai", columns={"id", "tanggal_mulai", "tanggal_selesai"}),
  *     @ORM\Index(name="idx_jabatan_pegawai_relation", columns={"id", "pegawai_id", "jabatan_id", "tipe_id", "kantor_id", "unit_id"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={"referensi": "ipartial"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class JabatanPegawai
 {
@@ -37,45 +45,67 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=Pegawai::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid
      */
     private $pegawai;
 
     /**
      * @ORM\ManyToOne(targetEntity=Jabatan::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Groups({"pegawai:read"})
      */
     private $jabatan;
 
     /**
      * @ORM\ManyToOne(targetEntity=TipeJabatan::class, inversedBy="jabatanPegawais")
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Groups({"pegawai:read"})
      */
     private $tipe;
 
     /**
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid()
+     * @Groups({"pegawai:read"})
      */
     private $kantor;
 
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="jabatanPegawais")
+     * @Groups({"pegawai:read"})
+     * @Assert\Valid()
      */
     private $unit;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"pegawai:read"})
      */
     private $referensi;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"pegawai:read"})
      */
     private $tanggalMulai;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @Groups({"pegawai:read"})
      */
     private $tanggalSelesai;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=JabatanAtribut::class, inversedBy="jabatanPegawais")
+     * @Groups({"pegawai:read"})
+     */
+    private $atribut;
 
     public function getId(): UuidInterface
     {
@@ -182,6 +212,18 @@ class JabatanPegawai
     public function setTanggalSelesai(?DateTimeImmutable $tanggalSelesai): self
     {
         $this->tanggalSelesai = $tanggalSelesai;
+
+        return $this;
+    }
+
+    public function getAtribut(): ?JabatanAtribut
+    {
+        return $this->atribut;
+    }
+
+    public function setAtribut(?JabatanAtribut $atribut): self
+    {
+        $this->atribut = $atribut;
 
         return $this;
     }

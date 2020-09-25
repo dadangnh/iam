@@ -2,6 +2,11 @@
 
 namespace App\Entity\Organisasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
@@ -12,9 +17,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"level": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=KantorRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="kantor", indexes={
@@ -23,6 +32,16 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
  *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id_id", "level"}),
  *     @ORM\Index(name="idx_kantor_location", columns={"id", "latitude", "longitude"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "sk": "ipartial",
+ *     "legacyKode": "partial",
+ *     "legacyKodeKpp": "partial",
+ *     "legacyKodeKanwil": "partial"
+ * })
+ * @ApiFilter(DateFilter::class, properties={"tanggalAktif", "tanggalNonaktif"})
+ * @ApiFilter(NumericFilter::class, properties={"level"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Kantor
 {
@@ -38,12 +57,16 @@ class Kantor
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Groups({"pegawai:read"})
      */
     private $nama;
 
     /**
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="kantors")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $jenisKantor;
 
@@ -54,6 +77,7 @@ class Kantor
 
     /**
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="childIds")
+     * @Assert\Valid()
      */
     private $parentId;
 
@@ -64,6 +88,7 @@ class Kantor
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Assert\NotNull
      */
     private $tanggalAktif;
 
@@ -128,7 +153,7 @@ class Kantor
     private $jabatanPegawais;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="kantors")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="kantors")
      */
     private $roles;
 

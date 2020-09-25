@@ -1,35 +1,30 @@
 <?php
 
-namespace App\Entity\Pegawai;
+namespace App\Entity\Organisasi;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\Pegawai\AgamaRepository;
+use App\Repository\Organisasi\GroupJabatanRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
- * @ORM\Entity(repositoryClass=AgamaRepository::class)
- * @ORM\Table(name="agama", indexes={
- *     @ORM\Index(name="idx_agama_nama", columns={"id", "nama"}),
- *     @ORM\Index(name="idx_agama_legacy", columns={"id", "legacy_kode"}),
+ * @ORM\Entity(repositoryClass=GroupJabatanRepository::class)
+ * @ORM\Table(name="group_jabatan", indexes={
+ *     @ORM\Index(name="idx_group_jabatan_nama", columns={"id", "nama"}),
+ *     @ORM\Index(name="idx_group_jabatan_legacy", columns={"id", "legacy_kode"}),
  * })
- * @UniqueEntity(fields={"nama"})
- * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
- * @ApiFilter(NumericFilter::class, properties={"legacyKode"})
+ * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "legacyKode": "iexact"})
  * @ApiFilter(PropertyFilter::class)
  */
-class Agama
+class GroupJabatan
 {
     /**
      * @var UuidInterface
@@ -44,26 +39,25 @@ class Agama
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"pegawai:read"})
      */
     private $nama;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string", length=4, nullable=true)
      */
     private $legacyKode;
 
     /**
-     * @ORM\OneToMany(targetEntity=Pegawai::class, mappedBy="agama")
+     * @ORM\OneToMany(targetEntity=Jabatan::class, mappedBy="groupJabatan")
      */
-    private $pegawais;
+    private $jabatans;
 
     public function __construct()
     {
-        $this->pegawais = new ArrayCollection();
+        $this->jabatans = new ArrayCollection();
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         return $this->nama;
     }
@@ -85,12 +79,12 @@ class Agama
         return $this;
     }
 
-    public function getLegacyKode(): ?int
+    public function getLegacyKode(): ?string
     {
         return $this->legacyKode;
     }
 
-    public function setLegacyKode(?int $legacyKode): self
+    public function setLegacyKode(?string $legacyKode): self
     {
         $this->legacyKode = $legacyKode;
 
@@ -98,30 +92,30 @@ class Agama
     }
 
     /**
-     * @return Collection|Pegawai[]
+     * @return Collection|Jabatan[]
      */
-    public function getPegawais(): Collection
+    public function getJabatans(): Collection
     {
-        return $this->pegawais;
+        return $this->jabatans;
     }
 
-    public function addPegawai(Pegawai $pegawai): self
+    public function addJabatan(Jabatan $jabatan): self
     {
-        if (!$this->pegawais->contains($pegawai)) {
-            $this->pegawais[] = $pegawai;
-            $pegawai->setAgama($this);
+        if (!$this->jabatans->contains($jabatan)) {
+            $this->jabatans[] = $jabatan;
+            $jabatan->setGroupJabatan($this);
         }
 
         return $this;
     }
 
-    public function removePegawai(Pegawai $pegawai): self
+    public function removeJabatan(Jabatan $jabatan): self
     {
-        if ($this->pegawais->contains($pegawai)) {
-            $this->pegawais->removeElement($pegawai);
+        if ($this->jabatans->contains($jabatan)) {
+            $this->jabatans->removeElement($jabatan);
             // set the owning side to null (unless already changed)
-            if ($pegawai->getAgama() === $this) {
-                $pegawai->setAgama(null);
+            if ($jabatan->getGroupJabatan() === $this) {
+                $jabatan->setGroupJabatan(null);
             }
         }
 

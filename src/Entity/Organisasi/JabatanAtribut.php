@@ -7,7 +7,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Pegawai\JabatanPegawai;
-use App\Repository\Organisasi\TipeJabatanRepository;
+use App\Repository\Organisasi\JabatanAtributRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,14 +19,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     attributes={"order"={"nama": "ASC"}}
  * )
- * @ORM\Entity(repositoryClass=TipeJabatanRepository::class)
- * @ORM\Table(name="tipe_jabatan", indexes={
- *     @ORM\Index(name="idx_tipe_jabatan", columns={"id", "nama"}),
+ * @ORM\Entity(repositoryClass=JabatanAtributRepository::class)
+ * @ORM\Table(name="jabatan_atribut", indexes={
+ *     @ORM\Index(name="idx_jabatan_atribut_nama", columns={"id", "nama"}),
  * })
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
  * @ApiFilter(PropertyFilter::class)
  */
-class TipeJabatan
+class JabatanAtribut
 {
     /**
      * @var UuidInterface
@@ -45,7 +45,7 @@ class TipeJabatan
     private $nama;
 
     /**
-     * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="tipe")
+     * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="atribut")
      */
     private $jabatanPegawais;
 
@@ -88,7 +88,7 @@ class TipeJabatan
     {
         if (!$this->jabatanPegawais->contains($jabatanPegawai)) {
             $this->jabatanPegawais[] = $jabatanPegawai;
-            $jabatanPegawai->setTipe($this);
+            $jabatanPegawai->setAtribut($this);
         }
 
         return $this;
@@ -99,8 +99,8 @@ class TipeJabatan
         if ($this->jabatanPegawais->contains($jabatanPegawai)) {
             $this->jabatanPegawais->removeElement($jabatanPegawai);
             // set the owning side to null (unless already changed)
-            if ($jabatanPegawai->getTipe() === $this) {
-                $jabatanPegawai->setTipe(null);
+            if ($jabatanPegawai->getAtribut() === $this) {
+                $jabatanPegawai->setAtribut(null);
             }
         }
 

@@ -2,6 +2,10 @@
 
 namespace App\Entity\Core;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
@@ -16,14 +20,27 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"level": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=RoleRepository::class)
  * @ORM\Table(name="role", indexes={
  *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name", "jenis"}),
  *     @ORM\Index(name="idx_role_relation", columns={"id", "level", "subs_of_role_id"}),
  * })
+ * @UniqueEntity(fields={"nama"})
+ * @UniqueEntity(fields={"systemName"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "systemName": "ipartial",
+ *     "deskripsi": "ipartial",
+ * })
+ * @ApiFilter(NumericFilter::class, properties={"level", "jenis"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Role
 {
@@ -39,11 +56,13 @@ class Role
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $systemName;
 
@@ -59,6 +78,7 @@ class Role
 
     /**
      * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="containRoles")
+     * @Assert\Valid()
      */
     private $subsOfRole;
 
@@ -68,37 +88,107 @@ class Role
     private $containRoles;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="role")
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="role", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_user",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *     }
+     * )
+     * @Assert\Valid()
      */
     private $users;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Jabatan::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Jabatan::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_jabatan",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="jabatan_id", referencedColumnName="id")
+     *     }
+     * )
+     * @Assert\Valid()
      */
     private $jabatans;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Unit::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Unit::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_unit",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
+     *     }
+     * )
+     * @Assert\Valid()
      */
     private $units;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Kantor::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Kantor::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_kantor",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="kantor_id", referencedColumnName="id")
+     *     }
+     * )
+     * @Assert\Valid()
      */
     private $kantors;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Eselon::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Eselon::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_eselon",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="eselon_id", referencedColumnName="id")
+     *     }
+     * )
+     * @Assert\Valid()
      */
     private $eselons;
 
     /**
-     * @ORM\ManyToMany(targetEntity=JenisKantor::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=JenisKantor::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_jenis_kantor",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="jenis_kantor_id", referencedColumnName="id")
+     *     }
+     * )
+     * @Assert\Valid()
      */
     private $jenisKantors;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Group::class, mappedBy="roles")
+     * @ORM\ManyToMany(targetEntity=Group::class, inversedBy="roles", cascade={"persist"})
+     * @ORM\JoinTable(
+     *     name="role_group",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     *     }
+     * )
+     * @Assert\Valid()
      */
     private $groups;
 

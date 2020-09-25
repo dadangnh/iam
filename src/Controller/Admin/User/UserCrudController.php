@@ -27,7 +27,8 @@ class UserCrudController extends AbstractCrudController
                 ->setRequired(true)
                 ->setFormType(PasswordType::class)
                 ->onlyOnForms(),
-            AssociationField::new('role'),
+            AssociationField::new('role')
+                ->onlyOnDetail(),
             BooleanField::new('status', 'Status Akun'),
             BooleanField::new('locked', 'Akun terkunci?'),
             BooleanField::new('twoFactorEnabled', '2FA')

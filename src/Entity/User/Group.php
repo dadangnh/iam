@@ -2,6 +2,11 @@
 
 namespace App\Entity\User;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Repository\User\GroupRepository;
@@ -11,15 +16,29 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"createDate": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=GroupRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="`group`", indexes={
  *     @ORM\Index(name="idx_group_data", columns={"id", "nama", "system_name", "status"}),
  *     @ORM\Index(name="idx_group_relation", columns={"id", "owner_id"}),
  * })
+ * @UniqueEntity(fields={"nama"})
+ * @UniqueEntity(fields={"systemName"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "systemName": "ipartial",
+ *     "deskripsi": "ipartial",
+ * })
+ * @ApiFilter(DateFilter::class, properties={"createDate"})
+ * @ApiFilter(BooleanFilter::class, properties={"status"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Group
 {
@@ -35,11 +54,13 @@ class Group
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $systemName;
 
@@ -51,6 +72,7 @@ class Group
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ownedGroups")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $owner;
 
@@ -61,6 +83,7 @@ class Group
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotNull()
      */
     private $status;
 
@@ -70,7 +93,7 @@ class Group
     private $groupMembers;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="groups")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="groups")
      */
     private $roles;
 

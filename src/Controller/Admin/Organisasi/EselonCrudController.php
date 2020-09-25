@@ -4,6 +4,7 @@ namespace App\Controller\Admin\Organisasi;
 
 use App\Entity\Organisasi\Eselon;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -26,7 +27,9 @@ class EselonCrudController extends AbstractCrudController
                 ->setRequired(true)
                 ->setMaxLength(255)
                 ->setHelp('Masukkan Kode sesuai ketentuan, misal Eselon 1a = I.a, Eselon 4b = IV.b'),
-            IntegerField::new('legacyKode', 'Kode Eselon lama di SIKKA')
+            IntegerField::new('legacyKode', 'Kode Eselon lama di SIKKA'),
+            AssociationField::new('roles', 'Roles')
+                ->onlyOnDetail()
         ];
     }
 }

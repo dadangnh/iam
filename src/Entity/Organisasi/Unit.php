@@ -2,6 +2,11 @@
 
 namespace App\Entity\Organisasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
@@ -12,9 +17,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"level": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=UnitRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="unit", indexes={
@@ -22,6 +31,13 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
  *     @ORM\Index(name="idx_unit_legacy", columns={"id", "legacy_kode"}),
  *     @ORM\Index(name="idx_unit_relation", columns={"id", "jenis_kantor_id", "eselon_id"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "legacyKode": "partial",
+ * })
+ * @ApiFilter(DateFilter::class, properties={"tanggalAktif", "tanggalNonaktif"})
+ * @ApiFilter(NumericFilter::class, properties={"level"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Unit
 {
@@ -37,28 +53,37 @@ class Unit
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Groups({"pegawai:read"})
      */
     private $nama;
 
     /**
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="units")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $jenisKantor;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotNull()
+     * @Groups({"pegawai:read"})
      */
     private $level;
 
     /**
      * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="units")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $eselon;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Assert\NotNull()
      */
     private $tanggalAktif;
 
@@ -83,7 +108,7 @@ class Unit
     private $jabatans;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="units")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="units")
      */
     private $roles;
 

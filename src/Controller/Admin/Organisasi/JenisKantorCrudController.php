@@ -4,6 +4,7 @@ namespace App\Controller\Admin\Organisasi;
 
 use App\Entity\Organisasi\JenisKantor;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -38,14 +39,19 @@ class JenisKantorCrudController extends AbstractCrudController
                     '1' => '1',
                     '2' => '2'
                 ])
-                ->setRequired(true),
+                ->setRequired(true)
+                ->hideOnIndex(),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
                 ->renderAsNativeWidget(true)
                 ->setRequired(true),
             DateTimeField::new('tanggalNonaktif', 'Tanggal Non aktif')
                 ->renderAsNativeWidget(true),
-            IntegerField::new('legacyId', 'ID pada DB SIKKA Lama'),
+            IntegerField::new('legacyId', 'ID pada DB SIKKA Lama')
+                ->hideOnIndex(),
             IntegerField::new('legacyKode', 'Kodifikasi pada DB SIKKA Lama')
+                ->hideOnIndex(),
+            AssociationField::new('roles', 'Roles')
+                ->onlyOnDetail()
         ];
     }
 }

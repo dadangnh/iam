@@ -38,6 +38,8 @@ class JabatanCrudController extends AbstractCrudController
                 ]),
             AssociationField::new('eselon', 'Eselon')
                 ->setHelp('Untuk jabatan struktural, isi eselon'),
+            AssociationField::new('groupJabatan', 'Group Jabatan')
+                ->setHelp('Pilih group jabatannya (normalnya untuk fungsional)'),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
                 ->setRequired(true)
                 ->renderAsNativeWidget(true),
@@ -55,7 +57,9 @@ class JabatanCrudController extends AbstractCrudController
                 ->hideOnIndex(),
             TextField::new('legacyKodeGradeKeu', 'Kode Jabatan Grade di SIKKA Lama')
                 ->setMaxLength(4)
-                ->hideOnIndex()
+                ->hideOnIndex(),
+            AssociationField::new('roles', 'Roles')
+                ->onlyOnDetail()
         ];
     }
 }

@@ -2,6 +2,10 @@
 
 namespace App\Entity\Organisasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Repository\Organisasi\EselonRepository;
@@ -10,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -18,6 +23,9 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
  *     @ORM\Index(name="idx_eselon_nama_status", columns={"id", "nama", "tingkat"}),
  *     @ORM\Index(name="idx_eselon_legacy", columns={"id", "legacy_kode"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "kode": "ipartial"})
+ * @ApiFilter(NumericFilter::class, properties={"tingkat", "legacyKode"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Eselon
 {
@@ -33,16 +41,19 @@ class Eselon
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotNull()
      */
     private $tingkat;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $kode;
 
@@ -62,7 +73,7 @@ class Eselon
     private $jabatans;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="eselons")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="eselons")
      */
     private $roles;
 

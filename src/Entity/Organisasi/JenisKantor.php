@@ -2,6 +2,11 @@
 
 namespace App\Entity\Organisasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Repository\Organisasi\JenisKantorRepository;
@@ -11,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -20,6 +26,10 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
  *     @ORM\Index(name="idx_jenis_kantor_nama_status", columns={"id", "nama", "tipe", "klasifikasi"}),
  *     @ORM\Index(name="idx_jenis_kantor_legacy", columns={"id", "legacy_kode", "legacy_id"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "tipe": "ipartial"})
+ * @ApiFilter(NumericFilter::class, properties={"klasifikasi", "legacyId", "legacyKode"})
+ * @ApiFilter(DateFilter::class, properties={"tanggalAktif", "tanggalNonaktif"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class JenisKantor
 {
@@ -35,21 +45,25 @@ class JenisKantor
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull()
      */
     private $tipe;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotNull()
      */
     private $klasifikasi;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Assert\NotNull()
      */
     private $tanggalAktif;
 
@@ -79,7 +93,7 @@ class JenisKantor
     private $units;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="jenisKantors")
+     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="jenisKantors")
      */
     private $roles;
 

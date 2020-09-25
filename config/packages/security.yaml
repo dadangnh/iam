@@ -25,6 +25,10 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
+            json_login:
+                check_path: app_json_login
+                username_path: username
+                password_path: password
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,5 +33,15 @@ class SecurityController extends AbstractController
     public function logout()
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+    }
+
+    /**
+     * @Route("/json_login", name="app_json_login", methods={"POST"})
+     */
+    public function json_login(IriConverterInterface $iriConverter)
+    {
+        return new Response(null, 204, [
+            'Location' => $iriConverter->getIriFromItem($this->getUser())
+        ]);
     }
 }
