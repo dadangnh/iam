@@ -2,6 +2,10 @@
 
 namespace App\Entity\Pegawai;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Pegawai\JenisKelaminRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -9,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -19,6 +24,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jenis_kelamin_nama", columns={"id", "nama"}),
  *     @ORM\Index(name="idx_jenis_kelamin_legacy", columns={"id", "legacy_kode"}),
  * })
+ * @UniqueEntity(fields={"nama"})
+ * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
+ * @ApiFilter(NumericFilter::class, properties={"legacyKode"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class JenisKelamin
 {
@@ -35,7 +44,7 @@ class JenisKelamin
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"user:read"})
+     * @Groups({"pegawai:read"})
      */
     private $nama;
 

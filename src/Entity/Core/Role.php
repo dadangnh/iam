@@ -2,6 +2,10 @@
 
 namespace App\Entity\Core;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
@@ -16,15 +20,27 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"level": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=RoleRepository::class)
  * @ORM\Table(name="role", indexes={
  *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name", "jenis"}),
  *     @ORM\Index(name="idx_role_relation", columns={"id", "level", "subs_of_role_id"}),
  * })
+ * @UniqueEntity(fields={"nama"})
+ * @UniqueEntity(fields={"systemName"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "systemName": "ipartial",
+ *     "deskripsi": "ipartial",
+ * })
+ * @ApiFilter(NumericFilter::class, properties={"level", "jenis"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Role
 {
@@ -62,6 +78,7 @@ class Role
 
     /**
      * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="containRoles")
+     * @Assert\Valid()
      */
     private $subsOfRole;
 
@@ -81,6 +98,7 @@ class Role
      *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $users;
 
@@ -95,6 +113,7 @@ class Role
      *          @ORM\JoinColumn(name="jabatan_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $jabatans;
 
@@ -109,6 +128,7 @@ class Role
      *          @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $units;
 
@@ -123,6 +143,7 @@ class Role
      *          @ORM\JoinColumn(name="kantor_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $kantors;
 
@@ -137,6 +158,7 @@ class Role
      *          @ORM\JoinColumn(name="eselon_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $eselons;
 
@@ -151,6 +173,7 @@ class Role
      *          @ORM\JoinColumn(name="jenis_kantor_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $jenisKantors;
 
@@ -165,6 +188,7 @@ class Role
      *          @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      *     }
      * )
+     * @Assert\Valid()
      */
     private $groups;
 

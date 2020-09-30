@@ -2,6 +2,9 @@
 
 namespace App\Entity\Organisasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Repository\Organisasi\TipeJabatanRepository;
@@ -14,11 +17,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=TipeJabatanRepository::class)
  * @ORM\Table(name="tipe_jabatan", indexes={
  *     @ORM\Index(name="idx_tipe_jabatan", columns={"id", "nama"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class TipeJabatan
 {

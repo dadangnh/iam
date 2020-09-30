@@ -2,6 +2,11 @@
 
 namespace App\Entity\User;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\Pegawai;
@@ -11,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Monolog\DateTimeImmutable;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
@@ -20,14 +26,25 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ApiResource(
  *     normalizationContext={"groups"={"user:read"}, "swagger_definition_name"="Read"},
- *     denormalizationContext={"groups"={"user:write"}, "swagger_definition_name"="Write"}
+ *     denormalizationContext={"groups"={"user:write"}, "swagger_definition_name"="Write"},
+ *     attributes={"order"={"username": "ASC"}}
  * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(fields={"username"})
  * @ORM\Table(name="`user`", indexes={
  *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
  *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
  * })
+ * @ApiFilter(BooleanFilter::class, properties={"status", "locked"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "username": "ipartial",
+ *     "pegawai.nama": "ipartial",
+ *     "pegawai.nip9": "partial",
+ *     "pegawai.nip18": "partial"
+ * })
+ * @ApiFilter(DateFilter::class, properties={"lastChange"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class User implements UserInterface
 {
@@ -44,14 +61,18 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"user:read", "user:write"})
+     * @Groups({"user:read", "user:write", "pegawai:read"})
      * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min="3",
+     *     max="150",
+     *     maxMessage="username tidak boleh kurang dari 3 dan lebih dari 150 karakter"
+     * )
      */
     private $username;
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="users")
-     * @Groups({"user:write"})
      */
     private $role;
 
@@ -66,12 +87,11 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Groups({"user:write"})
      */
     private $password;
 
     /**
-     * @Assert\NotBlank()
+     * @var string plain password
      * @Assert\Length(min=5, max=128)
      */
     private $plainPassword = null;
@@ -225,7 +245,7 @@ class User implements UserInterface
         return $this->plainPassword;
     }
 
-    public function setPlainPassword(string $password): void
+    public function setPlainPassword(?string $password): void
     {
         $this->plainPassword = $password;
     }

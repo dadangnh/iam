@@ -2,6 +2,11 @@
 
 namespace App\Entity\Pegawai;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\User\User;
 use App\Repository\Pegawai\PegawaiRepository;
@@ -26,6 +31,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_pegawai_legacy", columns={"id", "nip9"}),
  *     @ORM\Index(name="idx_pegawai_relation", columns={"id", "user_id", "jenis_kelamin_id", "agama_id"}),
  * })
+ * @ApiFilter(BooleanFilter::class, properties={"pensiun"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "nip9": "partial",
+ *     "nip18": "partial",
+ *     "user.username": "ipartial",
+ *     "agama.nama": "ipartial",
+ *     "jenisKelamin.nama": "ipartial",
+ * })
+ * @ApiFilter(DateFilter::class, properties={"tanggalLahir"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Pegawai
 {
@@ -44,6 +60,7 @@ class Pegawai
      * @ORM\OneToOne(targetEntity=User::class, inversedBy="pegawai", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"pegawai:read", "pegawai:write"})
      */
     private $user;
@@ -76,6 +93,7 @@ class Pegawai
      * @ORM\ManyToOne(targetEntity=JenisKelamin::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
@@ -85,6 +103,7 @@ class Pegawai
      * @ORM\ManyToOne(targetEntity=Agama::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */

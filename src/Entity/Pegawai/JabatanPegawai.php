@@ -2,6 +2,9 @@
 
 namespace App\Entity\Pegawai;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JabatanAtribut;
@@ -24,6 +27,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jabatan_pegawai", columns={"id", "tanggal_mulai", "tanggal_selesai"}),
  *     @ORM\Index(name="idx_jabatan_pegawai_relation", columns={"id", "pegawai_id", "jabatan_id", "tipe_id", "kantor_id", "unit_id"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={"referensi": "ipartial"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class JabatanPegawai
 {
@@ -41,6 +46,7 @@ class JabatanPegawai
      * @ORM\ManyToOne(targetEntity=Pegawai::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
+     * @Assert\Valid
      */
     private $pegawai;
 
@@ -48,7 +54,7 @@ class JabatanPegawai
      * @ORM\ManyToOne(targetEntity=Jabatan::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
-     * @Groups({"user:read"})
+     * @Assert\Valid()
      * @Groups({"pegawai:read"})
      */
     private $jabatan;
@@ -56,8 +62,8 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=TipeJabatan::class, inversedBy="jabatanPegawais")
      * @Assert\NotNull()
+     * @Assert\Valid()
      * @Groups({"pegawai:read"})
-     * @Groups({"user:read"})
      */
     private $tipe;
 
@@ -65,7 +71,7 @@ class JabatanPegawai
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
-     * @Groups({"user:read"})
+     * @Assert\Valid()
      * @Groups({"pegawai:read"})
      */
     private $kantor;
@@ -73,6 +79,7 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="jabatanPegawais")
      * @Groups({"pegawai:read"})
+     * @Assert\Valid()
      */
     private $unit;
 

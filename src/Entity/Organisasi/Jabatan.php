@@ -2,6 +2,11 @@
 
 namespace App\Entity\Organisasi;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
@@ -16,7 +21,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"level": "ASC", "nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=JabatanRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="jabatan", indexes={
@@ -24,6 +31,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jabatan_legacy", columns={"id", "legacy_kode"}),
  *     @ORM\Index(name="idx_jabatan_relation", columns={"id", "eselon_id"}),
  * })
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "jenis": "ipartial",
+ *     "legacyKode": "partial",
+ *     "legacyKodeJabKeu": "partial",
+ *     "legacyKodeGradeKeu": "partial",
+ * })
+ * @ApiFilter(DateFilter::class, properties={"tanggalAktif", "tanggalNonaktif"})
+ * @ApiFilter(NumericFilter::class, properties={"level"})
+ * @ApiFilter(PropertyFilter::class)
  */
 class Jabatan
 {
@@ -77,6 +94,7 @@ class Jabatan
 
     /**
      * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="jabatans")
+     * @Assert\Valid()
      */
     private $eselon;
 
@@ -102,6 +120,7 @@ class Jabatan
 
     /**
      * @ORM\ManyToMany(targetEntity=Unit::class, inversedBy="jabatans")
+     * @Assert\Valid()
      */
     private $units;
 

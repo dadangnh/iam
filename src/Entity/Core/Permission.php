@@ -2,6 +2,9 @@
 
 namespace App\Entity\Core;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Aplikasi\Modul;
 use App\Repository\Core\PermissionRepository;
@@ -10,14 +13,25 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={"order"={"nama": "ASC"}}
+ * )
  * @ORM\Entity(repositoryClass=PermissionRepository::class)
  * @ORM\Table(name="permission", indexes={
  *     @ORM\Index(name="idx_permission_nama_status", columns={"id", "nama", "system_name"}),
  * })
+ * @UniqueEntity(fields={"nama"})
+ * @UniqueEntity(fields={"systemName"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "nama": "ipartial",
+ *     "systemName": "ipartial",
+ *     "deskripsi": "ipartial",
+ * })
+ * @ApiFilter(PropertyFilter::class)
  */
 class Permission
 {
@@ -51,6 +65,7 @@ class Permission
     /**
      * @ORM\ManyToMany(targetEntity=Modul::class, inversedBy="permissions")
      * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $modul;
 
@@ -66,6 +81,7 @@ class Permission
      *     }
      * )
      * @Assert\NotNull()
+     * @Assert\Valid()
      */
     private $roles;
 
