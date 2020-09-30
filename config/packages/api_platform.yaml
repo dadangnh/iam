@@ -23,3 +23,7 @@ api_platform:
         html: ['text/html']
     swagger:
         versions: [3]
+        api_keys:
+            apiKey:
+                name: Authorization
+                type: header
