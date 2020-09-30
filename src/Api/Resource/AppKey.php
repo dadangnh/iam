@@ -11,10 +11,11 @@ use ApiPlatform\Core\Annotation\ApiResource;
  * @ApiResource(
  *      itemOperations={
  *          "get",
- *          "post_auth" ={
+ *          "post_publication" ={
  *              "method"="POST",
  *              "path"="/app_keys",
  *              "controller"=AppKeyController::class,
+ *              "read"=false,
  *          }
  *      }
  * )
@@ -29,6 +30,7 @@ final class AppKey
 
     /**
      * @var string
+     *
      */
     private $plain_password;
 
