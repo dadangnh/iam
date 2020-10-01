@@ -34,3 +34,8 @@ services:
         decorates: 'api_platform.swagger.normalizer.documentation'
         arguments: ['@App\Swagger\SwaggerDecorator.inner']
         autoconfigure: false
+
+    gesdinet.jwtrefreshtoken.refresh_token_manager:
+        class: App\Doctrine\RefreshTokenManager
+        public: true
+        arguments: [ '@doctrine.orm.default_entity_manager', 'Gesdinet\JWTRefreshTokenBundle\Entity\RefreshToken']

@@ -28,6 +28,10 @@ security:
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        refresh:
+            pattern: ^/token/refresh
+            stateless: true
+            anonymous: true
         main:
             anonymous: true
             lazy: true
