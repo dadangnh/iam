@@ -50,7 +50,7 @@ final class SwaggerDecorator implements NormalizerInterface
 
         $tokenDocumentation = [
             'paths' => [
-                '/authentication' => [
+                '/api/authentication' => [
                     'post' => [
                         'tags' => ['Token'],
                         'operationId' => 'postCredentialsItem',

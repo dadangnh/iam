@@ -3,9 +3,9 @@
 #    controller: App\Controller\DefaultController::index
 
 api_authentication:
-  path: /authentication
+  path: /api/authentication
   methods: ['POST']
 
 gesdinet_jwt_refresh_token:
-  path: /token/refresh
+  path: /api/token/refresh
   controller: gesdinet.jwtrefreshtoken::refresh
