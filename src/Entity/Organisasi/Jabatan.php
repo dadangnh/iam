@@ -57,6 +57,7 @@ class Jabatan
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"user:read"})
      * @Groups({"pegawai:read"})
      */
     private $nama;
