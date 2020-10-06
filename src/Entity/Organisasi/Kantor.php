@@ -59,6 +59,7 @@ class Kantor
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      * @Groups({"pegawai:read"})
+     * @Groups({"user:read"})
      */
     private $nama;
 
