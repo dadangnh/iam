@@ -4,9 +4,10 @@ namespace App\DataFixtures\Core;
 
 use App\Entity\Core\Role;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class RoleFixtures extends Fixture
+class RoleFixtures extends Fixture implements DependentFixtureInterface
 {
     public const ROLE_SUPER_ADMIN = 'super-admin-role';
     public const ROLE_ADMIN = 'admin-role';

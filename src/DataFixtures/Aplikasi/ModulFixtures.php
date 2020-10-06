@@ -4,9 +4,10 @@ namespace App\DataFixtures\Aplikasi;
 
 use App\Entity\Aplikasi\Modul;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class ModulFixtures extends Fixture
+class ModulFixtures extends Fixture implements DependentFixtureInterface
 {
     public const MODUL_SATU = 'modul-1';
     public const MODUL_DUA = 'modul-2';
