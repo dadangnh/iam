@@ -112,7 +112,7 @@ class User implements UserInterface
      * Default Symfony Guard Role
      * This is a virtual attributes
      * @var array
-     * @Groups({"user:read"})
+     * @Groups({"user:read", "pegawai:read"})
      */
     private $roles = [];
 
