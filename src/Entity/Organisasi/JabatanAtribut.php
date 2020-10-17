@@ -55,6 +55,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="jabatan_atribut", indexes={
  *     @ORM\Index(name="idx_jabatan_atribut_nama", columns={"id", "nama"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
  * @ApiFilter(PropertyFilter::class)
  */
@@ -67,17 +68,20 @@ class JabatanAtribut
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="atribut")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jabatanPegawais;
 

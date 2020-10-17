@@ -56,6 +56,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="permission", indexes={
  *     @ORM\Index(name="idx_permission_nama_status", columns={"id", "nama", "system_name"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @UniqueEntity(fields={"nama"})
  * @UniqueEntity(fields={"systemName"})
  * @ApiFilter(SearchFilter::class, properties={
@@ -74,28 +75,33 @@ class Permission
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $systemName;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $deskripsi;
 
     /**
      * @ORM\ManyToMany(targetEntity=Modul::class, inversedBy="permissions")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */
@@ -112,6 +118,7 @@ class Permission
      *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
      *     }
      * )
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */

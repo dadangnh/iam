@@ -63,6 +63,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_unit_legacy", columns={"id", "legacy_kode"}),
  *     @ORM\Index(name="idx_unit_relation", columns={"id", "jenis_kantor_id", "eselon_id"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={
  *     "nama": "ipartial",
  *     "legacyKode": "partial",
@@ -80,11 +81,13 @@ class Unit
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"pegawai:read"})
      */
@@ -93,6 +96,7 @@ class Unit
     /**
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="units")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */
@@ -100,6 +104,7 @@ class Unit
 
     /**
      * @ORM\Column(type="integer")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Groups({"pegawai:read"})
      */
@@ -108,6 +113,7 @@ class Unit
     /**
      * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="units")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */
@@ -115,32 +121,38 @@ class Unit
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $tanggalAktif;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $tanggalNonaktif;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="unit")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jabatanPegawais;
 
     /**
      * @ORM\ManyToMany(targetEntity=Jabatan::class, mappedBy="units")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jabatans;
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="units")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $roles;
 

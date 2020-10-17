@@ -59,6 +59,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="aplikasi", indexes={
  *     @ORM\Index(name="idx_aplikasi_nama_status", columns={"nama", "system_name", "status"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @UniqueEntity(fields={"nama"})
  * @UniqueEntity(fields={"systemName"})
  * @ApiFilter(SearchFilter::class, properties={
@@ -79,39 +80,46 @@ class Aplikasi
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $systemName;
 
     /**
      * @ORM\Column(type="boolean")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $status;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $createDate;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $deskripsi;
 
     /**
      * @ORM\OneToMany(targetEntity=Modul::class, mappedBy="aplikasi", orphanRemoval=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $moduls;
 

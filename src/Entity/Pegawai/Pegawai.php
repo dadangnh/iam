@@ -63,6 +63,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_pegawai_legacy", columns={"id", "nip9"}),
  *     @ORM\Index(name="idx_pegawai_relation", columns={"id", "user_id", "jenis_kelamin_id", "agama_id"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(BooleanFilter::class, properties={"pensiun"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "nama": "ipartial",
@@ -84,6 +85,7 @@ class Pegawai
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read", "pegawai:write"})
      */
     private $id;
@@ -91,6 +93,7 @@ class Pegawai
     /**
      * @ORM\OneToOne(targetEntity=User::class, inversedBy="pegawai", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"pegawai:read", "pegawai:write"})
@@ -99,6 +102,7 @@ class Pegawai
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
@@ -107,6 +111,7 @@ class Pegawai
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
@@ -115,6 +120,7 @@ class Pegawai
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
@@ -124,6 +130,7 @@ class Pegawai
     /**
      * @ORM\ManyToOne(targetEntity=JenisKelamin::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"user:read"})
@@ -134,6 +141,7 @@ class Pegawai
     /**
      * @ORM\ManyToOne(targetEntity=Agama::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"user:read"})
@@ -143,6 +151,7 @@ class Pegawai
 
     /**
      * @ORM\Column(type="boolean")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
@@ -150,18 +159,21 @@ class Pegawai
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read", "pegawai:write"})
      */
     private $npwp;
 
     /**
      * @ORM\Column(type="string", length=16, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read", "pegawai:write"})
      */
     private $nik;
 
     /**
      * @ORM\Column(type="string", length=9, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
@@ -169,6 +181,7 @@ class Pegawai
 
     /**
      * @ORM\Column(type="string", length=18, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
@@ -176,6 +189,7 @@ class Pegawai
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="pegawai", orphanRemoval=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */

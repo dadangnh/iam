@@ -51,6 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_group_member_data", columns={"id", "status", "user_id"}),
  *     @ORM\Index(name="idx_group_member_relation", columns={"id", "group_id_id", "user_id"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
 class GroupMember
 {
@@ -61,12 +62,14 @@ class GroupMember
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Group::class, inversedBy="groupMembers")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $groupId;
@@ -74,17 +77,20 @@ class GroupMember
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="groupMembers")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $user;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $joinDate;
 
     /**
      * @ORM\Column(type="boolean")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $status;
 

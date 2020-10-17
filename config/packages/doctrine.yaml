@@ -1,3 +1,4 @@
+# Default configuration for extension with alias: "doctrine"
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
@@ -6,13 +7,25 @@ doctrine:
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '5.7'
     orm:
+        default_entity_manager: ~
         auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-        auto_mapping: true
-        mappings:
-            App:
-                is_bundle: false
-                type: annotation
-                dir: '%kernel.project_dir%/src/Entity'
-                prefix: 'App\Entity'
-                alias: App
+        proxy_dir: '%kernel.cache_dir%/doctrine/orm/Proxies'
+        proxy_namespace: Proxies
+        entity_managers:
+            default:
+                connection: ~
+                auto_mapping: true
+                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+                second_level_cache:
+                    region_cache_driver:
+                        type: service
+                        id: snc_second_level_cache
+                    enabled: true
+                    region_lifetime: 86400
+                mappings:
+                    App:
+                        is_bundle: false
+                        type: annotation
+                        dir: '%kernel.project_dir%/src/Entity'
+                        prefix: 'App\Entity'
+                        alias: App

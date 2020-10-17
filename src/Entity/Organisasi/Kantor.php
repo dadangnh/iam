@@ -64,6 +64,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id_id", "level"}),
  *     @ORM\Index(name="idx_kantor_location", columns={"id", "latitude", "longitude"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={
  *     "nama": "ipartial",
  *     "sk": "ipartial",
@@ -84,11 +85,13 @@ class Kantor
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"pegawai:read"})
      * @Groups({"user:read"})
@@ -98,6 +101,7 @@ class Kantor
     /**
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="kantors")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */
@@ -105,88 +109,105 @@ class Kantor
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $level;
 
     /**
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="childIds")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $parentId;
 
     /**
      * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="parentId")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $childIds;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull
      */
     private $tanggalAktif;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $tanggalNonaktif;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $sk;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $alamat;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $telp;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $fax;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $zonaWaktu;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $latitude;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $longitude;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKode;
 
     /**
      * @ORM\Column(type="string", length=3, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKodeKpp;
 
     /**
      * @ORM\Column(type="string", length=3, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKodeKanwil;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="kantor", orphanRemoval=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jabatanPegawais;
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="kantors")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $roles;
 

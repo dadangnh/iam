@@ -49,6 +49,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_user_two_factor_data", columns={"id", "tfa_type"}),
  *     @ORM\Index(name="idx_user_two_factor_relation", columns={"id", "user_id"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  */
 class UserTwoFactor
 {
@@ -59,23 +60,27 @@ class UserTwoFactor
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userTwoFactors")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $user;
 
     /**
      * @ORM\Column(type="json", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $backupCode = [];
 
     /**
      * @ORM\Column(type="integer")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $tfaType;
 

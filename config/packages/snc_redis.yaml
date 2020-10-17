@@ -1,0 +1,46 @@
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: '%env(REDIS_URL)%'
+            logging: '%kernel.debug%'
+        session:
+            type: predis
+            alias: session
+            dsn: '%env(REDIS_URL)%/1'
+            logging: true
+        doctrine:
+            type: predis
+            alias: doctrine
+            dsn: '%env(REDIS_URL)%/2'
+            logging: '%kernel.debug%'
+    session:
+        client: session
+        prefix: 'iam_'
+    doctrine:
+        metadata_cache:
+            client: doctrine
+            entity_manager: default
+            namespace: 'dmc:'
+        result_cache:
+            client: doctrine
+            entity_manager: default
+            namespace: 'drc:'
+        query_cache:
+            client: doctrine
+            entity_manager: default
+            namespace: 'dqc:'
+        second_level_cache:
+            client: doctrine
+            entity_manager: default
+            namespace: 'dslc:'
+# Define your clients here. The example below connects to database 0 of the default Redis server.
+#
+# See https://github.com/snc/SncRedisBundle/blob/master/Resources/doc/index.md for instructions on
+# how to configure the bundle.
+#
+#        default:
+#            type: phpredis
+#            alias: default
+#            dsn: "%env(REDIS_URL)%"

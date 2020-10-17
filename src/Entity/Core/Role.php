@@ -64,6 +64,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name", "jenis"}),
  *     @ORM\Index(name="idx_role_relation", columns={"id", "level", "subs_of_role_id"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @UniqueEntity(fields={"nama"})
  * @UniqueEntity(fields={"systemName"})
  * @ApiFilter(SearchFilter::class, properties={
@@ -83,39 +84,46 @@ class Role
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $systemName;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $deskripsi;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $level;
 
     /**
      * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="containRoles")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $subsOfRole;
 
     /**
      * @ORM\OneToMany(targetEntity=Role::class, mappedBy="subsOfRole")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $containRoles;
 
@@ -130,6 +138,7 @@ class Role
      *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *     }
      * )
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $users;
@@ -145,6 +154,7 @@ class Role
      *          @ORM\JoinColumn(name="jabatan_id", referencedColumnName="id")
      *     }
      * )
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $jabatans;
@@ -160,6 +170,7 @@ class Role
      *          @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
      *     }
      * )
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $units;
@@ -175,6 +186,7 @@ class Role
      *          @ORM\JoinColumn(name="kantor_id", referencedColumnName="id")
      *     }
      * )
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $kantors;
@@ -190,6 +202,7 @@ class Role
      *          @ORM\JoinColumn(name="eselon_id", referencedColumnName="id")
      *     }
      * )
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $eselons;
@@ -205,6 +218,7 @@ class Role
      *          @ORM\JoinColumn(name="jenis_kantor_id", referencedColumnName="id")
      *     }
      * )
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $jenisKantors;
@@ -220,12 +234,14 @@ class Role
      *          @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      *     }
      * )
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $groups;
 
     /**
      * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="roles")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $permissions;
 
@@ -234,6 +250,7 @@ class Role
      *     "comment":"Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
      *          6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
      *          10 => jabatan + unit + kantor"})
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jenis;
 

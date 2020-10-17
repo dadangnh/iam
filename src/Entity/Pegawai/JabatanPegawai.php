@@ -60,6 +60,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jabatan_pegawai", columns={"id", "tanggal_mulai", "tanggal_selesai"}),
  *     @ORM\Index(name="idx_jabatan_pegawai_relation", columns={"id", "pegawai_id", "jabatan_id", "tipe_id", "kantor_id", "unit_id"}),
  * })
+ * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={"referensi": "ipartial"})
  * @ApiFilter(PropertyFilter::class)
  */
@@ -72,12 +73,14 @@ class JabatanPegawai
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Pegawai::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid
      */
@@ -86,6 +89,7 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=Jabatan::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"pegawai:read"})
@@ -94,6 +98,7 @@ class JabatanPegawai
 
     /**
      * @ORM\ManyToOne(targetEntity=TipeJabatan::class, inversedBy="jabatanPegawais")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"pegawai:read"})
@@ -103,6 +108,7 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"pegawai:read"})
@@ -111,6 +117,7 @@ class JabatanPegawai
 
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="jabatanPegawais")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      * @Assert\Valid()
      */
@@ -118,24 +125,28 @@ class JabatanPegawai
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
     private $referensi;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
     private $tanggalMulai;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
     private $tanggalSelesai;
 
     /**
      * @ORM\ManyToOne(targetEntity=JabatanAtribut::class, inversedBy="jabatanPegawais")
+     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
     private $atribut;
