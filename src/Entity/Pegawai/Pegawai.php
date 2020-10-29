@@ -151,7 +151,6 @@ class Pegawai
 
     /**
      * @ORM\Column(type="boolean")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
@@ -189,7 +188,6 @@ class Pegawai
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="pegawai", orphanRemoval=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */

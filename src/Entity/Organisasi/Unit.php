@@ -152,7 +152,6 @@ class Unit
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="units")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $roles;
 

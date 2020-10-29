@@ -115,7 +115,6 @@ class Eselon
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="eselons")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $roles;
 

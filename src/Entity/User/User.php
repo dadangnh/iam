@@ -108,7 +108,6 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="users")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $role;
 
@@ -123,7 +122,6 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $password;
 
@@ -135,7 +133,6 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read", "user:write"})
      * @Assert\NotNull()
      */
@@ -143,7 +140,6 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read", "user:write"})
      * @Assert\NotNull()
      */
@@ -151,7 +147,6 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:write"})
      * @Assert\NotNull()
      */
@@ -159,14 +154,12 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="datetime")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:write"})
      */
     private $lastChange;
 
     /**
      * @ORM\OneToMany(targetEntity=UserTwoFactor::class, mappedBy="user", orphanRemoval=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:write"})
      */
     private $userTwoFactors;
@@ -180,14 +173,12 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Group::class, mappedBy="owner")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read", "user:write"})
      */
     private $ownedGroups;
 
     /**
      * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="user", orphanRemoval=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read", "user:write"})
      */
     private $groupMembers;

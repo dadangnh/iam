@@ -118,7 +118,6 @@ class Modul
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $createDate;
 
@@ -130,7 +129,6 @@ class Modul
 
     /**
      * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="modul")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $permissions;
 

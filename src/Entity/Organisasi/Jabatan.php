@@ -172,7 +172,6 @@ class Jabatan
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="jabatans")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $roles;
 

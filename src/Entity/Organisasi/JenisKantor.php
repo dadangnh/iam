@@ -138,7 +138,6 @@ class JenisKantor
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="jenisKantors")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $roles;
 

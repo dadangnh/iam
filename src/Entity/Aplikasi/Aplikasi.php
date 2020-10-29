@@ -100,7 +100,6 @@ class Aplikasi
 
     /**
      * @ORM\Column(type="boolean")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $status;
@@ -119,7 +118,6 @@ class Aplikasi
 
     /**
      * @ORM\OneToMany(targetEntity=Modul::class, mappedBy="aplikasi", orphanRemoval=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $moduls;
 

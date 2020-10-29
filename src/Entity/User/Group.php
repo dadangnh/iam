@@ -129,13 +129,11 @@ class Group
 
     /**
      * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="groupId", orphanRemoval=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $groupMembers;
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="groups")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $roles;
 

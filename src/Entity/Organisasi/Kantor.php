@@ -207,7 +207,6 @@ class Kantor
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="kantors")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $roles;
 

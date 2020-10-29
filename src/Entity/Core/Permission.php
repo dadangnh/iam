@@ -101,7 +101,6 @@ class Permission
 
     /**
      * @ORM\ManyToMany(targetEntity=Modul::class, inversedBy="permissions")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */
@@ -118,7 +117,6 @@ class Permission
      *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
      *     }
      * )
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */

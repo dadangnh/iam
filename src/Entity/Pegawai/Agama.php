@@ -93,7 +93,6 @@ class Agama
 
     /**
      * @ORM\OneToMany(targetEntity=Pegawai::class, mappedBy="agama")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $pegawais;
 
