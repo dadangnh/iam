@@ -56,7 +56,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="tipe_jabatan", indexes={
  *     @ORM\Index(name="idx_tipe_jabatan", columns={"id", "nama"}),
  * })
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
  * @ApiFilter(PropertyFilter::class)
  */
@@ -69,13 +70,15 @@ class TipeJabatan
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"user:read"})
      */
@@ -83,7 +86,8 @@ class TipeJabatan
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="tipe")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jabatanPegawais;
 

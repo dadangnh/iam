@@ -56,7 +56,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_eselon_nama_status", columns={"id", "nama", "tingkat"}),
  *     @ORM\Index(name="idx_eselon_legacy", columns={"id", "legacy_kode"}),
  * })
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "kode": "ipartial"})
  * @ApiFilter(NumericFilter::class, properties={"tingkat", "legacyKode"})
  * @ApiFilter(PropertyFilter::class)
@@ -70,46 +71,53 @@ class Eselon
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="integer")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $tingkat;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $kode;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="eselon")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $units;
 
     /**
      * @ORM\OneToMany(targetEntity=Jabatan::class, mappedBy="eselon")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jabatans;
 

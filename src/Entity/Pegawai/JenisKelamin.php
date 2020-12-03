@@ -57,7 +57,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jenis_kelamin_nama", columns={"id", "nama"}),
  *     @ORM\Index(name="idx_jenis_kelamin_legacy", columns={"id", "legacy_kode"}),
  * })
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @UniqueEntity(fields={"nama"})
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
  * @ApiFilter(NumericFilter::class, properties={"legacyKode"})
@@ -72,13 +73,15 @@ class JenisKelamin
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"pegawai:read"})
      * @Groups({"user:read"})
@@ -87,13 +90,15 @@ class JenisKelamin
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=Pegawai::class, mappedBy="jenisKelamin")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $pegawais;
 

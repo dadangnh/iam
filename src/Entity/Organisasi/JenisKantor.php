@@ -59,7 +59,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jenis_kantor_nama_status", columns={"id", "nama", "tipe", "klasifikasi"}),
  *     @ORM\Index(name="idx_jenis_kantor_legacy", columns={"id", "legacy_kode", "legacy_id"}),
  * })
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "tipe": "ipartial"})
  * @ApiFilter(NumericFilter::class, properties={"klasifikasi", "legacyId", "legacyKode"})
  * @ApiFilter(DateFilter::class, properties={"tanggalAktif", "tanggalNonaktif"})
@@ -74,65 +75,75 @@ class JenisKantor
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $tipe;
 
     /**
      * @ORM\Column(type="integer")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $klasifikasi;
 
     /**
      * @ORM\Column(type="datetime_immutable")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $tanggalAktif;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $tanggalNonaktif;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyId;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="jenisKantor")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $kantors;
 
     /**
      * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="jenisKantor")
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $units;
 

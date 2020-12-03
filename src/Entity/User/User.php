@@ -68,7 +68,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
  *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
  * })
- * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(BooleanFilter::class, properties={"status", "locked"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "username": "ipartial",
@@ -88,14 +89,16 @@ class User implements UserInterface
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read", "user:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read", "user:write", "pegawai:read"})
      * @Assert\NotBlank()
      * @Assert\Length(
@@ -166,7 +169,8 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToOne(targetEntity=Pegawai::class, mappedBy="user", cascade={"persist", "remove"})
-     * @ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read", "user:write"})
      */
     private $pegawai;
