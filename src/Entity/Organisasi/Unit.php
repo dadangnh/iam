@@ -24,12 +24,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     attributes={
  *          "order"={"level": "ASC", "nama": "ASC"},
- *          "security"="is_granted('ROLE_USER') or is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
  *          "security_message"="Only a valid user/admin/app can access this."
  *     },
  *     collectionOperations={
  *         "get"={
- *              "security"="is_granted('ROLE_USER') or is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
  *              "security_message"="Only a valid user/admin/app can access this."
  *          },
  *         "post"={
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     itemOperations={
  *         "get"={
- *              "security"="is_granted('ROLE_USER') or is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
  *              "security_message"="Only a valid user/admin/app can access this."
  *          },
  *         "put"={
