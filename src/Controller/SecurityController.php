@@ -22,6 +22,16 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
+        // If user is admin and fully authenticated, redirect to admin page
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('admin');
+        }
+
+        // if user is not admin, log out
+        if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirectToRoute('app_logout');
+        }
+
         return $this->render('@EasyAdmin/page/login.html.twig', [
             // parameters usually defined in Symfony login forms
             'error' => $error,
@@ -57,10 +67,10 @@ class SecurityController extends AbstractController
             'sign_in_label' => 'Log in',
 
             // the 'name' HTML attribute of the <input> used for the username field (default: '_username')
-            'username_parameter' => 'djpconnect_username_field',
+            'username_parameter' => 'username',
 
             // the 'name' HTML attribute of the <input> used for the password field (default: '_password')
-            'password_parameter' => 'djpconnect_password_field',
+            'password_parameter' => 'password',
         ]);
     }
 
