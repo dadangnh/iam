@@ -18,12 +18,46 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *     attributes={"order"={"nama": "ASC"}}
+ *     attributes={
+ *          "order"={"nama": "ASC"},
+ *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *          "security_message"="Only a valid user/admin/app can access this."
+ *     },
+ *     collectionOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "post"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can add new resource to this entity type."
+ *          }
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "put"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can replace this entity type."
+ *          },
+ *         "patch"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can edit this entity type."
+ *          },
+ *         "delete"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can delete this entity type."
+ *          },
+ *     }
  * )
  * @ORM\Entity(repositoryClass=TipeJabatanRepository::class)
  * @ORM\Table(name="tipe_jabatan", indexes={
  *     @ORM\Index(name="idx_tipe_jabatan", columns={"id", "nama"}),
  * })
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial"})
  * @ApiFilter(PropertyFilter::class)
  */
@@ -36,11 +70,15 @@ class TipeJabatan
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"user:read"})
      */
@@ -48,6 +86,8 @@ class TipeJabatan
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="tipe")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jabatanPegawais;
 

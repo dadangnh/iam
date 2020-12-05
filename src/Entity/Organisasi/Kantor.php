@@ -22,7 +22,39 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *     attributes={"order"={"level": "ASC", "nama": "ASC"}}
+ *     attributes={
+ *          "order"={"level": "ASC", "nama": "ASC"},
+ *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *          "security_message"="Only a valid user/admin/app can access this."
+ *     },
+ *     collectionOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "post"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can add new resource to this entity type."
+ *          }
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "put"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can replace this entity type."
+ *          },
+ *         "patch"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can edit this entity type."
+ *          },
+ *         "delete"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can delete this entity type."
+ *          },
+ *     }
  * )
  * @ORM\Entity(repositoryClass=KantorRepository::class)
  * @ORM\HasLifecycleCallbacks()
@@ -32,6 +64,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id_id", "level"}),
  *     @ORM\Index(name="idx_kantor_location", columns={"id", "latitude", "longitude"}),
  * })
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={
  *     "nama": "ipartial",
  *     "sk": "ipartial",
@@ -52,11 +86,15 @@ class Kantor
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"pegawai:read"})
      * @Groups({"user:read"})
@@ -66,6 +104,8 @@ class Kantor
     /**
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="kantors")
      * @ORM\JoinColumn(nullable=false)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      */
@@ -73,83 +113,115 @@ class Kantor
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $level;
 
     /**
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="childIds")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $parentId;
 
     /**
      * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="parentId")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $childIds;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull
      */
     private $tanggalAktif;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $tanggalNonaktif;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $sk;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $alamat;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $telp;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $fax;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $zonaWaktu;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $latitude;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $longitude;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKode;
 
     /**
      * @ORM\Column(type="string", length=3, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKodeKpp;
 
     /**
      * @ORM\Column(type="string", length=3, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKodeKanwil;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="kantor", orphanRemoval=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jabatanPegawais;
 

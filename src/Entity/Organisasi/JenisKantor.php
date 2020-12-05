@@ -19,13 +19,48 @@ use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={
+ *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *          "security_message"="Only a valid user/admin/app can access this."
+ *     },
+ *     collectionOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "post"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can add new resource to this entity type."
+ *          }
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "put"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can replace this entity type."
+ *          },
+ *         "patch"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can edit this entity type."
+ *          },
+ *         "delete"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can delete this entity type."
+ *          },
+ *     }
+ * )
  * @ORM\Entity(repositoryClass=JenisKantorRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="jenis_kantor", indexes={
  *     @ORM\Index(name="idx_jenis_kantor_nama_status", columns={"id", "nama", "tipe", "klasifikasi"}),
  *     @ORM\Index(name="idx_jenis_kantor_legacy", columns={"id", "legacy_kode", "legacy_id"}),
  * })
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "tipe": "ipartial"})
  * @ApiFilter(NumericFilter::class, properties={"klasifikasi", "legacyId", "legacyKode"})
  * @ApiFilter(DateFilter::class, properties={"tanggalAktif", "tanggalNonaktif"})
@@ -40,55 +75,75 @@ class JenisKantor
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
     private $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $tipe;
 
     /**
      * @ORM\Column(type="integer")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $klasifikasi;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $tanggalAktif;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $tanggalNonaktif;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyId;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="jenisKantor")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $kantors;
 
     /**
      * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="jenisKantor")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $units;
 

@@ -21,6 +21,38 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
+ *     attributes={
+ *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *          "security_message"="Only a valid user/admin/app can access this."
+ *     },
+ *     collectionOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "post"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can add new resource to this entity type."
+ *          }
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "put"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can replace this entity type."
+ *          },
+ *         "patch"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can edit this entity type."
+ *          },
+ *         "delete"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can delete this entity type."
+ *          },
+ *     },
  *     normalizationContext={"groups"={"pegawai:read"}, "swagger_definition_name"="Read"},
  *     denormalizationContext={"groups"={"pegawai:write"}, "swagger_definition_name"="Write"}
  * )
@@ -31,6 +63,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_pegawai_legacy", columns={"id", "nip9"}),
  *     @ORM\Index(name="idx_pegawai_relation", columns={"id", "user_id", "jenis_kelamin_id", "agama_id"}),
  * })
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(BooleanFilter::class, properties={"pensiun"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "nama": "ipartial",
@@ -52,6 +86,8 @@ class Pegawai
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read", "pegawai:write"})
      */
     private $id;
@@ -59,6 +95,8 @@ class Pegawai
     /**
      * @ORM\OneToOne(targetEntity=User::class, inversedBy="pegawai", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"pegawai:read", "pegawai:write"})
@@ -67,6 +105,8 @@ class Pegawai
 
     /**
      * @ORM\Column(type="string", length=255)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
@@ -75,6 +115,8 @@ class Pegawai
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
@@ -83,6 +125,8 @@ class Pegawai
 
     /**
      * @ORM\Column(type="string", length=255)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
@@ -92,6 +136,8 @@ class Pegawai
     /**
      * @ORM\ManyToOne(targetEntity=JenisKelamin::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"user:read"})
@@ -102,6 +148,8 @@ class Pegawai
     /**
      * @ORM\ManyToOne(targetEntity=Agama::class, inversedBy="pegawais")
      * @ORM\JoinColumn(nullable=false)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"user:read"})
@@ -118,18 +166,24 @@ class Pegawai
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read", "pegawai:write"})
      */
     private $npwp;
 
     /**
      * @ORM\Column(type="string", length=16, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read", "pegawai:write"})
      */
     private $nik;
 
     /**
      * @ORM\Column(type="string", length=9, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
@@ -137,6 +191,8 @@ class Pegawai
 
     /**
      * @ORM\Column(type="string", length=18, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */

@@ -22,7 +22,39 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *     attributes={"order"={"level": "ASC", "nama": "ASC"}}
+ *     attributes={
+ *          "order"={"level": "ASC", "nama": "ASC"},
+ *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *          "security_message"="Only a valid user/admin/app can access this."
+ *     },
+ *     collectionOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "post"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can add new resource to this entity type."
+ *          }
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "put"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can replace this entity type."
+ *          },
+ *         "patch"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can edit this entity type."
+ *          },
+ *         "delete"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can delete this entity type."
+ *          },
+ *     }
  * )
  * @ORM\Entity(repositoryClass=JabatanRepository::class)
  * @ORM\HasLifecycleCallbacks()
@@ -31,6 +63,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jabatan_legacy", columns={"id", "legacy_kode"}),
  *     @ORM\Index(name="idx_jabatan_relation", columns={"id", "eselon_id"}),
  * })
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={
  *     "nama": "ipartial",
  *     "jenis": "ipartial",
@@ -51,11 +85,15 @@ class Jabatan
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      * @Groups({"user:read"})
      * @Groups({"pegawai:read"})
@@ -64,6 +102,8 @@ class Jabatan
 
     /**
      * @ORM\Column(type="integer")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Groups({"pegawai:read"})
      */
@@ -71,6 +111,8 @@ class Jabatan
 
     /**
      * @ORM\Column(type="string", length=255)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Groups({"pegawai:read"})
      */
@@ -78,48 +120,66 @@ class Jabatan
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
     private $tanggalAktif;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $tanggalNonaktif;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $sk;
 
     /**
      * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="jabatans")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $eselon;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKode;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKodeJabKeu;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $legacyKodeGradeKeu;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="jabatan", orphanRemoval=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $jabatanPegawais;
 
     /**
      * @ORM\ManyToMany(targetEntity=Unit::class, inversedBy="jabatans")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
     private $units;
@@ -131,6 +191,8 @@ class Jabatan
 
     /**
      * @ORM\ManyToOne(targetEntity=GroupJabatan::class, inversedBy="jabatans")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $groupJabatan;
 

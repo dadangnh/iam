@@ -20,13 +20,48 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *     attributes={
+ *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *          "security_message"="Only a valid user/admin/app can access this."
+ *     },
+ *     collectionOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "post"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can add new resource to this entity type."
+ *          }
+ *     },
+ *     itemOperations={
+ *         "get"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only a valid user/admin/app can access this."
+ *          },
+ *         "put"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can replace this entity type."
+ *          },
+ *         "patch"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can edit this entity type."
+ *          },
+ *         "delete"={
+ *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
+ *              "security_message"="Only admin/app can delete this entity type."
+ *          },
+ *     }
+ * )
  * @ORM\Entity(repositoryClass=JabatanPegawaiRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="jabatan_pegawai", indexes={
  *     @ORM\Index(name="idx_jabatan_pegawai", columns={"id", "tanggal_mulai", "tanggal_selesai"}),
  *     @ORM\Index(name="idx_jabatan_pegawai_relation", columns={"id", "pegawai_id", "jabatan_id", "tipe_id", "kantor_id", "unit_id"}),
  * })
+ * Disable second level cache for further analysis
+ * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @ApiFilter(SearchFilter::class, properties={"referensi": "ipartial"})
  * @ApiFilter(PropertyFilter::class)
  */
@@ -39,12 +74,16 @@ class JabatanPegawai
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Pegawai::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid
      */
@@ -53,6 +92,8 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=Jabatan::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"pegawai:read"})
@@ -61,6 +102,8 @@ class JabatanPegawai
 
     /**
      * @ORM\ManyToOne(targetEntity=TipeJabatan::class, inversedBy="jabatanPegawais")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"pegawai:read"})
@@ -70,6 +113,8 @@ class JabatanPegawai
     /**
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="jabatanPegawais")
      * @ORM\JoinColumn(nullable=false)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
      * @Groups({"pegawai:read"})
@@ -78,6 +123,8 @@ class JabatanPegawai
 
     /**
      * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="jabatanPegawais")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      * @Assert\Valid()
      */
@@ -85,24 +132,32 @@ class JabatanPegawai
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
     private $referensi;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
     private $tanggalMulai;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
     private $tanggalSelesai;
 
     /**
      * @ORM\ManyToOne(targetEntity=JabatanAtribut::class, inversedBy="jabatanPegawais")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
     private $atribut;
