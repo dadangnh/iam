@@ -41,8 +41,8 @@ before_script:
   # Install Composer and project dependencies.
   - curl -sS https://getcomposer.org/installer | php
   - curl -sS https://get.symfony.com/cli/installer | bash
-  - symfony composer install
   - export PATH="$HOME/.symfony/bin:$PATH"
+  - symfony composer install
   # Install Node dependencies.
   # comment this out if you don't have a node dependency
   - npm install
