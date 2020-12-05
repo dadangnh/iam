@@ -69,7 +69,7 @@ before_script:
 #  # Run database seed
 #  - php artisan db:seed
   - symfony console doctrine:schema:create
-  - symfony console doctrine:fixtures:load --yes
+  - symfony console doctrine:fixtures:load --no-interaction
   - symfony serve -d
 
 test:
