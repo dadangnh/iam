@@ -40,7 +40,7 @@ before_script:
   - docker-php-ext-enable xdebug
   # Install Composer and project dependencies.
   - curl -sS https://getcomposer.org/installer | php
-  - wget https://get.symfony.com/cli/installer -O - | bash
+  - curl -sS https://get.symfony.com/cli/installer | bash
   - symfony composer install
   # Install Node dependencies.
   # comment this out if you don't have a node dependency
