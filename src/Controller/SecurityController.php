@@ -3,13 +3,28 @@
 namespace App\Controller;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Entity\User\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     /**
      * @Route("/login", name="app_login")
      * @param AuthenticationUtils $authenticationUtils
@@ -87,7 +102,7 @@ class SecurityController extends AbstractController
      * @param IriConverterInterface $iriConverter
      * @return Response
      */
-    public function json_login(IriConverterInterface $iriConverter)
+    public function json_login(IriConverterInterface $iriConverter): Response
     {
         return $this->json([
             'user' => $this->getUser() ? $iriConverter->getIriFromItem($this->getUser()) : null,
@@ -98,5 +113,34 @@ class SecurityController extends AbstractController
             'nip9' => $this->getUser()->getPegawai() ? $this->getUser()->getPegawai()->getNip9() : null,
             'nip18' => $this->getUser()->getPegawai() ? $this->getUser()->getPegawai()->getNip18() : null,
         ]);
+    }
+
+    /**
+     * @Route("/change_password", name="app_change_password", methods={"POST"})
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return JsonResponse
+     */
+    public function change_password(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
+    {
+        $content = json_decode($request->getContent(), true);
+        $username = $content['username'];
+        $oldPassword = $content['old_password'];
+        $newPassword = $content['new_password'];
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $username]);
+        if (null === $user) {
+            return $this->json(['error' => 'No user found']);
+        }
+
+        $checkPassword = $passwordEncoder->isPasswordValid($user, $oldPassword);
+        if ($checkPassword) {
+            $newPasswordEncoded = $passwordEncoder->encodePassword($user, $newPassword);
+            $user->setPassword($newPasswordEncoded);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+            return $this->json(['message' => 'password successfully changed.']);
+        }
+
+        return $this->json(['error' => 'password invalid.']);
     }
 }
