@@ -48,6 +48,32 @@ final class SwaggerDecorator implements NormalizerInterface
             ],
         ];
 
+        $docs['components']['schemas']['ChangeUserPassword'] = [
+            'type' => 'object',
+            'properties' => [
+                'username' => [
+                    'type' => 'string',
+                ],
+                'old_password' => [
+                    'type' => 'string',
+                ],
+                'new_password' => [
+                    'type' => 'string',
+                ],
+            ],
+        ];
+
+        $docs['components']['schemas']['UserPasswordChangeResponse'] = [
+            'type' => 'object',
+            'properties' => [
+                'status' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+            ],
+        ];
+
+
         $tokenDocumentation = [
             'paths' => [
                 '/api/authentication' => [
@@ -72,6 +98,35 @@ final class SwaggerDecorator implements NormalizerInterface
                                     'application/json' => [
                                         'schema' => [
                                             '$ref' => '#/components/schemas/Token',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/api/change_user_password' => [
+                    'post' => [
+                        'tags' => ['Change User Password'],
+                        'operationId' => 'postCredentialsItem',
+                        'summary' => 'Change User Password',
+                        'requestBody' => [
+                            'description' => 'Post Username, Old Password, and New Password to change user password',
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        '$ref' => '#/components/schemas/ChangeUserPassword',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            Response::HTTP_OK => [
+                                'description' => 'Json Status',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/UserPasswordChangeResponse',
                                         ],
                                     ],
                                 ],

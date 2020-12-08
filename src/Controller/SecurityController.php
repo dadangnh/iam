@@ -5,6 +5,7 @@ namespace App\Controller;
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\User\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,13 +117,20 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/change_password", name="app_change_password", methods={"POST"})
+     * @Route("/api/change_user_password", name="app_change_password", methods={"POST"})
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @return JsonResponse
      */
     public function change_password(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {
+        if (!$this->isGranted('ROLE_APLIKASI')) {
+            return $this->json([
+                'message' => 'Unauthorized API access.',
+                'request' => $request
+            ]);
+        }
+
         $content = json_decode($request->getContent(), true);
         $username = $content['username'];
         $oldPassword = $content['old_password'];
