@@ -1537,16 +1537,16 @@
         },
         {
             "name": "easycorp/easyadmin-bundle",
-            "version": "v3.1.9",
+            "version": "v3.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EasyCorp/EasyAdminBundle.git",
-                "reference": "9904c14d589c65dae5fff0a2925856a09ba64a8e"
+                "reference": "77728bc54306b71b55872967368829176ac9ec5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/9904c14d589c65dae5fff0a2925856a09ba64a8e",
-                "reference": "9904c14d589c65dae5fff0a2925856a09ba64a8e",
+                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/77728bc54306b71b55872967368829176ac9ec5e",
+                "reference": "77728bc54306b71b55872967368829176ac9ec5e",
                 "shasum": ""
             },
             "require": {
@@ -1623,7 +1623,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-25T19:19:50+00:00"
+            "time": "2020-12-14T19:18:39+00:00"
         },
         {
             "name": "fig/link-util",
