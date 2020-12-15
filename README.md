@@ -52,7 +52,7 @@ $ symfony console doctrine:schema:create
 
 Prepopulate the database with default content:
 ```bash
-$ symfony console doctrine;fixtures:load --no-interaction
+$ symfony console doctrine:fixtures:load --no-interaction
 ```
 
 (Optional) if you have installed this before, you can make migration from previous release:
