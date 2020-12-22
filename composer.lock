@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "api-platform/core",
-            "version": "v2.5.8",
+            "version": "v2.5.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "d4d6377d0340e7bb6081bd93ebaf93ad9ac803d6"
+                "reference": "4f05477b5ec5cff7c9324a7510900db2a1173d70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/d4d6377d0340e7bb6081bd93ebaf93ad9ac803d6",
-                "reference": "d4d6377d0340e7bb6081bd93ebaf93ad9ac803d6",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/4f05477b5ec5cff7c9324a7510900db2a1173d70",
+                "reference": "4f05477b5ec5cff7c9324a7510900db2a1173d70",
                 "shasum": ""
             },
             "require": {
@@ -156,7 +156,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-02T20:43:41+00:00"
+            "time": "2020-12-17T15:47:58+00:00"
         },
         {
             "name": "brick/math",
@@ -2044,16 +2044,16 @@
         },
         {
             "name": "lexik/jwt-authentication-bundle",
-            "version": "v2.10.3",
+            "version": "v2.10.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lexik/LexikJWTAuthenticationBundle.git",
-                "reference": "1bc35b61963760007928de310ba408bfaa8bbd45"
+                "reference": "f6c0d9a2816b52e759ed1ba0658b45786b58fdf7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/1bc35b61963760007928de310ba408bfaa8bbd45",
-                "reference": "1bc35b61963760007928de310ba408bfaa8bbd45",
+                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/f6c0d9a2816b52e759ed1ba0658b45786b58fdf7",
+                "reference": "f6c0d9a2816b52e759ed1ba0658b45786b58fdf7",
                 "shasum": ""
             },
             "require": {
@@ -2140,9 +2140,13 @@
                 {
                     "url": "https://github.com/chalasr",
                     "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/lexik/jwt-authentication-bundle",
+                    "type": "tidelift"
                 }
             ],
-            "time": "2020-11-30T21:54:02+00:00"
+            "time": "2020-12-19T18:27:01+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -8253,12 +8257,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "d5961914bf7f90e81af509b81e51450bff419815"
+                "reference": "49da07b20a780d3fca9fe12e1db27975a2910c18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/d5961914bf7f90e81af509b81e51450bff419815",
-                "reference": "d5961914bf7f90e81af509b81e51450bff419815",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/49da07b20a780d3fca9fe12e1db27975a2910c18",
+                "reference": "49da07b20a780d3fca9fe12e1db27975a2910c18",
                 "shasum": ""
             },
             "conflict": {
@@ -8415,8 +8419,8 @@
                 "scheb/two-factor-bundle": ">=0,<3.26|>=4,<4.11",
                 "sensiolabs/connect": "<4.2.3",
                 "serluck/phpwhois": "<=4.2.6",
-                "shopware/core": "<=6.3.2",
-                "shopware/platform": "<=6.3.2",
+                "shopware/core": "<=6.3.4",
+                "shopware/platform": "<=6.3.4",
                 "shopware/shopware": "<5.6.9",
                 "silverstripe/admin": ">=1.0.3,<1.0.4|>=1.1,<1.1.1",
                 "silverstripe/assets": ">=1,<1.4.7|>=1.5,<1.5.2",
@@ -8562,7 +8566,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-12-08T15:02:56+00:00"
+            "time": "2020-12-21T18:11:20+00:00"
         },
         {
             "name": "symfony/browser-kit",
