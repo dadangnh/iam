@@ -13,13 +13,14 @@ stages:
 # Only needed when using a docker container to run your tests in.
 # Check out: http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
 services:
-  - postgres:13-alpine
+  - name: postgres:13-alpine
+    alias: database
   - redis:latest
 
 variables:
-  POSTGRES_USER: iam_db_dev
-  POSTGRES_PASSWORD: iam_db_dev
-  POSTGRES_DB: iam_db_dev
+  POSTGRES_USER: db_user
+  POSTGRES_PASSWORD: db_pass
+  POSTGRES_DB: db_name
 
 # This folder is cached between builds
 # http://docs.gitlab.com/ee/ci/yaml/README.html#cache
