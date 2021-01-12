@@ -1,4 +1,4 @@
-version: '3'
+version: '3.4'
 
 services:
   database:
@@ -7,8 +7,69 @@ services:
       POSTGRES_USER: iam_db_dev
       POSTGRES_PASSWORD: iam_db_dev
       POSTGRES_DB: iam_db_dev
-    ports: [5432]
+    ports:
+      - "5432:5432"
+    networks:
+      - djp
 
   redis:
     image: redis:latest
-    ports: [6379]
+    ports:
+      - "6379:6379"
+    networks:
+      - djp
+    
+  php:
+    build:
+      context: .
+      target: symfony_php
+      args:
+        SYMFONY_VERSION: ${SYMFONY_VERSION:-}
+        STABILITY: ${STABILITY:-stable}
+    restart: unless-stopped
+    healthcheck:
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - redis
+      - database
+    links:
+      - database
+      - redis
+    networks:
+      - djp
+    environment:
+      # Run "composer require symfony/orm-pack" to install and configure Doctrine ORM
+#      DATABASE_URL: postgresql://${POSTGRES_USER:-symfony}:${POSTGRES_PASSWORD:-ChangeMe}@database:5432/${POSTGRES_DB:-app}?serverVersion=${POSTGRES_VERSION:-13}
+      # Run "composer require symfony/mercure-bundle" to install and configure the Mercure integration
+      MERCURE_PUBLISH_URL: ${MERCURE_URL:-http://caddy/.well-known/mercure}
+      REDIS_URL: redis://redis:6379
+      SYMFONY_VERSION:
+
+  caddy:
+    build:
+      context: .
+      target: symfony_caddy
+    environment:
+      SERVER_NAME: ${SERVER_NAME:-localhost, caddy:80}
+      MERCURE_PUBLISHER_JWT: ${MERCURE_PUBLISHER_JWT:-!ChangeMe!}
+      MERCURE_SUBSCRIBER_JWT: ${MERCURE_SUBSCRIBER_JWT:-!ChangeMe!}
+    restart: unless-stopped
+    networks:
+      - djp
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  djp:
+    driver: bridge
