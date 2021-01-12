@@ -20,19 +20,28 @@ $ git clone git@gitlab.com:dadangnh/djp-iam.git some_dir
 $ cd some_dir
 ```
 
-Generate Private and public key for JWT Token, make sure you remember your passphrase:
-```bash
-$ mkdir -p config/jwt
-$ openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
-$ openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
-```
-
-Then, create your local environment by editing `.env` and save as `.env.local` or you can use OS's environment variable or use [Symfony Secrets](https://symfony.com/doc/current/configuration/secrets.html). Put your passphrase on the JWT_PASSPHRASE key
+Then, create your environment by editing `.env` and save as `.env.local` or you can use OS's environment variable or use [Symfony Secrets](https://symfony.com/doc/current/configuration/secrets.html). Create your JWT passphrase on the JWT_PASSPHRASE key.
+Make sure to adjust the credentials on the environment for the Docker. You can find inside docker-compose.yaml file
 
 Create the docker environment:
 ```bash
 $ docker-compose up -d
 ```
+
+Generate Private and public key for JWT Token:
+```bash
+$ docker-compose exec php sh -c '
+    set -e
+    apk add openssl
+    mkdir -p config/jwt
+    jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut -f 2 -d ''='')}
+    echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -pass stdin -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
+    echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -passin stdin -out config/jwt/public.pem -pubout
+    setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+    setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+'
+```
+
 
 ```bash
 $ docker-compose exec php composer install
@@ -59,8 +68,11 @@ $  docker-compose exec php bin/console doctrine:migrations:migrate
 ```
 
 Now your app are ready to use:
+
 Landing page: [https://localhost/](https://localhost/)
+
 API Endpoint and Docs: [https://localhost/api](https://localhost/api)
+
 Admin page: [https://localhost/admin](https://localhost/admin)
 
 default credentials:
