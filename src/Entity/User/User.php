@@ -229,7 +229,10 @@ class User implements UserInterface
         $plainRoles[] = 'ROLE_USER';
         /** @var Role $role */
         foreach ($roles as $role) {
-            $plainRoles[] = $role->getNama();
+            // make sure only direct Role <=> User relation are considered here
+            if (1 === $role->getJenis()) {
+                $plainRoles[] = $role->getNama();
+            }
         }
 
         // Get role by jabatan pegawai
