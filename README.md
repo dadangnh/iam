@@ -49,6 +49,7 @@ $ docker-compose exec php composer install
 
 Then, run (if database haven't created yet):
 ```bash
+$  docker-compose exec php bin/console doctrine:schema:drop --force
 $  docker-compose exec php bin/console doctrine:schema:create
 ```
 
