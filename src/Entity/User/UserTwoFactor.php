@@ -5,8 +5,7 @@ namespace App\Entity\User;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\User\UserTwoFactorRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -55,12 +54,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class UserTwoFactor
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -89,7 +86,7 @@ class UserTwoFactor
      */
     private $tfaType;
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
