@@ -5,6 +5,7 @@ namespace App\EventSubscriber\Admin;
 use App\Entity\User\User;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
@@ -16,9 +17,10 @@ use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 class UserSubscriber implements EventSubscriberInterface
 {
     /**
-     * @return array|string[]
+     * @return array
      */
-    public static function getSubscribedEvents()
+    #[ArrayShape([BeforeEntityPersistedEvent::class => "string[]", BeforeEntityUpdatedEvent::class => "string[]"])]
+    public static function getSubscribedEvents(): array
     {
         return [
             BeforeEntityPersistedEvent::class => ['setNewUserEncodedPassword'],

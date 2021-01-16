@@ -16,11 +16,11 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Monolog\DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -83,12 +83,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User implements UserInterface
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read", "user:write"})
@@ -107,7 +105,7 @@ class User implements UserInterface
      *     maxMessage="username tidak boleh kurang dari 3 dan lebih dari 150 karakter"
      * )
      */
-    private $username;
+    private string $username;
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="users")
@@ -117,49 +115,49 @@ class User implements UserInterface
     /**
      * Default Symfony Guard Role
      * This is a virtual attributes
-     * @var array
+     * @var null|array
      * @Groups({"user:read", "pegawai:read"})
      */
-    private $roles = [];
+    private ?array $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private $password;
+    private string $password;
 
     /**
-     * @var string plain password
+     * @var null|string plain password
      * @Assert\Length(min=5, max=128)
      */
-    private $plainPassword = null;
+    private ?string $plainPassword = null;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"user:read", "user:write"})
      * @Assert\NotNull()
      */
-    private $status;
+    private ?bool $status;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"user:read", "user:write"})
      * @Assert\NotNull()
      */
-    private $locked;
+    private ?bool $locked;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"user:write"})
      * @Assert\NotNull()
      */
-    private $twoFactorEnabled;
+    private ?bool $twoFactorEnabled;
 
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"user:write"})
      */
-    private $lastChange;
+    private ?DateTimeInterface $lastChange;
 
     /**
      * @ORM\OneToMany(targetEntity=UserTwoFactor::class, mappedBy="user", orphanRemoval=true)
@@ -187,7 +185,7 @@ class User implements UserInterface
      */
     private $groupMembers;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->userTwoFactors = new ArrayCollection();
         $this->role = new ArrayCollection();
@@ -195,12 +193,12 @@ class User implements UserInterface
         $this->groupMembers = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->username;
     }
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
@@ -232,7 +230,10 @@ class User implements UserInterface
         $plainRoles[] = 'ROLE_USER';
         /** @var Role $role */
         foreach ($roles as $role) {
-            $plainRoles[] = $role->getNama();
+            // make sure only direct Role <=> User relation are considered here
+            if (1 === $role->getJenis()) {
+                $plainRoles[] = $role->getNama();
+            }
         }
 
         // Get role by jabatan pegawai
@@ -319,7 +320,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getRole(): array
+    #[Pure] public function getRole(): array
     {
         $roles = $this->role->toArray();
 
@@ -428,7 +429,7 @@ class User implements UserInterface
     /**
      * @return Collection|UserTwoFactor[]
      */
-    public function getUserTwoFactors(): Collection
+    public function getUserTwoFactors(): Collection|array
     {
         return $this->userTwoFactors;
     }
@@ -494,7 +495,7 @@ class User implements UserInterface
     /**
      * @return Collection|Group[]
      */
-    public function getOwnedGroups(): Collection
+    public function getOwnedGroups(): Collection|array
     {
         return $this->ownedGroups;
     }
@@ -525,7 +526,7 @@ class User implements UserInterface
     /**
      * @return Collection|GroupMember[]
      */
-    public function getGroupMembers(): Collection
+    public function getGroupMembers(): Collection|array
     {
         return $this->groupMembers;
     }

@@ -15,8 +15,8 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -79,12 +79,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Jabatan
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -98,7 +96,7 @@ class Jabatan
      * @Groups({"user:read"})
      * @Groups({"pegawai:read"})
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="integer")
@@ -107,7 +105,7 @@ class Jabatan
      * @Assert\NotNull()
      * @Groups({"pegawai:read"})
      */
-    private $level;
+    private ?int $level;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -116,7 +114,7 @@ class Jabatan
      * @Assert\NotNull()
      * @Groups({"pegawai:read"})
      */
-    private $jenis;
+    private ?string $jenis;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -124,21 +122,21 @@ class Jabatan
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
-    private $tanggalAktif;
+    private ?DateTimeImmutable $tanggalAktif;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $tanggalNonaktif;
+    private ?DateTimeImmutable $tanggalNonaktif;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $sk;
+    private ?string $sk;
 
     /**
      * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="jabatans")
@@ -153,21 +151,21 @@ class Jabatan
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKode;
+    private ?string $legacyKode;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKodeJabKeu;
+    private ?string $legacyKodeJabKeu;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKodeGradeKeu;
+    private ?string $legacyKodeGradeKeu;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="jabatan", orphanRemoval=true)
@@ -196,19 +194,19 @@ class Jabatan
      */
     private $groupJabatan;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->nama;
     }
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
@@ -344,7 +342,7 @@ class Jabatan
     /**
      * @return Collection|JabatanPegawai[]
      */
-    public function getJabatanPegawais(): Collection
+    public function getJabatanPegawais(): Collection|array
     {
         return $this->jabatanPegawais;
     }
@@ -375,7 +373,7 @@ class Jabatan
     /**
      * @return Collection|Unit[]
      */
-    public function getUnits(): Collection
+    public function getUnits(): Collection|array
     {
         return $this->units;
     }
@@ -401,7 +399,7 @@ class Jabatan
     /**
      * @return Collection|Role[]
      */
-    public function getRoles(): Collection
+    public function getRoles(): Collection|array
     {
         return $this->roles;
     }

@@ -18,8 +18,7 @@ class AgamaCrudController extends AbstractCrudController
     {
         $em         = $this->getDoctrine()->getManager();
         $repository = $em->getRepository(Agama::class);
-        $getMaxId   = $repository->findMaxLegacyCode();
-        $maxId      = $getMaxId['maxid'];
+        $maxId      = $repository->findMaxLegacyCode();
 
         return[
             TextField::new('nama', 'Nama')
@@ -27,7 +26,11 @@ class AgamaCrudController extends AbstractCrudController
                 ->setMaxLength(255),
             IntegerField::new('legacyKode','Kode')
                 ->setRequired(true)
-                ->setHelp(empty($maxId) ? '' : 'Legacy Code terakhir yaitu : <span style=color:red;><i>'.$maxId.'</i></span>')
+                ->setHelp(
+                    empty($maxId)
+                        ? ''
+                        : 'Legacy Code terakhir yaitu : <span style=color:red;><i>' . $maxId . '</i></span>'
+                )
         ];
     }
 

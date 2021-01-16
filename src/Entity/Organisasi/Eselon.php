@@ -12,8 +12,8 @@ use App\Repository\Organisasi\EselonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -65,12 +65,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Eselon
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -82,7 +80,7 @@ class Eselon
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="integer")
@@ -90,7 +88,7 @@ class Eselon
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
-    private $tingkat;
+    private ?int $tingkat;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -98,14 +96,14 @@ class Eselon
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $kode;
+    private ?string $kode;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKode;
+    private ?int $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="eselon")
@@ -126,19 +124,19 @@ class Eselon
      */
     private $roles;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->units = new ArrayCollection();
         $this->jabatans = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->nama;
     }
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
@@ -194,7 +192,7 @@ class Eselon
     /**
      * @return Collection|Unit[]
      */
-    public function getUnits(): Collection
+    public function getUnits(): Collection|array
     {
         return $this->units;
     }
@@ -225,7 +223,7 @@ class Eselon
     /**
      * @return Collection|Jabatan[]
      */
-    public function getJabatans(): Collection
+    public function getJabatans(): Collection|array
     {
         return $this->jabatans;
     }
@@ -256,7 +254,7 @@ class Eselon
     /**
      * @return Collection|Role[]
      */
-    public function getRoles(): Collection
+    public function getRoles(): Collection|array
     {
         return $this->roles;
     }

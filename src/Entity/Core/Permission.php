@@ -11,8 +11,8 @@ use App\Repository\Core\PermissionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -70,12 +70,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Permission
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -87,7 +85,7 @@ class Permission
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -95,14 +93,14 @@ class Permission
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $systemName;
+    private ?string $systemName;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $deskripsi;
+    private ?string $deskripsi;
 
     /**
      * @ORM\ManyToMany(targetEntity=Modul::class, inversedBy="permissions")
@@ -127,13 +125,13 @@ class Permission
      */
     private $roles;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->modul = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
@@ -177,7 +175,7 @@ class Permission
     /**
      * @return Collection|Modul[]
      */
-    public function getModul(): Collection
+    public function getModul(): Collection|array
     {
         return $this->modul;
     }
@@ -203,7 +201,7 @@ class Permission
     /**
      * @return Collection|Role[]
      */
-    public function getRoles(): Collection
+    public function getRoles(): Collection|array
     {
         return $this->roles;
     }

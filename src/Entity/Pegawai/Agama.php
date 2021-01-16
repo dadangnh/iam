@@ -11,8 +11,8 @@ use App\Repository\Pegawai\AgamaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -67,12 +67,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Agama
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -86,21 +84,21 @@ class Agama
      * @Groups({"pegawai:read"})
      * @Groups({"user:read"})
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKode;
+    private ?int $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=Pegawai::class, mappedBy="agama")
      */
     private $pegawais;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->pegawais = new ArrayCollection();
     }
@@ -110,7 +108,7 @@ class Agama
         return $this->nama;
     }
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
@@ -142,7 +140,7 @@ class Agama
     /**
      * @return Collection|Pegawai[]
      */
-    public function getPegawais(): Collection
+    public function getPegawais(): Collection|array
     {
         return $this->pegawais;
     }

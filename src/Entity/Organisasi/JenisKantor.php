@@ -14,8 +14,8 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -69,12 +69,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class JenisKantor
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -86,7 +84,7 @@ class JenisKantor
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -94,7 +92,7 @@ class JenisKantor
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
-    private $tipe;
+    private ?string $tipe;
 
     /**
      * @ORM\Column(type="integer")
@@ -102,7 +100,7 @@ class JenisKantor
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
-    private $klasifikasi;
+    private ?int $klasifikasi;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -110,28 +108,28 @@ class JenisKantor
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
-    private $tanggalAktif;
+    private ?DateTimeImmutable $tanggalAktif;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $tanggalNonaktif;
+    private ?DateTimeImmutable $tanggalNonaktif;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyId;
+    private ?int $legacyId;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKode;
+    private ?int $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="jenisKantor")
@@ -152,19 +150,19 @@ class JenisKantor
      */
     private $roles;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->kantors = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->nama;
     }
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
@@ -264,7 +262,7 @@ class JenisKantor
     /**
      * @return Collection|Kantor[]
      */
-    public function getKantors(): Collection
+    public function getKantors(): Collection|array
     {
         return $this->kantors;
     }
@@ -295,7 +293,7 @@ class JenisKantor
     /**
      * @return Collection|Unit[]
      */
-    public function getUnits(): Collection
+    public function getUnits(): Collection|array
     {
         return $this->units;
     }
@@ -326,7 +324,7 @@ class JenisKantor
     /**
      * @return Collection|Role[]
      */
-    public function getRoles(): Collection
+    public function getRoles(): Collection|array
     {
         return $this->roles;
     }

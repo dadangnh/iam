@@ -15,8 +15,8 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -80,12 +80,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Kantor
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -99,7 +97,7 @@ class Kantor
      * @Groups({"pegawai:read"})
      * @Groups({"user:read"})
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="kantors")
@@ -116,7 +114,7 @@ class Kantor
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $level;
+    private ?int $level;
 
     /**
      * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="childIds")
@@ -139,84 +137,84 @@ class Kantor
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull
      */
-    private $tanggalAktif;
+    private ?DateTimeImmutable $tanggalAktif;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $tanggalNonaktif;
+    private ?DateTimeImmutable $tanggalNonaktif;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $sk;
+    private ?string $sk;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $alamat;
+    private ?string $alamat;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $telp;
+    private ?string $telp;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $fax;
+    private ?string $fax;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $zonaWaktu;
+    private ?string $zonaWaktu;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $latitude;
+    private ?float $latitude;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $longitude;
+    private ?float $longitude;
 
     /**
      * @ORM\Column(type="string", length=10, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKode;
+    private ?string $legacyKode;
 
     /**
      * @ORM\Column(type="string", length=3, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKodeKpp;
+    private ?string $legacyKodeKpp;
 
     /**
      * @ORM\Column(type="string", length=3, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKodeKanwil;
+    private ?string $legacyKodeKanwil;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="kantor", orphanRemoval=true)
@@ -230,19 +228,19 @@ class Kantor
      */
     private $roles;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->childIds = new ArrayCollection();
         $this->jabatanPegawais = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->nama;
     }
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
@@ -298,7 +296,7 @@ class Kantor
     /**
      * @return Collection|self[]
      */
-    public function getChildIds(): Collection
+    public function getChildIds(): Collection|array
     {
         return $this->childIds;
     }
@@ -481,7 +479,7 @@ class Kantor
     /**
      * @return Collection|JabatanPegawai[]
      */
-    public function getJabatanPegawais(): Collection
+    public function getJabatanPegawais(): Collection|array
     {
         return $this->jabatanPegawais;
     }
@@ -512,7 +510,7 @@ class Kantor
     /**
      * @return Collection|Role[]
      */
-    public function getRoles(): Collection
+    public function getRoles(): Collection|array
     {
         return $this->roles;
     }

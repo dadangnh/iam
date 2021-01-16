@@ -4,7 +4,7 @@
 
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG PHP_VERSION=7
+ARG PHP_VERSION=8
 ARG CADDY_VERSION=2
 
 # "php" stage

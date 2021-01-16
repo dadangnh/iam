@@ -14,8 +14,8 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -80,12 +80,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Pegawai
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read", "pegawai:write"})
@@ -111,7 +109,7 @@ class Pegawai
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -121,7 +119,7 @@ class Pegawai
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
-    private $tanggalLahir;
+    private ?DateTimeImmutable $tanggalLahir;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -131,7 +129,7 @@ class Pegawai
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
-    private $tempatLahir;
+    private ?string $tempatLahir;
 
     /**
      * @ORM\ManyToOne(targetEntity=JenisKelamin::class, inversedBy="pegawais")
@@ -162,7 +160,7 @@ class Pegawai
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
-    private $pensiun;
+    private ?bool $pensiun;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -170,7 +168,7 @@ class Pegawai
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read", "pegawai:write"})
      */
-    private $npwp;
+    private ?string $npwp;
 
     /**
      * @ORM\Column(type="string", length=16, nullable=true)
@@ -178,7 +176,7 @@ class Pegawai
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read", "pegawai:write"})
      */
-    private $nik;
+    private ?string $nik;
 
     /**
      * @ORM\Column(type="string", length=9, nullable=true)
@@ -187,7 +185,7 @@ class Pegawai
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
-    private $nip9;
+    private ?string $nip9;
 
     /**
      * @ORM\Column(type="string", length=18, nullable=true)
@@ -196,7 +194,7 @@ class Pegawai
      * @Groups({"user:read"})
      * @Groups({"pegawai:read", "pegawai:write"})
      */
-    private $nip18;
+    private ?string $nip18;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="pegawai", orphanRemoval=true)
@@ -205,17 +203,17 @@ class Pegawai
      */
     private $jabatanPegawais;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->nama;
     }
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
@@ -363,7 +361,7 @@ class Pegawai
     /**
      * @return Collection|JabatanPegawai[]
      */
-    public function getJabatanPegawais(): Collection
+    public function getJabatanPegawais(): Collection|array
     {
         return $this->jabatanPegawais;
     }

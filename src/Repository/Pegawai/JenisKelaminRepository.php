@@ -4,6 +4,7 @@ namespace App\Repository\Pegawai;
 
 use App\Entity\Pegawai\JenisKelamin;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Driver\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,7 +20,12 @@ class JenisKelaminRepository extends ServiceEntityRepository
         parent::__construct($registry, JenisKelamin::class);
     }
 
-    public function findMaxLegacyCode(): array
+    /**
+     * @return mixed
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function findMaxLegacyCode(): mixed
     {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -28,7 +34,7 @@ class JenisKelaminRepository extends ServiceEntityRepository
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetch();
+        return $stmt->fetchOne();
     }
 
     // /**

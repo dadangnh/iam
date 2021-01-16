@@ -13,8 +13,8 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -75,12 +75,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Aplikasi
 {
     /**
-     * @var UuidInterface
-     *
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\CustomIdGenerator(class=UuidGenerator::class)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -92,7 +90,7 @@ class Aplikasi
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -100,34 +98,34 @@ class Aplikasi
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $systemName;
+    private ?string $systemName;
 
     /**
      * @ORM\Column(type="boolean")
      * @Assert\NotNull()
      */
-    private $status;
+    private ?bool $status;
 
     /**
      * @ORM\Column(type="datetime_immutable")
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $createDate;
+    private ?DateTimeImmutable $createDate;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $deskripsi;
+    private ?string $deskripsi;
 
     /**
      * @ORM\OneToMany(targetEntity=Modul::class, mappedBy="aplikasi", orphanRemoval=true)
      */
     private $moduls;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->moduls = new ArrayCollection();
     }
@@ -137,7 +135,7 @@ class Aplikasi
         return $this->nama;
     }
 
-    public function getId(): UuidInterface
+    public function getId()
     {
         return $this->id;
     }
@@ -213,7 +211,7 @@ class Aplikasi
     /**
      * @return Collection|Modul[]
      */
-    public function getModuls(): Collection
+    public function getModuls(): Collection|array
     {
         return $this->moduls;
     }
