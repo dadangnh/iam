@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use JsonException;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -32,14 +33,35 @@ class JsonLoginTest extends ApiTestCase
                 'body' => json_encode([
                     'username' => $defaultCredential,
                     'password' => $defaultCredential,
-                ])
+                ], JSON_THROW_ON_ERROR)
             ]);
-        } catch (TransportExceptionInterface $e) {
+        } catch (TransportExceptionInterface | JsonException $e) {
         }
         self::assertResponseStatusCodeSame(200);
         try {
             self::assertJsonContains(['username' => $defaultCredential]);
         } catch (ClientExceptionInterface | DecodingExceptionInterface | RedirectionExceptionInterface | ServerExceptionInterface | TransportExceptionInterface $e) {
         }
+    }
+
+    public function testAuthentication(): void
+    {
+        $defaultCredential = 'admin';
+        try {
+            $response = static::createClient()->request('POST', '/api/authentication', [
+                'headers' => [
+                    'content-type' => 'application/json',
+                    'accept' => 'application/json',
+                ],
+                'body' => json_encode([
+                    'username' => $defaultCredential,
+                    'password' => $defaultCredential,
+                ], JSON_THROW_ON_ERROR)
+            ]);
+        } catch (TransportExceptionInterface | JsonException $e) {
+        }
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertResponseIsSuccessful();
     }
 }
