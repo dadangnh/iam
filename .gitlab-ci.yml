@@ -1,7 +1,7 @@
 # This file is a template, and might need editing before it works on your project.
 # Official framework image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/php
-image: php:7.4
+image: php:8
 
 stages:
   - build
@@ -36,7 +36,7 @@ before_script:
   - apt-get update -yqq
   # Prep for Node
   - apt-get install gnupg -yqq
-  # Upgrade to Node 8
+  # Upgrade to Node 15
   - curl -sL https://deb.nodesource.com/setup_15.x | bash -
   # Install dependencies
   - apt-get install git nodejs unzip libcurl4-gnutls-dev libicu-dev libonig-dev libzip-dev libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
@@ -56,25 +56,7 @@ before_script:
   # Install Node dependencies.
   # comment this out if you don't have a node dependency
   - npm install
-  # Copy over testing configuration.
-  # Don't forget to set the database config in .env.testing correctly
-  # DB_HOST=mysql
-  # DB_DATABASE=project_name
-  # DB_USERNAME=root
-  # DB_PASSWORD=secret
-#  - cp .env.testing .env
-  # Run npm build
-  # comment this out if you don't have a frontend build
-  # you can change this to to your frontend building script like
-  # npm run build
-#  - npm run dev
   # Generate an application key. Re-cache.
-#  - php artisan key:generate
-#  - php artisan config:cache
-#  # Run database migrations.
-#  - php artisan migrate
-#  # Run database seed
-#  - php artisan db:seed
   - symfony console doctrine:schema:create
   - symfony console doctrine:fixtures:load --no-interaction
   - symfony server:ca:install
@@ -82,7 +64,7 @@ before_script:
 
 test:
   script:
-    # run laravel tests
+    # run unit tests
     - php bin/phpunit
     # run frontend tests
     # if you have any task for testing frontend
