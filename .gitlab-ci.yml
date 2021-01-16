@@ -35,7 +35,7 @@ before_script:
   # Update packages
   - apt-get update -yqq
   # Generate private and public key for JWT token
-  - apt-get install gnupg openssl -yqq
+  - apt-get install gnupg openssl acl -yqq
   - mkdir -p config/jwt
   - export jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut -f 2 -d ''='')}
   - echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 --pass stdin
