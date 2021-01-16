@@ -14,6 +14,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -91,7 +92,7 @@ class Group
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -99,14 +100,14 @@ class Group
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $systemName;
+    private ?string $systemName;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $deskripsi;
+    private ?string $deskripsi;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ownedGroups")
@@ -122,7 +123,7 @@ class Group
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $createDate;
+    private ?DateTimeImmutable $createDate;
 
     /**
      * @ORM\Column(type="boolean")
@@ -130,7 +131,7 @@ class Group
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      */
-    private $status;
+    private ?bool $status;
 
     /**
      * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="groupId", orphanRemoval=true)
@@ -142,7 +143,7 @@ class Group
      */
     private $roles;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->groupMembers = new ArrayCollection();
         $this->roles = new ArrayCollection();
@@ -236,7 +237,7 @@ class Group
     /**
      * @return Collection|GroupMember[]
      */
-    public function getGroupMembers(): Collection
+    public function getGroupMembers(): Collection|array
     {
         return $this->groupMembers;
     }
@@ -267,7 +268,7 @@ class Group
     /**
      * @return Collection|Role[]
      */
-    public function getRoles(): Collection
+    public function getRoles(): Collection|array
     {
         return $this->roles;
     }

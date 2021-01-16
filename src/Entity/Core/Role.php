@@ -18,6 +18,7 @@ use App\Repository\Core\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -93,7 +94,7 @@ class Role
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -101,21 +102,21 @@ class Role
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $systemName;
+    private ?string $systemName;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $deskripsi;
+    private ?string $deskripsi;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $level;
+    private ?int $level;
 
     /**
      * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="containRoles")
@@ -268,7 +269,7 @@ class Role
      */
     private $jenis;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->containRoles = new ArrayCollection();
         $this->users = new ArrayCollection();
@@ -281,7 +282,7 @@ class Role
         $this->permissions = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->nama;
     }
@@ -354,7 +355,7 @@ class Role
     /**
      * @return Collection|self[]
      */
-    public function getContainRoles(): Collection
+    public function getContainRoles(): Collection|array
     {
         return $this->containRoles;
     }
@@ -385,7 +386,7 @@ class Role
     /**
      * @return Collection|User[]
      */
-    public function getUsers(): Collection
+    public function getUsers(): Collection|array
     {
         return $this->users;
     }
@@ -413,7 +414,7 @@ class Role
     /**
      * @return Collection|Jabatan[]
      */
-    public function getJabatans(): Collection
+    public function getJabatans(): Collection|array
     {
         return $this->jabatans;
     }
@@ -441,7 +442,7 @@ class Role
     /**
      * @return Collection|Unit[]
      */
-    public function getUnits(): Collection
+    public function getUnits(): Collection|array
     {
         return $this->units;
     }
@@ -469,7 +470,7 @@ class Role
     /**
      * @return Collection|Kantor[]
      */
-    public function getKantors(): Collection
+    public function getKantors(): Collection|array
     {
         return $this->kantors;
     }
@@ -497,7 +498,7 @@ class Role
     /**
      * @return Collection|Eselon[]
      */
-    public function getEselons(): Collection
+    public function getEselons(): Collection|array
     {
         return $this->eselons;
     }
@@ -525,7 +526,7 @@ class Role
     /**
      * @return Collection|JenisKantor[]
      */
-    public function getJenisKantors(): Collection
+    public function getJenisKantors(): Collection|array
     {
         return $this->jenisKantors;
     }
@@ -553,7 +554,7 @@ class Role
     /**
      * @return Collection|Group[]
      */
-    public function getGroups(): Collection
+    public function getGroups(): Collection|array
     {
         return $this->groups;
     }
@@ -581,7 +582,7 @@ class Role
     /**
      * @return Collection|Permission[]
      */
-    public function getPermissions(): Collection
+    public function getPermissions(): Collection|array
     {
         return $this->permissions;
     }

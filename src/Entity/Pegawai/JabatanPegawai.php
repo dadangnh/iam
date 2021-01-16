@@ -133,7 +133,7 @@ class JabatanPegawai
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
-    private $referensi;
+    private ?string $referensi;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -141,7 +141,7 @@ class JabatanPegawai
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
-    private $tanggalMulai;
+    private ?DateTimeImmutable $tanggalMulai;
 
     /**
      * @ORM\Column(type="datetime_immutable", nullable=true)
@@ -149,7 +149,7 @@ class JabatanPegawai
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"pegawai:read"})
      */
-    private $tanggalSelesai;
+    private ?DateTimeImmutable $tanggalSelesai;
 
     /**
      * @ORM\ManyToOne(targetEntity=JabatanAtribut::class, inversedBy="jabatanPegawais")

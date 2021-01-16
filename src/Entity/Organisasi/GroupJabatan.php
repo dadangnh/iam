@@ -76,14 +76,14 @@ class GroupJabatan
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="string", length=4, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKode;
+    private ?string $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=Jabatan::class, mappedBy="groupJabatan")
@@ -97,7 +97,7 @@ class GroupJabatan
         $this->jabatans = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->nama;
     }
@@ -134,7 +134,7 @@ class GroupJabatan
     /**
      * @return Collection|Jabatan[]
      */
-    public function getJabatans(): Collection
+    public function getJabatans(): Collection|array
     {
         return $this->jabatans;
     }

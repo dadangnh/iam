@@ -11,6 +11,7 @@ use App\Repository\Organisasi\TipeJabatanRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -79,7 +80,7 @@ class TipeJabatan
      * @Assert\NotBlank()
      * @Groups({"user:read"})
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="tipe")
@@ -88,12 +89,12 @@ class TipeJabatan
      */
     private $jabatanPegawais;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->nama;
     }
@@ -118,7 +119,7 @@ class TipeJabatan
     /**
      * @return Collection|JabatanPegawai[]
      */
-    public function getJabatanPegawais(): Collection
+    public function getJabatanPegawais(): Collection|array
     {
         return $this->jabatanPegawais;
     }

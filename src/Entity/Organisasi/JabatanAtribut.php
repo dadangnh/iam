@@ -11,6 +11,7 @@ use App\Repository\Organisasi\JabatanAtributRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -77,7 +78,7 @@ class JabatanAtribut
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="atribut")
@@ -86,12 +87,12 @@ class JabatanAtribut
      */
     private $jabatanPegawais;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->nama;
     }
@@ -116,7 +117,7 @@ class JabatanAtribut
     /**
      * @return Collection|JabatanPegawai[]
      */
-    public function getJabatanPegawais(): Collection
+    public function getJabatanPegawais(): Collection|array
     {
         return $this->jabatanPegawais;
     }

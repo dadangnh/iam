@@ -88,14 +88,14 @@ class GroupMember
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $joinDate;
+    private ?DateTimeImmutable $joinDate;
 
     /**
      * @ORM\Column(type="boolean")
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $status;
+    private ?bool $status;
 
     public function getId()
     {

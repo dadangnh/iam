@@ -77,14 +77,14 @@ class UserTwoFactor
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $backupCode = [];
+    private ?array $backupCode = [];
 
     /**
      * @ORM\Column(type="integer")
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $tfaType;
+    private ?int $tfaType;
 
     public function getId()
     {

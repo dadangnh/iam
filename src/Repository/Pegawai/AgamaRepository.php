@@ -4,6 +4,7 @@ namespace App\Repository\Pegawai;
 
 use App\Entity\Pegawai\Agama;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Driver\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,12 +15,21 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AgamaRepository extends ServiceEntityRepository
 {
+    /**
+     * AgamaRepository constructor.
+     * @param ManagerRegistry $registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Agama::class);
     }
 
-    public function findMaxLegacyCode(): array
+    /**
+     * @return mixed
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function findMaxLegacyCode(): mixed
     {
         $conn = $this->getEntityManager()->getConnection();
 
@@ -28,7 +38,7 @@ class AgamaRepository extends ServiceEntityRepository
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        return $stmt->fetch();
+        return $stmt->fetchOne();
     }
 
     // /**

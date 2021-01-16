@@ -11,6 +11,7 @@ use App\Repository\Pegawai\JenisKelaminRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -83,14 +84,14 @@ class JenisKelamin
      * @Groups({"pegawai:read"})
      * @Groups({"user:read"})
      */
-    private $nama;
+    private ?string $nama;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $legacyKode;
+    private ?int $legacyKode;
 
     /**
      * @ORM\OneToMany(targetEntity=Pegawai::class, mappedBy="jenisKelamin")
@@ -99,7 +100,7 @@ class JenisKelamin
      */
     private $pegawais;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->pegawais = new ArrayCollection();
     }
@@ -141,7 +142,7 @@ class JenisKelamin
     /**
      * @return Collection|Pegawai[]
      */
-    public function getPegawais(): Collection
+    public function getPegawais(): Collection|array
     {
         return $this->pegawais;
     }
