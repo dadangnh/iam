@@ -30,7 +30,9 @@ RUN set -eux; \
 		icu-dev \
 		libzip-dev \
 		zlib-dev \
-		postgresql-libs postgresql-dev \
+		postgresql-libs \
+		postgresql-dev \
+		pcre-dev \
 	; \
 	\
 	docker-php-ext-configure zip; \
@@ -42,11 +44,13 @@ RUN set -eux; \
 	; \
 	pecl install \
 		apcu-${APCU_VERSION} \
+		redis \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
+		redis.so \
 	; \
 	\
 	runDeps="$( \

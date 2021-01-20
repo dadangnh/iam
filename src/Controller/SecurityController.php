@@ -5,7 +5,7 @@ namespace App\Controller;
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\User\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ class SecurityController extends AbstractController
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -121,6 +121,7 @@ class SecurityController extends AbstractController
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @return JsonResponse
+     * @throws JsonException
      */
     public function change_password(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {
@@ -131,7 +132,7 @@ class SecurityController extends AbstractController
             ]);
         }
 
-        $content = json_decode($request->getContent(), true);
+        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $username = $content['username'];
         $oldPassword = $content['old_password'];
         $newPassword = $content['new_password'];
@@ -150,5 +151,14 @@ class SecurityController extends AbstractController
         }
 
         return $this->json(['error' => 'password invalid.']);
+    }
+
+    /**
+     * @Route("/api/whoami", name="app_whoami", methods={"POST"})
+     * @return JsonResponse
+     */
+    public function whoami(): JsonResponse
+    {
+        return $this->json($this->getUser());
     }
 }
