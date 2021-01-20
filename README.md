@@ -48,18 +48,18 @@ $ docker-compose exec php sh -c '
 On Windows:
 
 ```bash
-> docker-compose exec php /bin/bash
+> docker-compose exec php /bin/sh
 ```
 
-You will enter docker shell, then run:
+You will enter docker shell, then run (line by line, do not paste it as a whole):
 
 ```bash
 set -e
 apk add openssl
 mkdir -p config/jwt
-jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut -f 2 -d ''='')}
-echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -pass stdin -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
-echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -passin stdin -out config/jwt/public.pem -pubout
+export jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut -f 2 -d ''='')}
+echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 --pass stdin
+echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout --passin stdin
 setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
 setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
 exit
