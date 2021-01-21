@@ -58,6 +58,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="aplikasi", indexes={
  *     @ORM\Index(name="idx_aplikasi_nama_status", columns={"nama", "system_name", "status"}),
+ *     @ORM\Index(name="idx_aplikasi_url", columns={"id", "nama", "host_name", "url"}),
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
@@ -67,6 +68,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "nama": "ipartial",
  *     "systemName": "ipartial",
  *     "deskripsi": "ipartial",
+ *     "hostName": "ipartial",
+ *     "url": "ipartial",
  * })
  * @ApiFilter(DateFilter::class, properties={"createDate"})
  * @ApiFilter(BooleanFilter::class, properties={"status"})
@@ -124,6 +127,20 @@ class Aplikasi
      * @ORM\OneToMany(targetEntity=Modul::class, mappedBy="aplikasi", orphanRemoval=true)
      */
     private $moduls;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     */
+    private ?string $hostName;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     */
+    private ?string $url;
 
     #[Pure] public function __construct()
     {
@@ -235,6 +252,30 @@ class Aplikasi
                 $modul->setAplikasi(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getHostName(): ?string
+    {
+        return $this->hostName;
+    }
+
+    public function setHostName(?string $hostName): self
+    {
+        $this->hostName = $hostName;
+
+        return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url): self
+    {
+        $this->url = $url;
 
         return $this;
     }

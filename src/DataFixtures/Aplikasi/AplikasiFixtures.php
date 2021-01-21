@@ -18,6 +18,8 @@ class AplikasiFixtures extends Fixture
         $aplikasi1->setSystemName('aplikasi_1');
         $aplikasi1->setDeskripsi('Test Aplikasi 1');
         $aplikasi1->setStatus(true);
+        $aplikasi1->setHostName('app1.intranet.local');
+        $aplikasi1->setUrl('https://app1.intranet.local');
         $manager->persist($aplikasi1);
 
         $aplikasi2 = new Aplikasi();
@@ -25,6 +27,8 @@ class AplikasiFixtures extends Fixture
         $aplikasi2->setSystemName('aplikasi_2');
         $aplikasi2->setDeskripsi('Test Aplikasi 2');
         $aplikasi2->setStatus(false);
+        $aplikasi2->setHostName('app2.intranet.local');
+        $aplikasi2->setUrl('https://app2.intranet.local');
         $manager->persist($aplikasi2);
 
         $manager->flush();

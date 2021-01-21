@@ -23,12 +23,24 @@ class AplikasiCrudController extends AbstractCrudController
         return [
             TextField::new('nama', 'Nama')
                 ->setRequired(true)
-                ->setMaxLength(255),
+                ->setMaxLength(255)
+                ->setHelp('Nama modul, misal: HRIS'),
             SlugField::new('systemName', 'Nama System')
                 ->setTargetFieldName('nama')
-                ->setRequired(true),
-            TextEditorField::new('deskripsi', 'Deskripsi'),
-            BooleanField::new('status', 'Status Produksi'),
+                ->setRequired(true)
+                ->setHelp('auto generated, buka kunci untuk custom'),
+            TextEditorField::new('deskripsi', 'Deskripsi')
+                ->setHelp('Deskripsi/ penjelasan aplikasi'),
+            TextField::new('hostName', 'Hostname')
+                ->setRequired(false)
+                ->setMaxLength(255)
+                ->setHelp('hostname system, misal: hris.pajak.go.id'),
+            TextField::new('url', 'URL')
+                ->setRequired(false)
+                ->setMaxLength(255)
+                ->setHelp('Url aplikasi, misal: https://www.pajak.go.id'),
+            BooleanField::new('status', 'Status Produksi')
+                ->setHelp('Centang apabila statusnya production'),
             DateTimeField::new('createDate', 'Tanggal Dibuat')
                 ->hideOnForm()
                 ->renderAsNativeWidget(),
