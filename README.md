@@ -65,15 +65,21 @@ setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
 exit
 ```
 
+Install dependency
 
 ```bash
 $ docker-compose exec php composer install
 ```
 
-Then, run (if database haven't created yet):
+
+### Fresh Install
+For new installation, do the following, existing installation can proceed to migration.
+
 ```bash
-$  docker-compose exec php bin/console doctrine:schema:drop --force
-$  docker-compose exec php bin/console doctrine:schema:create
+$  docker-compose exec php bin/console doctrine:database:drop --force
+$  docker-compose exec php bin/console doctrine:database:create
+$  docker-compose exec php bin/console make:migration
+$  docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
 Prepopulate the database with default content:
@@ -81,14 +87,15 @@ Prepopulate the database with default content:
 $  docker-compose exec php bin/console doctrine:fixtures:load --no-interaction
 ```
 
-(Optional) if you have installed this before, you can make migration from previous release:
+### Migration
+For existing database, do migration check and make migration if needed. if you have installed this before, you can make migration from previous release:
 ```bash
 $  docker-compose exec php bin/console make:migration
 ```
 
-(Optional) Lastly, run the migration:
+Lastly, run the migration:
 ```bash
-$  docker-compose exec php bin/console doctrine:migrations:migrate
+$  docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
 Now your app are ready to use:
