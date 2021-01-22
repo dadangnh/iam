@@ -102,6 +102,29 @@ final class SwaggerDecorator implements NormalizerInterface
             ],
         ];
 
+        $docs['components']['schemas']['GetRoleByJabatanRequest'] = [
+            'type' => 'object',
+            'properties' => [
+                'id_jabatan' => [
+                    'type' => 'string',
+                ],
+            ],
+        ];
+
+        $docs['components']['schemas']['GetRoleByJabatanResponse'] = [
+            'type' => 'object',
+            'properties' => [
+                'roles_count' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'roles' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                ],
+            ],
+        ];
+
         $tokenDocumentation = [
             'paths' => [
                 '/api/authentication' => [
@@ -196,16 +219,6 @@ final class SwaggerDecorator implements NormalizerInterface
                         'tags' => ['Who Am I'],
                         'operationId' => 'postCredentialsItem',
                         'summary' => 'Get User data from valid token.',
-                        /*'requestBody' => [
-                            'description' => 'Get User data from valid token',
-                            'content' => [
-                                'application/json' => [
-                                    'schema' => [
-                                        '$ref' => '#/components/schemas/Credentials',
-                                    ],
-                                ],
-                            ],
-                        ],*/
                         'responses' => [
                             Response::HTTP_OK => [
                                 'description' => 'Get User data from valid token',
@@ -242,6 +255,35 @@ final class SwaggerDecorator implements NormalizerInterface
                                     'application/json' => [
                                         'schema' => [
                                             '$ref' => '#/components/schemas/UserPasswordChangeResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/api/get_roles_by_jabatan' => [
+                    'post' => [
+                        'tags' => ['Get list of Roles by Jabatan Pegawai'],
+                        'operationId' => 'postCredentialsItem',
+                        'summary' => 'Get list of Roles by Jabatan Pegawai',
+                        'requestBody' => [
+                            'description' => 'Post the Jabatan Pegawai id',
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        '$ref' => '#/components/schemas/GetRoleByJabatanRequest',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            Response::HTTP_OK => [
+                                'description' => 'List of Roles',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/GetRoleByJabatanResponse',
                                         ],
                                     ],
                                 ],
