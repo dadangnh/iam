@@ -48,6 +48,25 @@ final class SwaggerDecorator implements NormalizerInterface
             ],
         ];
 
+        $docs['components']['schemas']['putRefreshToken'] = [
+            'type' => 'object',
+            'properties' => [
+                'refresh_token' => [
+                    'type' => 'string',
+                ],
+            ],
+        ];
+
+        $docs['components']['schemas']['RefreshToken'] = [
+            'type' => 'object',
+            'properties' => [
+                'token' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+            ],
+        ];
+
         $docs['components']['schemas']['ChangeUserPassword'] = [
             'type' => 'object',
             'properties' => [
@@ -73,6 +92,15 @@ final class SwaggerDecorator implements NormalizerInterface
             ],
         ];
 
+        $docs['components']['schemas']['sendResponse'] = [
+            'type' => 'object',
+            'properties' => [
+                'status' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+            ],
+        ];
 
         $tokenDocumentation = [
             'paths' => [
@@ -98,6 +126,93 @@ final class SwaggerDecorator implements NormalizerInterface
                                     'application/json' => [
                                         'schema' => [
                                             '$ref' => '#/components/schemas/Token',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/api/token/refresh' => [
+                    'post' => [
+                        'tags' => ['Refresh Token'],
+                        'operationId' => 'postCredentialsItem',
+                        'summary' => 'Get JWT token to login with Refresh Token.',
+                        'requestBody' => [
+                            'description' => 'Create new JWT Token from Refresh Token',
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        '$ref' => '#/components/schemas/putRefreshToken',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            Response::HTTP_OK => [
+                                'description' => 'Get New JWT token',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/RefreshToken',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/json_login' => [
+                    'post' => [
+                        'tags' => ['JSON Login'],
+                        'operationId' => 'postCredentialsItem',
+                        'summary' => 'Get User data.',
+                        'requestBody' => [
+                            'description' => 'Get User data',
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        '$ref' => '#/components/schemas/Credentials',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        'responses' => [
+                            Response::HTTP_OK => [
+                                'description' => 'Get User data',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/sendResponse',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                '/api/whoami' => [
+                    'post' => [
+                        'tags' => ['Who Am I'],
+                        'operationId' => 'postCredentialsItem',
+                        'summary' => 'Get User data from valid token.',
+                        /*'requestBody' => [
+                            'description' => 'Get User data from valid token',
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        '$ref' => '#/components/schemas/Credentials',
+                                    ],
+                                ],
+                            ],
+                        ],*/
+                        'responses' => [
+                            Response::HTTP_OK => [
+                                'description' => 'Get User data from valid token',
+                                'content' => [
+                                    'application/json' => [
+                                        'schema' => [
+                                            '$ref' => '#/components/schemas/sendResponse',
                                         ],
                                     ],
                                 ],
