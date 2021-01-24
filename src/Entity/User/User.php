@@ -12,6 +12,7 @@ use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\Pegawai;
 use App\Repository\User\UserRepository;
+use App\utils\RoleUtils;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -241,77 +242,12 @@ class User implements UserInterface
         // 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
         // 10 => jabatan + unit + kantor"
         if (null !== $this->getPegawai()) {
+            $arrayOfRoles = [];
             /** @var JabatanPegawai $jabatanPegawai */
             foreach ($this->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
-                $jabatan = $jabatanPegawai->getJabatan();
-                $unit = $jabatanPegawai->getUnit();
-                $kantor = $jabatanPegawai->getKantor();
-
-                // check from jabatan
-                if (null !== $jabatan) {
-                    // direct role from jabatan/ jabatan unit/ jabatan kantor/ combination
-                    foreach ($jabatan->getRoles() as $role) {
-                        if (2 === $role->getJenis()) {
-                            $plainRoles[] = $role->getNama();
-                        } elseif (8 === $role->getJenis() && $role->getUnits()->contains($unit)) {
-                            $plainRoles[] = $role->getNama();
-                        } elseif (9 === $role->getJenis() && $role->getKantors()->contains($kantor)) {
-                            $plainRoles[] = $role->getNama();
-                        } elseif (10 === $role->getJenis()
-                            && $role->getUnits()->contains($unit)
-                            && $role->getKantors()->contains($kantor)
-                        ) {
-                            $plainRoles[] = $role->getNama();
-                        }
-                    }
-
-                    // get eselon level
-                    $eselon = $jabatan->getEselon();
-                    if (null !== $eselon) {
-                        foreach ($eselon->getRoles() as $role) {
-                            if (5 === $role->getJenis()) {
-                                $plainRoles[] = $role->getNama();
-                            }
-                        }
-                    }
-
-                // get role from unit
-                } elseif (null !== $unit) {
-                    foreach ($unit->getRoles() as $role) {
-                        if (3 === $role->getJenis()) {
-                            $plainRoles[] = $role->getNama();
-                        }
-                    }
-
-                    // get jenis kantor
-                    $jenisKantor = $unit->getJenisKantor();
-                    if (null !== $jenisKantor) {
-                        foreach ($jenisKantor->getRoles() as $role) {
-                            if (6 === $role->getJenis()) {
-                                $plainRoles[] = $role->getNama();
-                            }
-                        }
-                    }
-
-                // get role from kantor
-                } elseif (null !== $kantor) {
-                    foreach ($kantor->getRoles() as $role) {
-                        if (4 === $role->getJenis()) {
-                            $plainRoles[] = $role->getNama();
-                        }
-                    }
-
-                    // get jenis kantor
-                    $jenisKantor = $kantor->getJenisKantor();
-                    if (null !== $jenisKantor) {
-                        foreach ($jenisKantor->getRoles() as $role) {
-                            if (6 === $role->getJenis()) {
-                                $plainRoles[] = $role->getNama();
-                            }
-                        }
-                    }
-                }
+                $arrayOfRoles[] = RoleUtils::getPlainRolesNameFromJabatanPegawai($jabatanPegawai);
             }
+            $plainRoles = array_merge($plainRoles, ...$arrayOfRoles);
         }
 
         return array_unique($plainRoles);

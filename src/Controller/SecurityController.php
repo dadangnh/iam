@@ -143,6 +143,7 @@ class SecurityController extends AbstractController
 
         $checkPassword = $passwordEncoder->isPasswordValid($user, $oldPassword);
         if ($checkPassword) {
+            // TODO: check password strength and implement password blacklist
             $newPasswordEncoded = $passwordEncoder->encodePassword($user, $newPassword);
             $user->setPassword($newPasswordEncoded);
             $this->entityManager->persist($user);
