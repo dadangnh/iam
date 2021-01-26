@@ -69,6 +69,26 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         $upkLokalRole->setLevel(0);
         $manager->persist($upkLokalRole);
 
+        $inactiveRole = new Role();
+        $inactiveRole->setNama('ROLE_INACTIVE');
+        $inactiveRole->setSystemName('ROLE_INACTIVE');
+        $inactiveRole->setDeskripsi(
+            'Default Role for Inactive user, no need to set manually, every inactive user will gain this role'
+        );
+        $inactiveRole->setJenis(1);
+        $inactiveRole->setLevel(0);
+        $manager->persist($inactiveRole);
+
+        $retiredRole = new Role();
+        $retiredRole->setNama('ROLE_RETIRED');
+        $retiredRole->setSystemName('ROLE_RETIRED');
+        $retiredRole->setDeskripsi(
+            'Default Role for retired user, no need to set manually, every retired user will gain this role'
+        );
+        $retiredRole->setJenis(1);
+        $retiredRole->setLevel(0);
+        $manager->persist($retiredRole);
+
         $manager->flush();
 
         $this->addReference(self::ROLE_SUPER_ADMIN, $superAdminRole);
