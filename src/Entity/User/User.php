@@ -267,7 +267,7 @@ class User implements UserInterface
     public function getDirectRoles(): array
     {
         // check whether user is still active or not
-        if ($this->getActive()) {
+        if ($this->isActive()) {
             // for active user, give a normal ROLE_USER for every user
             $plainRoles[] = 'ROLE_USER';
 
