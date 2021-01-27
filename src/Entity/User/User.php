@@ -67,11 +67,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"username"})
  * @ORM\Table(name="`user`", indexes={
  *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
- *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
+ *     @ORM\Index(name="idx_user_active", columns={"id", "active", "locked"}),
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ApiFilter(BooleanFilter::class, properties={"status", "locked"})
+ * @ApiFilter(BooleanFilter::class, properties={"active", "locked"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "username": "ipartial",
  *     "pegawai.nama": "ipartial",
@@ -138,7 +138,7 @@ class User implements UserInterface
      * @Groups({"user:read", "user:write"})
      * @Assert\NotNull()
      */
-    private ?bool $status;
+    private ?bool $active;
 
     /**
      * @ORM\Column(type="boolean")
@@ -267,7 +267,7 @@ class User implements UserInterface
     public function getDirectRoles(): array
     {
         // check whether user is still active or not
-        if ($this->getStatus()) {
+        if ($this->isActive()) {
             // for active user, give a normal ROLE_USER for every user
             $plainRoles[] = 'ROLE_USER';
 
@@ -331,14 +331,14 @@ class User implements UserInterface
         $this->plainPassword = $password;
     }
 
-    public function getStatus(): ?bool
+    public function isActive(): ?bool
     {
-        return $this->status;
+        return $this->active;
     }
 
-    public function setStatus(bool $status): self
+    public function setActive(bool $active): self
     {
-        $this->status = $status;
+        $this->active = $active;
 
         return $this;
     }
