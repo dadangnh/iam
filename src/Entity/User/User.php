@@ -331,7 +331,7 @@ class User implements UserInterface
         $this->plainPassword = $password;
     }
 
-    public function getActive(): ?bool
+    public function isActive(): ?bool
     {
         return $this->active;
     }
