@@ -5,6 +5,8 @@ namespace App\utils;
 
 
 use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Entity\Aplikasi\Aplikasi;
+use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use JetBrains\PhpStorm\ArrayShape;
@@ -94,6 +96,10 @@ class RoleUtils
         return $roles;
     }
 
+    /**
+     * @param JabatanPegawai $jabatanPegawai
+     * @return array
+     */
     public static function getPlainRolesNameFromJabatanPegawai(JabatanPegawai $jabatanPegawai): array
     {
         $roles = self::getRolesFromJabatanPegawai($jabatanPegawai);
@@ -106,6 +112,11 @@ class RoleUtils
         return $plainRoles;
     }
 
+    /**
+     * @param Role $role
+     * @param IriConverterInterface $iriConverter
+     * @return array
+     */
     #[ArrayShape([
         'iri' => "string",
         'id' => "null|string",
@@ -124,6 +135,11 @@ class RoleUtils
         ];
     }
 
+    /**
+     * @param array $roles
+     * @param IriConverterInterface $iriConverter
+     * @return array
+     */
     public static function createRoleDefaultResponseFromArrayOfRoles(array $roles, IriConverterInterface $iriConverter): array
     {
         $response = [];
@@ -134,5 +150,47 @@ class RoleUtils
         }
 
         return $response;
+    }
+
+    /**
+     * @param Role $role
+     * @return array
+     */
+    public static function getAplikasiByRole(Role $role): array
+    {
+        $permissions = $role->getPermissions();
+        $listAplikasi = [];
+        if (null !== $permissions) {
+            /** @var Permission $permission */
+            foreach ($permissions as $permission) {
+                $moduls = $permission->getModul();
+                if (null !== $moduls) {
+                    foreach ($moduls as $modul) {
+                        if ($modul->getStatus()) {
+                            /** @var Aplikasi $aplikasi */
+                            $aplikasi = $modul->getAplikasi();
+                            if ($aplikasi->getStatus()) {
+                                $listAplikasi[] = $aplikasi;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $listAplikasi;
+    }
+
+    /**
+     * @param array $roles
+     * @return array
+     */
+    public static function getAplikasiByArrayOfRoles(array $roles): array
+    {
+        $listAplikasi = [];
+        /** @var Role $role */
+        foreach ($roles as $role) {
+            $listAplikasi[] = self::getAplikasiByRole($role);
+        }
+        return array_merge(...$listAplikasi);
     }
 }
