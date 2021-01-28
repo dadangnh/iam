@@ -43,6 +43,8 @@ class CommonController extends AbstractController
 
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $idJabatan = $content['id_jabatan_pegawai'];
+
+        /** @var JabatanPegawai $jabatanPegawai */
         $jabatanPegawai = $this->entityManager
             ->getRepository(JabatanPegawai::class)
             ->findOneBy(['id' => $idJabatan]);
