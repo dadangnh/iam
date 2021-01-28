@@ -31,7 +31,7 @@ class NewUserFixtures extends Fixture
         $superAdmin->setPassword(
             $this->encoderFactory->getEncoder(User::class)->encodePassword('toor', null)
         );
-        $superAdmin->setStatus(true);
+        $superAdmin->setActive(true);
         $superAdmin->setLocked(false);
         $superAdmin->setTwoFactorEnabled(false);
         $manager->persist($superAdmin);
@@ -41,7 +41,7 @@ class NewUserFixtures extends Fixture
         $admin->setPassword(
             $this->encoderFactory->getEncoder(User::class)->encodePassword('admin', null)
         );
-        $admin->setStatus(true);
+        $admin->setActive(true);
         $admin->setLocked(false);
         $admin->setTwoFactorEnabled(false);
         $manager->persist($admin);
@@ -51,7 +51,7 @@ class NewUserFixtures extends Fixture
         $upkPusat->setPassword(
             $this->encoderFactory->getEncoder(User::class)->encodePassword('upk_pusat', null)
         );
-        $upkPusat->setStatus(true);
+        $upkPusat->setActive(true);
         $upkPusat->setLocked(false);
         $upkPusat->setTwoFactorEnabled(false);
         $manager->persist($upkPusat);

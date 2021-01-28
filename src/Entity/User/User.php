@@ -67,11 +67,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"username"})
  * @ORM\Table(name="`user`", indexes={
  *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
- *     @ORM\Index(name="idx_user_status", columns={"id", "status", "locked"}),
+ *     @ORM\Index(name="idx_user_active", columns={"id", "active", "locked"}),
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ApiFilter(BooleanFilter::class, properties={"status", "locked"})
+ * @ApiFilter(BooleanFilter::class, properties={"active", "locked"})
  * @ApiFilter(SearchFilter::class, properties={
  *     "username": "ipartial",
  *     "pegawai.nama": "ipartial",
@@ -138,7 +138,7 @@ class User implements UserInterface
      * @Groups({"user:read", "user:write"})
      * @Assert\NotNull()
      */
-    private ?bool $status;
+    private ?bool $active;
 
     /**
      * @ORM\Column(type="boolean")
@@ -196,7 +196,7 @@ class User implements UserInterface
 
     public function __toString(): string
     {
-        return (string) $this->username;
+        return $this->username;
     }
 
     public function getId()
@@ -211,7 +211,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->username;
+        return $this->username;
     }
 
     public function setUsername(string $username): self
@@ -226,16 +226,8 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->getRole();
-        // guarantee every user at least has ROLE_USER
-        $plainRoles[] = 'ROLE_USER';
-        /** @var Role $role */
-        foreach ($roles as $role) {
-            // make sure only direct Role <=> User relation are considered here
-            if (1 === $role->getJenis()) {
-                $plainRoles[] = $role->getNama();
-            }
-        }
+        // Get Direct Role Relation
+        $plainRoles = $this->getDirectRoles();
 
         // Get role by jabatan pegawai
         // Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
@@ -243,9 +235,14 @@ class User implements UserInterface
         // 10 => jabatan + unit + kantor"
         if (null !== $this->getPegawai()) {
             $arrayOfRoles = [];
-            /** @var JabatanPegawai $jabatanPegawai */
-            foreach ($this->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
-                $arrayOfRoles[] = RoleUtils::getPlainRolesNameFromJabatanPegawai($jabatanPegawai);
+            // make sure that retired person doesn't get role
+            if (!$this->getPegawai()->getPensiun()) {
+                /** @var JabatanPegawai $jabatanPegawai */
+                foreach ($this->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
+                    $arrayOfRoles[] = RoleUtils::getPlainRolesNameFromJabatanPegawai($jabatanPegawai);
+                }
+            } else {
+                return ['ROLE_RETIRED'];
             }
             $plainRoles = array_merge($plainRoles, ...$arrayOfRoles);
         }
@@ -263,6 +260,35 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
+    /**
+     * Method to get the direct relation of role and user
+     * @return array
+     */
+    public function getDirectRoles(): array
+    {
+        // check whether user is still active or not
+        if ($this->isActive()) {
+            // for active user, give a normal ROLE_USER for every user
+            $plainRoles[] = 'ROLE_USER';
+
+            // get the direct role <=> user relation
+            $roles = $this->getRole();
+
+            /** @var Role $role */
+            foreach ($roles as $role) {
+                // make sure only direct Role <=> User relation are considered here (only type 1)
+                if (1 === $role->getJenis()) {
+                    $plainRoles[] = $role->getNama();
+                }
+            }
+
+            // return in unique array
+            return array_unique($plainRoles);
+        }
+
+        // for inactive user, give inactive role
+        return ['ROLE_INACTIVE'];
+    }
     /**
      * @see UserInterface
      */
@@ -305,14 +331,14 @@ class User implements UserInterface
         $this->plainPassword = $password;
     }
 
-    public function getStatus(): ?bool
+    public function isActive(): ?bool
     {
-        return $this->status;
+        return $this->active;
     }
 
-    public function setStatus(bool $status): self
+    public function setActive(bool $active): self
     {
-        $this->status = $status;
+        $this->active = $active;
 
         return $this;
     }

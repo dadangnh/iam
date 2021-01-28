@@ -29,7 +29,7 @@ class UserCrudController extends AbstractCrudController
                 ->onlyOnForms(),
             AssociationField::new('role')
                 ->onlyOnDetail(),
-            BooleanField::new('status', 'Status Akun'),
+            BooleanField::new('active', 'Akun aktif?'),
             BooleanField::new('locked', 'Akun terkunci?'),
             BooleanField::new('twoFactorEnabled', '2FA')
         ];
