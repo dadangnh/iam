@@ -26,7 +26,7 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Route("/api/get_roles_by_jabatan", methods={"POST"})
+     * @Route("/api/get_roles_by_jabatan_pegawai", methods={"POST"})
      * @param Request $request
      * @param IriConverterInterface $iriConverter
      * @return JsonResponse
@@ -42,7 +42,9 @@ class CommonController extends AbstractController
         }
 
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        $idJabatan = $content['id_jabatan'];
+        $idJabatan = $content['id_jabatan_pegawai'];
+
+        /** @var JabatanPegawai $jabatanPegawai */
         $jabatanPegawai = $this->entityManager
             ->getRepository(JabatanPegawai::class)
             ->findOneBy(['id' => $idJabatan]);
