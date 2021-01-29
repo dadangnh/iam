@@ -5,7 +5,9 @@ namespace App\Controller;
 
 
 use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
+use App\utils\AplikasiUtils;
 use App\utils\RoleUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
@@ -62,6 +64,42 @@ class CommonController extends AbstractController
         return $this->json([
             'roles_count' => count($roles),
             'roles' => RoleUtils::createRoleDefaultResponseFromArrayOfRoles($roles, $iriConverter)
+        ]);
+    }
+
+    /**
+     * @Route("/api/get_aplikasi_by_token", methods={"POST"})
+     * @param Request $request
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    public function getAplikasiByToken(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'message' => 'Unauthorized API access.',
+                'request' => $request
+            ]);
+        }
+
+        $listOfPlainRoles = $this->getUser()->getRoles();
+        $lisAplikasi = $listRoles = [];
+        foreach ($listOfPlainRoles as $plainRole) {
+            $role = $this->getDoctrine()
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $plainRole]);
+            if (null !== $role) {
+                $listRoles[] = $role;
+            }
+        }
+
+        foreach (RoleUtils::getAplikasiByArrayOfRoles($listRoles) as $aplikasi) {
+            $lisAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        }
+
+        return $this->json([
+            'aplikasi_count' => count($lisAplikasi),
+            'aplikasi' => $lisAplikasi,
         ]);
     }
 }
