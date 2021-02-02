@@ -87,6 +87,6 @@ deploy:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
   script:
     - pwd
-    - ssh $SERVER "cd $DIR_PATH; killall -9 php; git pull; $PHP --version; $COMPOSER install; $PHP bin/console make:migration; $PHP bin/console doctrine:migrations:migrate --no-interaction; nohup $PHP -S localhost:8088 -t public/ & ; exit;"
+    - ssh $SERVER "sh deploy.sh; exit;"
   only:
     - master
