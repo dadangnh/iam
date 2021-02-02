@@ -85,7 +85,7 @@ deploy:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
   script:
     - pwd
-    - ssh $SERVER "sh deploy.sh; exit;"
+    - ssh $SERVER ". ~/.asdf/asdf.sh; sh deploy.sh; exit;"
   only:
     - master
   cache:
