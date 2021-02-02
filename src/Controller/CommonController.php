@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -25,6 +26,15 @@ class CommonController extends AbstractController
 
     public function __construct(EntityManagerInterface $entityManager) {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @Route("/", name="app_index")
+     * @return RedirectResponse
+     */
+    public function index(): RedirectResponse
+    {
+        return $this->redirectToRoute('api_entrypoint', [], 301);
     }
 
     /**
