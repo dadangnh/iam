@@ -20,13 +20,6 @@ variables:
   POSTGRES_PASSWORD: db_pass
   POSTGRES_DB: db_name
 
-# This folder is cached between builds
-# http://docs.gitlab.com/ee/ci/yaml/README.html#cache
-cache:
-  paths:
-    - vendor/
-    - node_modules/
-
 test:
   # This is a basic example for a gem or script which doesn't use
   # services such as redis or postgres
@@ -74,6 +67,11 @@ test:
     # set it in your package.json script
     # comment this out if you don't have a frontend test
 #    - npm test
+  cache:
+    key: cacheTest
+    paths:
+      - vendor/
+      - node_modules/
 
 deploy:
   image: ubuntu:latest
@@ -90,3 +88,8 @@ deploy:
     - ssh $SERVER "sh deploy.sh; exit;"
   only:
     - master
+  cache:
+    key: cacheDeploy
+    paths:
+      - vendor/
+      - node_modules/
