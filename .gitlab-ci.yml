@@ -83,6 +83,8 @@ deploy:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - touch ~/.ssh/known_hosts
+    - echo "$KNOWN_HOST" > ~/.ssh/known_hosts
   script:
     - pwd
     - ssh $SERVER ". ~/.asdf/asdf.sh; sh deploy.sh; exit;"
