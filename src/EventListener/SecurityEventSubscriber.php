@@ -82,6 +82,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
         $payload['id'] = $user->getId();
         $payload['roles'] = $user->getRoles();
         $payload['username'] = $user->getUsername();
+        $payload['exp'] = (new DateTimeImmutable())->getTimestamp() + 3600;
         $payload['expired'] = (new DateTimeImmutable())->getTimestamp() + 3600;
         $payload['pegawai'] = null !== $user->getPegawai()
             ? [
