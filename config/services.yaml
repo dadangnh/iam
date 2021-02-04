@@ -38,6 +38,17 @@ services:
         decorates: 'api_platform.openapi.factory'
         autoconfigure: false
 
+    shared_auth_library_jwt_user_provider:
+        class: App\SharedAuthLibrary\Security\JwtUserProvider
+
+    App\EventListener\SecurityEventSubscriber:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated}
+
+    App\SharedAuthLibrary\Listener\JwtPayloadListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded}
+
     gesdinet.jwtrefreshtoken.refresh_token_manager:
         class: App\Doctrine\RefreshTokenManager
         public: true
