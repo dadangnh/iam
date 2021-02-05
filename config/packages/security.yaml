@@ -1,10 +1,14 @@
 security:
     encoders:
+        App\SharedAuthLibrary\Security\User:
+            algorithm: auto
         App\Entity\User\User:
             algorithm: auto
 
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
+        service:
+            id: shared_auth_library_jwt_user_provider
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
@@ -14,20 +18,28 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        api:
-            pattern:  ^/api/
+
+        login:
+            pattern:  ^/api/authentication$
             stateless: true
             anonymous: true
             provider: app_user_provider
-            guard:
-                authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
             json_login:
                 check_path: /api/authentication
                 username_path: username
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern:  ^/api/
+            stateless: true
+            anonymous: true
+            provider: service
+            guard:
+                entry_point: lexik_jwt_authentication.jwt_token_authenticator
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
         refresh:
             pattern: ^/token/refresh
             stateless: true
