@@ -19,40 +19,6 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource(
- *     attributes={
- *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *          "security_message"="Only a valid user/admin/app can access this."
- *     },
- *     collectionOperations={
- *         "get"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only a valid user/admin/app can access this."
- *          },
- *         "post"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can add new resource to this entity type."
- *          }
- *     },
- *     itemOperations={
- *         "get"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only a valid user/admin/app can access this."
- *          },
- *         "put"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can replace this entity type."
- *          },
- *         "patch"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can edit this entity type."
- *          },
- *         "delete"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can delete this entity type."
- *          },
- *     }
- * )
  * @ORM\Entity(repositoryClass=JenisKantorRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="jenis_kantor", indexes={
@@ -61,11 +27,48 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "tipe": "ipartial"})
- * @ApiFilter(NumericFilter::class, properties={"klasifikasi", "legacyId", "legacyKode"})
- * @ApiFilter(DateFilter::class, properties={"tanggalAktif", "tanggalNonaktif"})
- * @ApiFilter(PropertyFilter::class)
  */
+#[ApiResource(
+    collectionOperations: [
+        'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            'security_message' => 'Only a valid user can access this.'
+        ],
+        'post' => [
+            'security'=>'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message'=>'Only admin/app can add new resource to this entity type.'
+        ]
+    ],
+    itemOperations: [
+        'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            'security_message' => 'Only a valid user can access this.'
+        ],
+        'put' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+        'patch' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+        'delete' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+    ],
+    attributes: [
+        'security' => 'is_granted("ROLE_USER")',
+        'security_message' => 'Only a valid user can access this.',
+    ],
+)]
+#[ApiFilter(SearchFilter::class, properties: [
+    'nama' => 'ipartial',
+    'tipe' => 'ipartial',
+])]
+#[ApiFilter(DateFilter::class, properties: ['tanggalAktif', 'tanggalNonaktif'])]
+#[ApiFilter(NumericFilter::class, properties: ['klasifikasi', 'legacyId', 'legacyKode'])]
+#[ApiFilter(PropertyFilter::class)]
 class JenisKantor
 {
     /**

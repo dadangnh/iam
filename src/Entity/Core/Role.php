@@ -24,41 +24,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource(
- *     attributes={
- *          "order"={"level": "ASC", "nama": "ASC"},
- *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *          "security_message"="Only a valid user/admin/app can access this."
- *     },
- *     collectionOperations={
- *         "get"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only a valid user/admin/app can access this."
- *          },
- *         "post"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can add new resource to this entity type."
- *          }
- *     },
- *     itemOperations={
- *         "get"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only a valid user/admin/app can access this."
- *          },
- *         "put"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can replace this entity type."
- *          },
- *         "patch"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can edit this entity type."
- *          },
- *         "delete"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can delete this entity type."
- *          },
- *     }
- * )
  * @ORM\Entity(repositoryClass=RoleRepository::class)
  * @ORM\Table(name="role", indexes={
  *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name", "jenis"}),
@@ -68,14 +33,60 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
  * @UniqueEntity(fields={"nama"})
  * @UniqueEntity(fields={"systemName"})
- * @ApiFilter(SearchFilter::class, properties={
- *     "nama": "ipartial",
- *     "systemName": "ipartial",
- *     "deskripsi": "ipartial",
- * })
- * @ApiFilter(NumericFilter::class, properties={"level", "jenis"})
- * @ApiFilter(PropertyFilter::class)
  */
+#[ApiResource(
+    collectionOperations: [
+        'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            'security_message' => 'Only a valid user can access this.'
+        ],
+        'post' => [
+            'security'=>'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message'=>'Only admin/app can add new resource to this entity type.'
+        ]
+    ],
+    itemOperations: [
+        'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            'security_message' => 'Only a valid user can access this.'
+        ],
+        'put' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+        'patch' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+        'delete' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+    ],
+    attributes: [
+        'security' => 'is_granted("ROLE_USER")',
+        'security_message' => 'Only a valid user can access this.',
+        'order' => [
+            'level' => 'ASC',
+            'nama' => 'ASC',
+        ]
+    ],
+    denormalizationContext: [
+        'groups' => ['pegawai:write'],
+        'swagger_definition_name' => 'write'
+    ],
+    normalizationContext: [
+        'groups' => ['pegawai:read'],
+        'swagger_definition_name' => 'read'
+    ]
+)]
+#[ApiFilter(SearchFilter::class, properties: [
+    'nama' => 'ipartial',
+    'systemName' => 'ipartial',
+    'deskripsi' => 'ipartial',
+])]
+#[ApiFilter(NumericFilter::class, properties: ['level', 'jenis'])]
+#[ApiFilter(PropertyFilter::class)]
 class Role
 {
     /**

@@ -17,40 +17,6 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource(
- *     attributes={
- *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *          "security_message"="Only a valid user/admin/app can access this."
- *     },
- *     collectionOperations={
- *         "get"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only a valid user/admin/app can access this."
- *          },
- *         "post"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can add new resource to this entity type."
- *          }
- *     },
- *     itemOperations={
- *         "get"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only a valid user/admin/app can access this."
- *          },
- *         "put"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can replace this entity type."
- *          },
- *         "patch"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can edit this entity type."
- *          },
- *         "delete"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can delete this entity type."
- *          },
- *     }
- * )
  * @ORM\Entity(repositoryClass=EselonRepository::class)
  * @ORM\Table(name="eselon", indexes={
  *     @ORM\Index(name="idx_eselon_nama_status", columns={"id", "nama", "tingkat"}),
@@ -58,10 +24,47 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ApiFilter(SearchFilter::class, properties={"nama": "ipartial", "kode": "ipartial"})
- * @ApiFilter(NumericFilter::class, properties={"tingkat", "legacyKode"})
- * @ApiFilter(PropertyFilter::class)
  */
+#[ApiResource(
+    collectionOperations: [
+        'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            'security_message' => 'Only a valid user can access this.'
+        ],
+        'post' => [
+            'security'=>'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message'=>'Only admin/app can add new resource to this entity type.'
+        ]
+    ],
+    itemOperations: [
+        'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            'security_message' => 'Only a valid user can access this.'
+        ],
+        'put' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+        'patch' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+        'delete' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+    ],
+    attributes: [
+        'security' => 'is_granted("ROLE_USER")',
+        'security_message' => 'Only a valid user can access this.',
+    ],
+)]
+#[ApiFilter(SearchFilter::class, properties: [
+    'nama' => 'ipartial',
+    "kode" => "ipartial",
+])]
+#[ApiFilter(NumericFilter::class, properties: ['tingkat', 'legacyKode'])]
+#[ApiFilter(PropertyFilter::class)]
 class Eselon
 {
     /**
