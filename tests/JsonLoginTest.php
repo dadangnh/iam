@@ -12,11 +12,11 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class JsonLoginTest extends ApiTestCase
 {
-    public function testGetAgamas(): void
+    public function testGetAplikasi(): void
     {
         // Expect to get 401 status code because no Token supplied
         try {
-            $response = static::createClient()->request('GET', '/api/agamas');
+            $response = static::createClient()->request('GET', '/api/aplikasis');
         } catch (TransportExceptionInterface $e) {
         }
         self::assertResponseStatusCodeSame(401);

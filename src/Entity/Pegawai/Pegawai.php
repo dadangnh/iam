@@ -61,7 +61,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="pegawai", indexes={
  *     @ORM\Index(name="idx_pegawai_data", columns={"id", "nama", "pensiun", "nik", "nip9", "nip18"}),
  *     @ORM\Index(name="idx_pegawai_legacy", columns={"id", "nip9"}),
- *     @ORM\Index(name="idx_pegawai_relation", columns={"id", "user_id", "jenis_kelamin_id", "agama_id"}),
+ *     @ORM\Index(name="idx_pegawai_relation", columns={"id", "user_id"}),
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
@@ -71,8 +71,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "nip9": "partial",
  *     "nip18": "partial",
  *     "user.username": "ipartial",
- *     "agama.nama": "ipartial",
- *     "jenisKelamin.nama": "ipartial",
  * })
  * @ApiFilter(DateFilter::class, properties={"tanggalLahir"})
  * @ApiFilter(PropertyFilter::class)
@@ -130,30 +128,6 @@ class Pegawai
      * @Groups({"pegawai:read", "pegawai:write"})
      */
     private ?string $tempatLahir;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=JenisKelamin::class, inversedBy="pegawais")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
-    private $jenisKelamin;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Agama::class, inversedBy="pegawais")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
-    private $agama;
 
     /**
      * @ORM\Column(type="boolean")
@@ -262,30 +236,6 @@ class Pegawai
     public function setTempatLahir(string $tempatLahir): self
     {
         $this->tempatLahir = $tempatLahir;
-
-        return $this;
-    }
-
-    public function getJenisKelamin(): ?JenisKelamin
-    {
-        return $this->jenisKelamin;
-    }
-
-    public function setJenisKelamin(?JenisKelamin $jenisKelamin): self
-    {
-        $this->jenisKelamin = $jenisKelamin;
-
-        return $this;
-    }
-
-    public function getAgama(): ?Agama
-    {
-        return $this->agama;
-    }
-
-    public function setAgama(?Agama $agama): self
-    {
-        $this->agama = $agama;
 
         return $this;
     }

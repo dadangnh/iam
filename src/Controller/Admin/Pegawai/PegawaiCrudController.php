@@ -33,12 +33,6 @@ class PegawaiCrudController extends AbstractCrudController
             DateField::new('tanggalLahir', 'Tanggal Lahir')
                 ->renderAsNativeWidget(true)
                 ->hideOnIndex(),
-            AssociationField::new('jenisKelamin')
-                ->setRequired(true)
-                ->setHelp('Silakan pilih salah satu'),
-            AssociationField::new('agama')
-                ->setRequired(true)
-                ->setHelp('Silakan pilih salah satu'),
             BooleanField::new('pensiun', 'Pensiun')
                 ->setHelp('Pegawai Pensiun?')
                 ->hideOnIndex(),
