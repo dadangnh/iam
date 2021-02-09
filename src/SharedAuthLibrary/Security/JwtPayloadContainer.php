@@ -8,6 +8,9 @@ class JwtPayloadContainer
 {
     private array $payload = [];
 
+    /**
+     * @param array $payload
+     */
     public function setPayload(array $payload): void
     {
         if (empty($this->payload)) {
@@ -15,6 +18,9 @@ class JwtPayloadContainer
         }
     }
 
+    /**
+     * @return array
+     */
     public function getPayload(): array
     {
         return $this->payload;

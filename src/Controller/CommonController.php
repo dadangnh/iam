@@ -29,21 +29,21 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Route("/", name="app_index")
      * @return RedirectResponse
      */
+    #[Route('/', name: 'app_index')]
     public function index(): RedirectResponse
     {
         return $this->redirectToRoute('api_entrypoint', [], 301);
     }
 
     /**
-     * @Route("/api/get_roles_by_jabatan_pegawai", methods={"POST"})
      * @param Request $request
      * @param IriConverterInterface $iriConverter
      * @return JsonResponse
      * @throws JsonException
      */
+    #[Route('/api/get_roles_by_jabatan_pegawai', methods: ['POST'])]
     public function getRoleByJabatanPegawai(Request $request, IriConverterInterface $iriConverter): JsonResponse
     {
         if (!$this->isGranted('ROLE_USER')) {
@@ -83,6 +83,7 @@ class CommonController extends AbstractController
      * @param IriConverterInterface $iriConverter
      * @return JsonResponse
      */
+    #[Route('/api/get_aplikasi_by_token', methods: ['POST'])]
     public function getAplikasiByToken(Request $request, IriConverterInterface $iriConverter): JsonResponse
     {
         if (!$this->isGranted('ROLE_USER')) {

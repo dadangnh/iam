@@ -11,11 +11,18 @@ class JwtPayloadListener
 {
     private JwtPayloadContainer $jwtPayloadContainer;
 
+    /**
+     * JwtPayloadListener constructor.
+     * @param JwtPayloadContainer $jwtPayloadContainer
+     */
     public function __construct(JwtPayloadContainer $jwtPayloadContainer)
     {
         $this->jwtPayloadContainer = $jwtPayloadContainer;
     }
 
+    /**
+     * @param JWTDecodedEvent $event
+     */
     public function onJWTDecoded(JWTDecodedEvent $event): void
     {
         $payload = $event->getPayload();

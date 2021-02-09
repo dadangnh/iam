@@ -4,8 +4,10 @@
 namespace App\Doctrine;
 
 
+use DateTime;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectRepository;
 use Gesdinet\JWTRefreshTokenBundle\Entity\RefreshTokenRepository;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManager as BaseRefreshTokenManager;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenInterface;
@@ -13,19 +15,19 @@ use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenInterface;
 class RefreshTokenManager extends BaseRefreshTokenManager
 {
     /**
-     * @var EntityManagerInterface
+     * @var ObjectManager|EntityManagerInterface
      */
-    protected $objectManager;
+    protected ObjectManager|EntityManagerInterface $objectManager;
 
     /**
      * @var string
      */
-    protected $class;
+    protected string $class;
 
     /**
-     * @var RefreshTokenRepository
+     * @var ObjectRepository|RefreshTokenRepository
      */
-    protected $repository;
+    protected ObjectRepository|RefreshTokenRepository $repository;
 
     /**
      * Constructor.
@@ -46,7 +48,7 @@ class RefreshTokenManager extends BaseRefreshTokenManager
      *
      * @return RefreshTokenInterface
      */
-    public function get($refreshToken)
+    public function get($refreshToken): RefreshTokenInterface
     {
         return $this->repository->findOneBy(array('refreshToken' => $refreshToken));
     }
@@ -56,7 +58,7 @@ class RefreshTokenManager extends BaseRefreshTokenManager
      *
      * @return RefreshTokenInterface
      */
-    public function getLastFromUsername($username)
+    public function getLastFromUsername($username): RefreshTokenInterface
     {
         return $this->repository->findOneBy(array('username' => $username), array('valid' => 'DESC'));
     }
@@ -88,7 +90,7 @@ class RefreshTokenManager extends BaseRefreshTokenManager
     }
 
     /**
-     * @param \DateTime $datetime
+     * @param DateTime $datetime
      * @param bool      $andFlush
      *
      * @return RefreshTokenInterface[]
@@ -113,7 +115,7 @@ class RefreshTokenManager extends BaseRefreshTokenManager
      *
      * @return string
      */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->class;
     }

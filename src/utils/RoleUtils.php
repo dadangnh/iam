@@ -57,7 +57,7 @@ class RoleUtils
                 }
             }
 
-            // get role from unit
+        // get role from unit
         } elseif (null !== $unit) {
             foreach ($unit->getRoles() as $role) {
                 if (3 === $role->getJenis()) {
@@ -75,7 +75,7 @@ class RoleUtils
                 }
             }
 
-            // get role from kantor
+        // get role from kantor
         } elseif (null !== $kantor) {
             foreach ($kantor->getRoles() as $role) {
                 if (4 === $role->getJenis()) {

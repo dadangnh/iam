@@ -26,19 +26,26 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminDashboardController extends AbstractDashboardController
 {
     /**
-     * @Route("/admin", name="admin")
+     * @return Response
      */
+    #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
         return $this->render('admin/dashboard.html.twig');
     }
 
+    /**
+     * @return Dashboard
+     */
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
             ->setTitle('DJP<i>connect</i>');
     }
 
+    /**
+     * @return iterable
+     */
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');

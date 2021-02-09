@@ -14,11 +14,19 @@ class JwtUserProvider implements UserProviderInterface
 {
     private JwtPayloadContainer $jwtPayloadContainer;
 
+    /**
+     * JwtUserProvider constructor.
+     * @param JwtPayloadContainer $jwtPayloadContainer
+     */
     public function __construct(JwtPayloadContainer $jwtPayloadContainer)
     {
         $this->jwtPayloadContainer = $jwtPayloadContainer;
     }
 
+    /**
+     * @param string $username
+     * @return User
+     */
     #[Pure] public function loadUserByUsername($username): User
     {
         $payload = $this->jwtPayloadContainer->getPayload();
@@ -32,6 +40,10 @@ class JwtUserProvider implements UserProviderInterface
         );
     }
 
+    /**
+     * @param UserInterface $user
+     * @return User
+     */
     public function refreshUser(UserInterface $user): User
     {
         if (!$user instanceof User) {
@@ -43,6 +55,10 @@ class JwtUserProvider implements UserProviderInterface
         return $this->loadUserByUsername($user->getUsername());
     }
 
+    /**
+     * @param string $class
+     * @return bool
+     */
     public function supportsClass($class): bool
     {
         return User::class === $class;

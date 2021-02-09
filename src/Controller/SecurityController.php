@@ -31,6 +31,7 @@ class SecurityController extends AbstractController
      * @param AuthenticationUtils $authenticationUtils
      * @return Response
      */
+    #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         // get the login error if there is one
@@ -91,18 +92,19 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/logout", name="app_logout")
+     * Method for log out
      */
-    public function logout()
+    #[Route('/logout', name: 'app_logout')]
+    public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
     /**
-     * @Route("/json_login", name="app_json_login", methods={"POST"})
      * @param IriConverterInterface $iriConverter
      * @return Response
      */
+    #[Route('/json_login', name: 'app_json_login', methods: ['POST'])]
     public function json_login(IriConverterInterface $iriConverter): Response
     {
         return $this->json([
@@ -117,12 +119,12 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/api/change_user_password", name="app_change_password", methods={"POST"})
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @return JsonResponse
      * @throws JsonException
      */
+    #[Route('/api/change_user_password', name: 'app_change_password', methods: ['POST'])]
     public function change_password(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {
         if (!$this->isGranted('ROLE_APLIKASI')) {
@@ -155,9 +157,9 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/api/whoami", name="app_whoami", methods={"POST"})
      * @return JsonResponse
      */
+    #[Route('/api/whoami', name: 'app_whoami', methods: ['POST'])]
     public function whoami(): JsonResponse
     {
         return $this->json($this->getUser());
