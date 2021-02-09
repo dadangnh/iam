@@ -26,42 +26,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource(
- *     normalizationContext={"groups"={"user:read"}, "swagger_definition_name"="Read"},
- *     denormalizationContext={"groups"={"user:write"}, "swagger_definition_name"="Write"},
- *     attributes={
- *          "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *          "security_message"="Only a valid user/admin/app can access this."
- *     },
- *     collectionOperations={
- *         "get"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only a valid user/admin/app can access this."
- *          },
- *         "post"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can add new resource to this entity type."
- *          }
- *     },
- *     itemOperations={
- *         "get"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only a valid user/admin/app can access this."
- *          },
- *         "put"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can replace this entity type."
- *          },
- *         "patch"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can edit this entity type."
- *          },
- *         "delete"={
- *              "security"="is_granted('ROLE_APLIKASI') or is_granted('ROLE_ADMIN')",
- *              "security_message"="Only admin/app can delete this entity type."
- *          },
- *     }
- * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * @UniqueEntity(fields={"username"})
@@ -71,16 +35,58 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ApiFilter(BooleanFilter::class, properties={"active", "locked"})
- * @ApiFilter(SearchFilter::class, properties={
- *     "username": "ipartial",
- *     "pegawai.nama": "ipartial",
- *     "pegawai.nip9": "partial",
- *     "pegawai.nip18": "partial"
- * })
- * @ApiFilter(DateFilter::class, properties={"lastChange"})
- * @ApiFilter(PropertyFilter::class)
  */
+#[ApiResource(
+    collectionOperations: [
+        'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            'security_message' => 'Only a valid user can access this.'
+        ],
+        'post' => [
+            'security'=>'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message'=>'Only admin/app can add new resource to this entity type.'
+        ]
+    ],
+    itemOperations: [
+        'get' => [
+            'security' => 'is_granted("ROLE_USER")',
+            'security_message' => 'Only a valid user can access this.'
+        ],
+        'put' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+        'patch' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+        'delete' => [
+            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            'security_message' => 'Only admin/app can add new resource to this entity type.'
+        ],
+    ],
+    attributes: [
+        'security' => 'is_granted("ROLE_USER")',
+        'security_message' => 'Only a valid user can access this.',
+    ],
+    denormalizationContext: [
+        'groups' => ['user:write'],
+        'swagger_definition_name' => 'write'
+    ],
+    normalizationContext: [
+        'groups' => ['user:read'],
+        'swagger_definition_name' => 'read'
+    ]
+)]
+#[ApiFilter(SearchFilter::class, properties: [
+    'username' => 'ipartial',
+    'pegawai.nama' => 'ipartial',
+    'pegawai.nip9' => 'partial',
+    'pegawai.nip18' => 'partial'
+])]
+#[ApiFilter(DateFilter::class, properties: ['lastChange'])]
+#[ApiFilter(BooleanFilter::class, properties: ['active', 'locked'])]
+#[ApiFilter(PropertyFilter::class)]
 class User implements UserInterface
 {
     /**
