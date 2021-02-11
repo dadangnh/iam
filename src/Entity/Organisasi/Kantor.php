@@ -299,7 +299,7 @@ class Kantor
     /**
      * @return Collection|self[]
      */
-    public function getChilds(): Collection
+    public function getChilds(): Collection|array
     {
         return $this->childs;
     }
