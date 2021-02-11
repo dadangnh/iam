@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(name="unit", indexes={
  *     @ORM\Index(name="idx_unit_nama", columns={"id", "nama", "level"}),
- *     @ORM\Index(name="idx_unit_legacy", columns={"id", "legacy_kode"}),
+ *     @ORM\Index(name="idx_unit_legacy", columns={"id", "legacy_kode", "pembina_id"}),
  *     @ORM\Index(name="idx_unit_relation", columns={"id", "jenis_kantor_id", "eselon_id"}),
  * })
  * Disable second level cache for further analysis
@@ -167,11 +167,26 @@ class Unit
      */
     private $roles;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="membina")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     */
+    private $pembina;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="pembina")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     */
+    private $membina;
+
     #[Pure] public function __construct()
     {
         $this->jabatanPegawais = new ArrayCollection();
         $this->jabatans = new ArrayCollection();
         $this->roles = new ArrayCollection();
+        $this->membina = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -356,6 +371,48 @@ class Unit
     {
         if ($this->roles->contains($role)) {
             $this->roles->removeElement($role);
+        }
+
+        return $this;
+    }
+
+    public function getPembina(): ?self
+    {
+        return $this->pembina;
+    }
+
+    public function setPembina(?self $pembina): self
+    {
+        $this->pembina = $pembina;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getMembina(): Collection
+    {
+        return $this->membina;
+    }
+
+    public function addMembina(self $membina): self
+    {
+        if (!$this->membina->contains($membina)) {
+            $this->membina[] = $membina;
+            $membina->setPembina($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMembina(self $membina): self
+    {
+        if ($this->membina->removeElement($membina)) {
+            // set the owning side to null (unless already changed)
+            if ($membina->getPembina() === $this) {
+                $membina->setPembina(null);
+            }
         }
 
         return $this;

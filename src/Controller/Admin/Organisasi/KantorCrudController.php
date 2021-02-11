@@ -35,6 +35,9 @@ class KantorCrudController extends AbstractCrudController
             AssociationField::new('parent', 'Kantor Induk'),
             AssociationField::new('childs', 'Kantor Dibawahnya')
                 ->onlyOnDetail(),
+            AssociationField::new('pembina', 'Kantor Induk Pembina'),
+            AssociationField::new('membina', 'Kantor yang Dibina')
+                ->onlyOnDetail(),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
                 ->renderAsNativeWidget(true),
             DateTimeField::new('tanggalNonaktif', 'Tanggal Non Aktif')

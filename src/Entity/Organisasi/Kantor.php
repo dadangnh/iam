@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="kantor", indexes={
  *     @ORM\Index(name="idx_kantor_nama_status", columns={"id", "nama", "level", "sk"}),
  *     @ORM\Index(name="idx_kantor_legacy", columns={"id", "legacy_kode", "legacy_kode_kpp", "legacy_kode_kanwil"}),
- *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id", "level"}),
+ *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id", "level", "pembina_id"}),
  *     @ORM\Index(name="idx_kantor_location", columns={"id", "latitude", "longitude"}),
  * })
  * Disable second level cache for further analysis
@@ -231,11 +231,26 @@ class Kantor
      */
     private $roles;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="membina")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     */
+    private $pembina;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="pembina")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     */
+    private $membina;
+
     #[Pure] public function __construct()
     {
         $this->childs = new ArrayCollection();
         $this->jabatanPegawais = new ArrayCollection();
         $this->roles = new ArrayCollection();
+        $this->membina = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -530,6 +545,48 @@ class Kantor
     {
         if ($this->roles->contains($role)) {
             $this->roles->removeElement($role);
+        }
+
+        return $this;
+    }
+
+    public function getPembina(): ?self
+    {
+        return $this->pembina;
+    }
+
+    public function setPembina(?self $pembina): self
+    {
+        $this->pembina = $pembina;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getMembina(): Collection|array
+    {
+        return $this->membina;
+    }
+
+    public function addMembina(self $membina): self
+    {
+        if (!$this->membina->contains($membina)) {
+            $this->membina[] = $membina;
+            $membina->setPembina($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMembina(self $membina): self
+    {
+        if ($this->membina->removeElement($membina)) {
+            // set the owning side to null (unless already changed)
+            if ($membina->getPembina() === $this) {
+                $membina->setPembina(null);
+            }
         }
 
         return $this;
