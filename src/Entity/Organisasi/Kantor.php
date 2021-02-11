@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="kantor", indexes={
  *     @ORM\Index(name="idx_kantor_nama_status", columns={"id", "nama", "level", "sk"}),
  *     @ORM\Index(name="idx_kantor_legacy", columns={"id", "legacy_kode", "legacy_kode_kpp", "legacy_kode_kanwil"}),
- *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id_id", "level"}),
+ *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id", "level"}),
  *     @ORM\Index(name="idx_kantor_location", columns={"id", "latitude", "longitude"}),
  * })
  * Disable second level cache for further analysis
@@ -120,19 +120,19 @@ class Kantor
     private ?int $level;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="childIds")
+     * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="childs")
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
      */
-    private $parentId;
+    private $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="parentId")
+     * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="parent")
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
-    private $childIds;
+    private $childs;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -233,7 +233,7 @@ class Kantor
 
     #[Pure] public function __construct()
     {
-        $this->childIds = new ArrayCollection();
+        $this->childs = new ArrayCollection();
         $this->jabatanPegawais = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
@@ -284,14 +284,14 @@ class Kantor
         return $this;
     }
 
-    public function getParentId(): ?self
+    public function getParent(): ?self
     {
-        return $this->parentId;
+        return $this->parent;
     }
 
-    public function setParentId(?self $parentId): self
+    public function setParent(?self $parent): self
     {
-        $this->parentId = $parentId;
+        $this->parent = $parent;
 
         return $this;
     }
@@ -299,28 +299,27 @@ class Kantor
     /**
      * @return Collection|self[]
      */
-    public function getChildIds(): Collection|array
+    public function getChilds(): Collection|array
     {
-        return $this->childIds;
+        return $this->childs;
     }
 
-    public function addChildId(self $childId): self
+    public function addChild(self $child): self
     {
-        if (!$this->childIds->contains($childId)) {
-            $this->childIds[] = $childId;
-            $childId->setParentId($this);
+        if (!$this->childs->contains($child)) {
+            $this->childs[] = $child;
+            $child->setParent($this);
         }
 
         return $this;
     }
 
-    public function removeChildId(self $childId): self
+    public function removeChild(self $child): self
     {
-        if ($this->childIds->contains($childId)) {
-            $this->childIds->removeElement($childId);
+        if ($this->childs->removeElement($child)) {
             // set the owning side to null (unless already changed)
-            if ($childId->getParentId() === $this) {
-                $childId->setParentId(null);
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
             }
         }
 

@@ -141,14 +141,14 @@ class OrganisasiFixtures extends Fixture
         $kantorDjp->setNama('Direktorat Jenderal Pajak');
         $kantorDjp->setJenisKantor($jenisDjp);
         $kantorDjp->setLevel(1);
-        $kantorDjp->setParentId($kantorKementerian);
+        $kantorDjp->setParent($kantorKementerian);
         $manager->persist($kantorDjp);
 
         $kantorSes = new Kantor();
         $kantorSes->setNama('Sekretariat Direktorat Jenderal Pajak');
         $kantorSes->setJenisKantor($jenisSes);
         $kantorSes->setLevel(2);
-        $kantorSes->setParentId($kantorDjp);
+        $kantorSes->setParent($kantorDjp);
         $manager->persist($kantorSes);
 
         $unitKementerian = new Unit();
