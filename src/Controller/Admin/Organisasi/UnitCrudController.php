@@ -33,6 +33,9 @@ class UnitCrudController extends AbstractCrudController
             AssociationField::new('eselon', 'Eselon')
                 ->setRequired(true)
                 ->setHelp('Eselon tertinggi yang menjabat di unit organisasi ini'),
+            AssociationField::new('pembina', 'Unit Induk Pembina'),
+            AssociationField::new('membina', 'Unit yang Dibina')
+                ->onlyOnDetail(),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
                 ->setRequired(true)
                 ->renderAsNativeWidget(true),
