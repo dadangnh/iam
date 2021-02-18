@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="unit", indexes={
  *     @ORM\Index(name="idx_unit_nama", columns={"id", "nama", "level"}),
  *     @ORM\Index(name="idx_unit_legacy", columns={"id", "legacy_kode", "pembina_id"}),
- *     @ORM\Index(name="idx_unit_relation", columns={"id", "jenis_kantor_id", "eselon_id"}),
+ *     @ORM\Index(name="idx_unit_relation", columns={"id", "jenis_kantor_id", "parent_id", "eselon_id"}),
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
@@ -117,6 +117,21 @@ class Unit
     private ?int $level;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="childs")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Assert\Valid()
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="parent")
+     * Disable second level cache for further analysis
+     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     */
+    private $childs;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="units")
      * @ORM\JoinColumn(nullable=false)
      * Disable second level cache for further analysis
@@ -183,6 +198,7 @@ class Unit
 
     #[Pure] public function __construct()
     {
+        $this->childs = new ArrayCollection();
         $this->jabatanPegawais = new ArrayCollection();
         $this->jabatans = new ArrayCollection();
         $this->roles = new ArrayCollection();
@@ -231,6 +247,48 @@ class Unit
     public function setLevel(int $level): self
     {
         $this->level = $level;
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getChilds(): Collection|array
+    {
+        return $this->childs;
+    }
+
+    public function addChild(self $child): self
+    {
+        if (!$this->childs->contains($child)) {
+            $this->childs[] = $child;
+            $child->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(self $child): self
+    {
+        if ($this->childs->removeElement($child)) {
+            // set the owning side to null (unless already changed)
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
+            }
+        }
 
         return $this;
     }
