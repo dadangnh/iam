@@ -70,31 +70,16 @@ exit
 $ docker-compose exec php composer install
 ```
 
-
-#### Fresh Install
-For new installation, do the following, existing installation can proceed to migration.
-
+#### Migration
+run the migration:
 ```bash
-$  docker-compose exec php bin/console doctrine:database:drop --force
-$  docker-compose exec php bin/console doctrine:database:create
-$  docker-compose exec php bin/console make:migration
 $  docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-Prepopulate the database with default content:
+#### Add default data (optional on non production)
+run the following to add dummy data:
 ```bash
 $  docker-compose exec php bin/console doctrine:fixtures:load --no-interaction
-```
-
-#### Migration
-For existing database, do migration check and make migration if needed. if you have installed this before, you can make migration from previous release:
-```bash
-$  docker-compose exec php bin/console make:migration
-```
-
-Lastly, run the migration:
-```bash
-$  docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
 Now your app are ready to use:
@@ -195,31 +180,16 @@ $ openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
 $ symfony composer install
 ```
 
-
-#### Fresh Install
-For new installation, do the following, existing installation can proceed to migration.
-
-```bash
-$  symfony console doctrine:database:drop --force
-$  symfony console doctrine:database:create
-$  symfony console make:migration
-$  symfony console doctrine:migrations:migrate --no-interaction
-```
-
-Prepopulate the database with default content:
-```bash
-$  symfony console doctrine:fixtures:load --no-interaction
-```
-
 #### Migration
-For existing database, do migration check and make migration if needed. if you have installed this before, you can make migration from previous release:
+run the migration:
 ```bash
-$  symfony console make:migration
+$  docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-Lastly, run the migration:
+#### Add default data (optional on non production)
+run the following to add dummy data:
 ```bash
-$  symfony console doctrine:migrations:migrate --no-interaction
+$  docker-compose exec php bin/console doctrine:fixtures:load --no-interaction
 ```
 
 Now your app are ready to use:
@@ -281,30 +251,16 @@ $ openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout
 $ symfony composer install
 ```
 
-#### Fresh Install
-For new installation, do the following, existing installation can proceed to migration.
-
-```bash
-$  symfony console doctrine:database:drop --force
-$  symfony console doctrine:database:create
-$  symfony console make:migration
-$  symfony console doctrine:migrations:migrate --no-interaction
-```
-
-Prepopulate the database with default content:
-```bash
-$  symfony console doctrine:fixtures:load --no-interaction
-```
-
 #### Migration
-For existing database, do migration check and make migration if needed. if you have installed this before, you can make migration from previous release:
+run the migration:
 ```bash
-$  symfony console make:migration
+$  docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-Lastly, run the migration:
+#### Add default data (optional on non production)
+run the following to add dummy data:
 ```bash
-$  symfony console doctrine:migrations:migrate --no-interaction
+$  docker-compose exec php bin/console doctrine:fixtures:load --no-interaction
 ```
 
 Now your app are ready to use:

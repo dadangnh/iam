@@ -30,6 +30,9 @@ class UnitCrudController extends AbstractCrudController
                 ->setHelp('
                     Level Unit Organisasi, <br>misal: Kementerian Keuangan = 0, DJP = 1, Kanwil Modern = 2, dst
                 '),
+            AssociationField::new('parent', 'Unit Induk'),
+            AssociationField::new('childs', 'Unit Dibawahnya')
+                ->onlyOnDetail(),
             AssociationField::new('eselon', 'Eselon')
                 ->setRequired(true)
                 ->setHelp('Eselon tertinggi yang menjabat di unit organisasi ini'),
