@@ -78,7 +78,6 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Route("/api/get_aplikasi_by_token", methods={"POST"})
      * @param Request $request
      * @param IriConverterInterface $iriConverter
      * @return JsonResponse
@@ -94,7 +93,7 @@ class CommonController extends AbstractController
         }
 
         $listOfPlainRoles = $this->getUser()->getRoles();
-        $lisAplikasi = $listRoles = [];
+        $listAplikasi = $listRoles = [];
         foreach ($listOfPlainRoles as $plainRole) {
             $role = $this->getDoctrine()
                 ->getRepository(Role::class)
@@ -105,12 +104,50 @@ class CommonController extends AbstractController
         }
 
         foreach (RoleUtils::getAplikasiByArrayOfRoles($listRoles) as $aplikasi) {
-            $lisAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
         }
 
         return $this->json([
-            'aplikasi_count' => count($lisAplikasi),
-            'aplikasi' => $lisAplikasi,
+            'aplikasi_count' => count($listAplikasi),
+            'aplikasi' => $listAplikasi,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     * @throws JsonException
+     */
+    #[Route('/api/get_aplikasi_by_role_name', methods: ['POST'])]
+    public function getAplikasiByRoleName(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'message' => 'Unauthorized API access.',
+                'request' => $request
+            ]);
+        }
+
+        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $roleName = $content['role_name'];
+
+        $role = $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findOneBy(['nama' => $roleName]);
+
+        if (null === $role) {
+            return $this->json(['warning' => 'No roles associated with this name']);
+        }
+
+        $listAplikasi = [];
+        foreach (RoleUtils::getAplikasiByRole($role) as $aplikasi) {
+            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        }
+
+        return $this->json([
+            'aplikasi_count' => count($listAplikasi),
+            'aplikasi' => $listAplikasi,
         ]);
     }
 }

@@ -43,8 +43,31 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-
         $schemas['GetAplikasiByTokenResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'aplikasi_count' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'aplikasi' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
+        $schemas['GetAplikasiByRoleNameRequest'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'role_name' => [
+                    'type' => 'string',
+                    'example' => 'string',
+                ],
+            ],
+        ]);
+
+        $schemas['GetAplikasiByRoleNameResponse'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
                 'aplikasi_count' => [
@@ -89,7 +112,6 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-
         $aplikasiByTokenItem = new Model\PathItem(
             ref: 'Aplikasi',
             post: new Model\Operation(
@@ -111,8 +133,40 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $aplikasiByRoleName = new Model\PathItem(
+            ref: 'Aplikasi',
+            post: new Model\Operation(
+                operationId: 'postCredentialsItem',
+                tags: ['Authorization - Get List of Aplikasi By Role Name'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Aplikasi',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetAplikasiByRoleNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Roles from Jabatan Pegawai.',
+                requestBody: new Model\RequestBody(
+                    description: 'Role Name',
+                    content: new ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/GetAplikasiByRoleNameRequest',
+                            ],
+                        ],
+                    ]),
+                ),
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/get_roles_by_jabatan_pegawai', $roleByJabatanPegawaiItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_token', $aplikasiByTokenItem);
+        $openApi->getPaths()->addPath('/api/get_aplikasi_by_role_name', $aplikasiByRoleName);
 
         return $openApi;
 
