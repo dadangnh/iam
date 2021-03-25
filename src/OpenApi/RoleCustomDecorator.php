@@ -81,6 +81,24 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
+        $schemas['GetPermissionsByTokenResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'unique_permissions_count' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'unique_permissions' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                ],
+                'list_per_role' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
         $roleByJabatanPegawaiItem = new Model\PathItem(
             ref: 'Roles',
             post: new Model\Operation(
@@ -164,11 +182,32 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $permissionsByTokenItem = new Model\PathItem(
+            ref: 'Permission',
+            post: new Model\Operation(
+                operationId: 'postCredentialsItem',
+                tags: ['Authorization - Get List of Permissions From Token'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Permissions',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetPermissionsByTokenResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Permissions from Token.',
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/get_roles_by_jabatan_pegawai', $roleByJabatanPegawaiItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_token', $aplikasiByTokenItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_role_name', $aplikasiByRoleName);
+        $openApi->getPaths()->addPath('/api/get_permissions_by_token', $permissionsByTokenItem);
 
         return $openApi;
-
     }
 }

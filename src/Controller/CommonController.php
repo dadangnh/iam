@@ -5,12 +5,14 @@ namespace App\Controller;
 
 
 use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\utils\AplikasiUtils;
 use App\utils\RoleUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -148,6 +150,57 @@ class CommonController extends AbstractController
         return $this->json([
             'aplikasi_count' => count($listAplikasi),
             'aplikasi' => $listAplikasi,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/get_permissions_by_token', methods: ['POST'])]
+    public function getPermissionsByToken(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'message' => 'Unauthorized API access.',
+                'request' => $request
+            ]);
+        }
+
+        $listOfPlainRoles = $this->getUser()->getRoles();
+        $uniquePermissions = $listPermissionsOnRoles = $listRoles = [];
+        $uniquePermissionsCount = 0;
+        foreach ($listOfPlainRoles as $plainRole) {
+            $role = $this->getDoctrine()
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $plainRole]);
+            if (null !== $role) {
+                $listRoles[] = $role;
+            }
+        }
+
+        foreach ($listRoles as $role) {
+            $permissions = $role->getPermissions();
+            if (null !== $permissions) {
+                /** @var Permission $permission */
+                foreach ($permissions as $permission) {
+                    $iri = $iriConverter->getIriFromItem($permission);
+                    if (!in_array($iri, $uniquePermissions, true)) {
+                        $uniquePermissionsCount++;
+                        $uniquePermissions[] = $iri;
+                    }
+                }
+                $listPermissionsOnRoles[] = [
+                    $role->getNama() => $permissions
+                ];
+            }
+        }
+
+        return $this->json([
+            'unique_permissions_count' => $uniquePermissionsCount,
+            'unique_permissions' => $uniquePermissions,
+            'list_per_role' => $listPermissionsOnRoles
         ]);
     }
 }
