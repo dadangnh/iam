@@ -131,12 +131,7 @@ class CommonController extends AbstractController
             ]);
         }
 
-        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        $roleName = $content['role_name'];
-
-        $role = $this->getDoctrine()
-            ->getRepository(Role::class)
-            ->findOneBy(['nama' => $roleName]);
+        $role = $this->readRoleFromRoleNameRequest($request);
 
         if (null === $role) {
             return $this->json(['warning' => 'No roles associated with this name']);
@@ -202,5 +197,49 @@ class CommonController extends AbstractController
             'unique_permissions' => $uniquePermissions,
             'list_per_role' => $listPermissionsOnRoles
         ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws JsonException
+     */
+    #[Route('/api/get_permissions_by_role_name', methods: ['POST'])]
+    public function getPermissionsByRoleName(Request $request): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'message' => 'Unauthorized API access.',
+                'request' => $request
+            ]);
+        }
+
+        $role = $this->readRoleFromRoleNameRequest($request);
+
+        if (null === $role) {
+            return $this->json(['warning' => 'No roles associated with this name']);
+        }
+
+        $permissions = $role->getPermissions();
+
+        return $this->json([
+            'permissions_count' => count($permissions),
+            'permissions' => $permissions
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return Role|null
+     * @throws JsonException
+     */
+    private function readRoleFromRoleNameRequest(Request $request): Role|null
+    {
+        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $roleName = $content['role_name'];
+
+        return $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findOneBy(['nama' => $roleName]);
     }
 }

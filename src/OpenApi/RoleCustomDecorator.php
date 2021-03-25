@@ -99,6 +99,20 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
+        $schemas['GetPermissionsByRoleNameResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'permissions_count' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'permissions' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
         $roleByJabatanPegawaiItem = new Model\PathItem(
             ref: 'Roles',
             post: new Model\Operation(
@@ -203,10 +217,43 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $permissionsByRoleNameItem = new Model\PathItem(
+            ref: 'Permission',
+            post: new Model\Operation(
+                operationId: 'postCredentialsItem',
+                tags: ['Authorization - Get List of Permissions From Role Name'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Permissions',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetPermissionsByRoleNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Permissions from Role Name.',
+                requestBody: new Model\RequestBody(
+                    description: 'Role Name',
+                    content: new ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/GetAplikasiByRoleNameRequest',
+                            ],
+                        ],
+                    ]),
+                ),
+
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/get_roles_by_jabatan_pegawai', $roleByJabatanPegawaiItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_token', $aplikasiByTokenItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_role_name', $aplikasiByRoleName);
         $openApi->getPaths()->addPath('/api/get_permissions_by_token', $permissionsByTokenItem);
+        $openApi->getPaths()->addPath('/api/get_permissions_by_role_name', $permissionsByRoleNameItem);
 
         return $openApi;
     }
