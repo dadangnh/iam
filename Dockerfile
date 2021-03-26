@@ -74,6 +74,19 @@ RUN set -eux; \
 		echo 'ping.path = /ping'; \
 	} | tee /usr/local/etc/php-fpm.d/docker-healthcheck.conf
 
+ARG POSTGRES_HOST
+ARG POSTGRES_USER
+ARG POSTGRES_PASSWORD
+ARG POSTGRES_DB
+ARG POSTGRES_PORT
+ARG POSTGRES_VERSION
+ARG DATABASE_URL
+ARG REDIS_HOST
+ARG REDIS_PORT
+ARG REDIS_URL
+ENV DATABASE_URL="postgresql://${POSTGRES_USER:-db_user}:${POSTGRES_PASSWORD:-db_pass}@${POSTGRES_HOST:-database}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-db_name}?serverVersion=${POSTGRES_VERSION:-13}"
+ENV REDIS_URL="redis://${REDIS_HOST:-redis}:${REDIS_PORT:-6379}"
+
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
