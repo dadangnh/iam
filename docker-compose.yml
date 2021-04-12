@@ -12,13 +12,6 @@ services:
     networks:
       - djp
 
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    networks:
-      - djp
-    
   php:
     build:
       context: .
@@ -35,11 +28,9 @@ services:
       retries: 3
       start_period: 30s
     depends_on:
-      - redis
       - database
     links:
       - database
-      - redis
     networks:
       - djp
     environment:
@@ -47,7 +38,6 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-db_user}:${POSTGRES_PASSWORD:-db_pass}@database:5432/${POSTGRES_DB:-db_name}?serverVersion=${POSTGRES_VERSION:-13}
       # Run "composer require symfony/mercure-bundle" to install and configure the Mercure integration
       MERCURE_PUBLISH_URL: ${MERCURE_URL:-http://caddy/.well-known/mercure}
-      REDIS_URL: redis://redis:6379
       SYMFONY_VERSION:
 
   caddy:
