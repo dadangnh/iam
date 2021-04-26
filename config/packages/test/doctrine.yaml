@@ -1,4 +1,0 @@
-doctrine:
-    dbal:
-        override_url: true
-        dbname: test_db
