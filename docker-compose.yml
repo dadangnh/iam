@@ -27,8 +27,8 @@ services:
         SYMFONY_VERSION: ${SYMFONY_VERSION:-}
         STABILITY: ${STABILITY:-stable}
     restart: unless-stopped
-    volumes:
-      - php_socket:/var/run/php
+    ports:
+      - "9000:9000"
     healthcheck:
       interval: 10s
       timeout: 3s
@@ -64,7 +64,6 @@ services:
     networks:
       - djp
     volumes:
-      - php_socket:/var/run/php
       - caddy_data:/data
       - caddy_config:/config
     ports:
