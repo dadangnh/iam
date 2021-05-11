@@ -157,6 +157,38 @@ class SecurityController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return JsonResponse
+     * @throws JsonException
+     */
+    #[Route('/api/change_password_by_sikka', name: 'app_change_password_by_sikka', methods: ['POST'])]
+    public function change_password_by_sikka(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_HRIS')) {
+            return $this->json([
+                'message' => 'Unauthorized API access.',
+                'request' => $request
+            ]);
+        }
+
+        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $username = $content['username'];
+        $newPassword = $content['new_password'];
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $username]);
+        if (null === $user) {
+            return $this->json(['error' => 'No user found']);
+        }else{
+            // TODO: check password strength and implement password blacklist
+            $newPasswordEncoded = $passwordEncoder->encodePassword($user, $newPassword);
+            $user->setPassword($newPasswordEncoded);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+            return $this->json(['message' => 'password successfully changed.']);
+        }
+    }
+
+    /**
      * @return JsonResponse
      */
     #[Route('/api/whoami', name: 'app_whoami', methods: ['POST'])]
@@ -164,4 +196,5 @@ class SecurityController extends AbstractController
     {
         return $this->json($this->getUser());
     }
+
 }
