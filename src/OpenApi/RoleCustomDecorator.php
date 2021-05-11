@@ -182,7 +182,60 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
                         ],
                     ],
                 ],
-                summary: 'Get Roles from Jabatan Pegawai.',
+                summary: 'Get list of Aplikasi from Role Name',
+                requestBody: new Model\RequestBody(
+                    description: 'Role Name',
+                    content: new ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/GetAplikasiByRoleNameRequest',
+                            ],
+                        ],
+                    ]),
+                ),
+            ),
+        );
+
+
+        $allAplikasiByTokenItem = new Model\PathItem(
+            ref: 'Aplikasi',
+            post: new Model\Operation(
+                operationId: 'postCredentialsItem',
+                tags: ['Authorization - Get List of All Aplikasi From Token (including unreleased one)'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Aplikasi data from Token, including unreleased application',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetAplikasiByTokenResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Aplikasi from Token.',
+            ),
+        );
+
+        $allAplikasiByRoleName = new Model\PathItem(
+            ref: 'Aplikasi',
+            post: new Model\Operation(
+                operationId: 'postCredentialsItem',
+                tags: ['Authorization - Get List of All Aplikasi By Role Name (including unreleased one)'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Aplikasi data from role name, including unreleased application',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetAplikasiByRoleNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get list of Aplikasi from Role Name.',
                 requestBody: new Model\RequestBody(
                     description: 'Role Name',
                     content: new ArrayObject([
@@ -252,6 +305,8 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/get_roles_by_jabatan_pegawai', $roleByJabatanPegawaiItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_token', $aplikasiByTokenItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_role_name', $aplikasiByRoleName);
+        $openApi->getPaths()->addPath('/api/get_all_aplikasi_by_token', $allAplikasiByTokenItem);
+        $openApi->getPaths()->addPath('/api/get_all_aplikasi_by_role_name', $allAplikasiByRoleName);
         $openApi->getPaths()->addPath('/api/get_permissions_by_token', $permissionsByTokenItem);
         $openApi->getPaths()->addPath('/api/get_permissions_by_role_name', $permissionsByRoleNameItem);
 

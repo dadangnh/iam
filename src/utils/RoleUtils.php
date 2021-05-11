@@ -193,4 +193,40 @@ class RoleUtils
         }
         return array_merge(...$listAplikasi);
     }
+
+    /**
+     * @param Role $role
+     * @return array
+     */
+    public static function getAllAplikasiByRole(Role $role): array
+    {
+        $permissions = $role->getPermissions();
+        $listAplikasi = [];
+        if (null !== $permissions) {
+            /** @var Permission $permission */
+            foreach ($permissions as $permission) {
+                $moduls = $permission->getModul();
+                if (null !== $moduls) {
+                    foreach ($moduls as $modul) {
+                        $listAplikasi[] = $modul->getAplikasi();
+                    }
+                }
+            }
+        }
+        return $listAplikasi;
+    }
+
+    /**
+     * @param array $roles
+     * @return array
+     */
+    public static function getAllAplikasiByArrayOfRoles(array $roles): array
+    {
+        $listAplikasi = [];
+        /** @var Role $role */
+        foreach ($roles as $role) {
+            $listAplikasi[] = self::getAllAplikasiByRole($role);
+        }
+        return array_merge(...$listAplikasi);
+    }
 }
