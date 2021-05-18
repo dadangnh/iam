@@ -127,10 +127,11 @@ class SecurityController extends AbstractController
     #[Route('/api/change_user_password', name: 'app_change_password', methods: ['POST'])]
     public function change_password(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {
-        if (!$this->isGranted('ROLE_APLIKASI')) {
+        // Make sure every active user can change their own password
+        if (!$this->isGranted('ROLE_USER')) {
             return $this->json([
+                'code' => 401,
                 'message' => 'Unauthorized API access.',
-                'request' => $request
             ]);
         }
 
@@ -138,9 +139,22 @@ class SecurityController extends AbstractController
         $username = $content['username'];
         $oldPassword = $content['old_password'];
         $newPassword = $content['new_password'];
+        /** @var User $user */
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $username]);
         if (null === $user) {
-            return $this->json(['error' => 'No user found']);
+            return $this->json([
+                'code' => 404,
+                'error' => 'No user found'
+            ]);
+        }
+
+        // Do a cross check so only the user can change their password
+        $currentUser = $this->getUser();
+        if ($currentUser->getUsername() !== $user->getUsername()) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Invalid token access.'
+            ]);
         }
 
         $checkPassword = $passwordEncoder->isPasswordValid($user, $oldPassword);
@@ -150,10 +164,16 @@ class SecurityController extends AbstractController
             $user->setPassword($newPasswordEncoded);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
-            return $this->json(['message' => 'password successfully changed.']);
+            return $this->json([
+                'code' => 200,
+                'message' => 'password successfully changed.'
+            ]);
         }
 
-        return $this->json(['error' => 'password invalid.']);
+        return $this->json([
+            'code' => 401,
+            'error' => 'password invalid.'
+        ]);
     }
 
     /**
@@ -165,10 +185,16 @@ class SecurityController extends AbstractController
     #[Route('/api/change_password_by_sikka', name: 'app_change_password_by_sikka', methods: ['POST'])]
     public function change_password_by_sikka(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
     {
-        if (!$this->isGranted('ROLE_HRIS')) {
+        // this endpoint should only used by UPK/ HRIS/ SUPER ADMIN to reset user password
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')
+            && !$this->isGranted('ROLE_HRIS')
+            && !$this->isGranted('ROLE_UPK_PUSAT')
+            && !$this->isGranted('ROLE_UPK_WILAYAH')
+            && !$this->isGranted('ROLE_UPK_LOKAL')
+        ) {
             return $this->json([
+                'code' => 401,
                 'message' => 'Unauthorized API access.',
-                'request' => $request
             ]);
         }
 
@@ -177,14 +203,20 @@ class SecurityController extends AbstractController
         $newPassword = $content['new_password'];
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $username]);
         if (null === $user) {
-            return $this->json(['error' => 'No user found']);
-        }else{
+            return $this->json([
+                'code' => 404,
+                'error' => 'No user found'
+            ]);
+        } else {
             // TODO: check password strength and implement password blacklist
             $newPasswordEncoded = $passwordEncoder->encodePassword($user, $newPassword);
             $user->setPassword($newPasswordEncoded);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
-            return $this->json(['message' => 'password successfully changed.']);
+            return $this->json([
+                'code' => 200,
+                'message' => 'password successfully changed.'
+            ]);
         }
     }
 

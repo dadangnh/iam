@@ -74,4 +74,5 @@ security:
         - { path: ^/api, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/authentication, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/change_password_by_sikka, roles: ROLE_HRIS }
+        - { path: ^/api/change_user_password, roles: ROLE_USER }
+        - { path: ^/api/change_password_by_sikka, roles: [ROLE_SUPER_ADMIN, ROLE_HRIS, ROLE_UPK_PUSAT, ROLE_UPK_WILAYAH, ROLE_UPK_LOKAL] }
