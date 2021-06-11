@@ -99,7 +99,8 @@ services:
       - php
     networks:
       - djp
-#    volumes:
+    volumes:
+      - ./:/srv/app
 #      - nginx_data:/data
 #      - nginx_config:/config
     ports:

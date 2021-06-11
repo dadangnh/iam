@@ -71,6 +71,9 @@ RUN set -eux; \
 COPY docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 RUN chmod +x /usr/local/bin/docker-healthcheck
 
+#RUN apk add shadow && usermod -u 1000 www-data && groupmod -g 1000 www-data
+#RUN usermod -u 1000 www-data
+
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 
 RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
@@ -175,6 +178,8 @@ COPY docker/nginx/nginx.conf /etc/nginx/
 COPY docker/nginx/upstream.conf /etc/nginx/default/
 
 RUN adduser -D -g '' -G www-data www-data
+#RUN apk add shadow && usermod -u 1000 www-data && groupmod -g 1000 www-data
+#RUN usermod -u 1000 www-data
 
 CMD ["nginx"]
 
