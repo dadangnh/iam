@@ -176,6 +176,9 @@ COPY certs/cert.pem /etc/certs/live/iam/fullchain.pem
 COPY certs/key.pem /etc/certs/live/iam/privkey.pem
 COPY docker/nginx/nginx.conf /etc/nginx/
 COPY docker/nginx/upstream.conf /etc/nginx/default/
+RUN rm -rf /etc/nginx/http.d/default.conf
+
+WORKDIR /srv/app
 
 RUN adduser -D -g '' -G www-data www-data
 #RUN apk add shadow && usermod -u 1000 www-data && groupmod -g 1000 www-data
