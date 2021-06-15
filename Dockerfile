@@ -71,6 +71,9 @@ RUN set -eux; \
 COPY docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 RUN chmod +x /usr/local/bin/docker-healthcheck
 
+#RUN apk add shadow && usermod -u 1000 www-data && groupmod -g 1000 www-data
+#RUN usermod -u 1000 www-data
+
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 
 RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
@@ -92,12 +95,17 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 WORKDIR /srv/app
 
+# Allow to choose skeleton
+ARG SKELETON="symfony/skeleton"
+ENV SKELETON ${SKELETON}
+
 # Allow to use development versions of Symfony
 ARG STABILITY="stable"
-ENV STABILITY ${STABILITY:-stable}
+ENV STABILITY ${STABILITY}
 
 # Allow to select skeleton version
 ARG SYMFONY_VERSION=""
+ENV SYMFONY_VERSION ${SYMFONY_VERSION}
 
 # Download the Symfony skeleton and leverage Docker cache layers
 #RUN composer create-project "symfony/skeleton ${SYMFONY_VERSION}" . --stability=$STABILITY --prefer-dist --no-dev --no-progress --no-interaction; \
@@ -115,6 +123,10 @@ RUN set -eux; \
 	composer symfony:dump-env prod; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync
+
+#add composer install
+RUN  /usr/bin/composer install
+
 VOLUME /srv/app/var
 
 ENTRYPOINT ["docker-entrypoint"]
@@ -136,3 +148,35 @@ COPY --from=dunglas/mercure:v0.11 /srv/public /srv/mercure-assets/
 COPY --from=symfony_caddy_builder /usr/bin/caddy /usr/bin/caddy
 COPY --from=symfony_php /srv/app/public public/
 COPY docker/caddy/Caddyfile /etc/caddy/Caddyfile
+RUN mkdir /etc/caddy/key; \
+    mkdir /etc/caddy/cert
+COPY certs/cert.pem /etc/caddy/cert/cert.pem
+COPY certs/key.pem /etc/caddy/key/key.pem
+
+# nginx stage
+FROM alpine:latest AS symfony_nginx
+
+RUN rm -rf /var/cache/apk/* && \
+    rm -rf /tmp/*
+
+RUN apk update
+
+RUN apk add --update nginx
+RUN rm -rf /var/cache/apk/* && rm -rf /tmp/*
+RUN mkdir -p /var/cache/nginx/iam
+COPY certs/cert.pem /etc/certs/live/iam/fullchain.pem
+COPY certs/key.pem /etc/certs/live/iam/privkey.pem
+COPY docker/nginx/nginx.conf /etc/nginx/
+COPY docker/nginx/upstream.conf /etc/nginx/default/
+RUN rm -rf /etc/nginx/http.d/default.conf
+
+WORKDIR /srv/app
+
+RUN adduser -D -g '' -G www-data www-data
+#RUN apk add shadow && usermod -u 1000 www-data && groupmod -g 1000 www-data
+#RUN usermod -u 1000 www-data
+
+CMD ["nginx"]
+
+EXPOSE 80
+EXPOSE 443
