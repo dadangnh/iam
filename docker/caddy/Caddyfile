@@ -9,15 +9,26 @@
             experimental_http3
         }
     }
-
-    #tls cert.pem key.pem
-
 }
 
 {$SERVER_NAME}
 
 log
-tls /etc/caddy/cert/cert.pem /etc/caddy/key/key.pem
+
+# Uncomment for deployment on OCP
+# tls /etc/caddy/cert/cert.pem /etc/caddy/key/key.pem
+
+# Matches requests for HTML documents, for static files and for Next.js files,
+# except for known API paths and paths with extensions handled by API Platform
+@pwa expression `(
+        {header.Accept}.matches("\\btext/html\\b")
+        && !{path}.matches("(?i)(?:^/docs|^/graphql|^/bundles/|^/_profiler|^/_wdt|\\.(?:json|html$|csv$|ya?ml$|xml$))")
+    )
+    || {path} == "/favicon.ico"
+    || {path} == "/manifest.json"
+    || {path} == "/robots.txt"
+    || {path}.startsWith("/_next")
+    || {path}.startsWith("/sitemap")`
 
 route {
     root * /srv/app/public
@@ -35,9 +46,9 @@ route {
         # Extra directives
         {$MERCURE_EXTRA_DIRECTIVES}
     }
-    #vulcain
+    vulcain
     push
-    php_fastcgi {$PHP_URL}:9000
+    php_fastcgi php:9000
     encode zstd gzip
     file_server
 }
