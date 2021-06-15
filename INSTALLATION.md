@@ -1,5 +1,7 @@
 # DJP-IAM Installation Method
 
+####Since 1.15.0, our default compose file contains two web server (caddy or nginx). As the consequences, you need to choose which one to use on deployment command
+
 To install/ deploy this service, we support the following method:
 
 1. [Fully Dockerized for Development](#1-fully-dockerized-for-development)
@@ -22,9 +24,14 @@ $ cd some_dir
 Then, create your environment by editing `.env` and save as `.env.local` or you can use OS's environment variable or use [Symfony Secrets](https://symfony.com/doc/current/configuration/secrets.html). Create your JWT passphrase on the JWT_PASSPHRASE key.
 Make sure to adjust the credentials on the environment for the Docker. You can find inside docker-compose.yaml file
 
-Create the docker environment:
+Create the docker environment with caddy:
 ```bash
-$ docker-compose up -d
+$ docker-compose up -d database redis php caddy
+```
+
+Create the docker environment with nginx:
+```bash
+$ docker-compose up -d database redis php nginx
 ```
 
 Generate Private and public key for JWT Token:
@@ -120,10 +127,10 @@ Example with Git:
 $ git clone git@gitlab.com:dadangnh/djp-iam.git
 ```
 
-Go into the directory containing your project (`<project-name>`), and start the app in production mode:
+Go into the directory containing your project (`<project-name>`), and start the app in production mode (caddy):
 
 ```bash
-$ SERVER_NAME=your-domain-name.example.com docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+$ SERVER_NAME=your-domain-name.example.com docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d database redis php caddy
 ```
 
 
@@ -132,12 +139,20 @@ Be sure to replace `your-domain-name.example.com` by your actual domain name.
 Your server is up and running, and a Let's Encrypt HTTPS certificate has been automatically generated for you.
 Go to `https://your-domain-name.example.com` and enjoy!
 
-### Disabling HTTPS
+### Disabling HTTPS on Caddy
 
 Alternatively, if you don't want to expose an HTTPS server but only an HTTP one, run the following command:
 
 ```bash
-$ SERVER_NAME=:80 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+$ SERVER_NAME=:80 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d database redis php caddy
+```
+
+### Disabling HTTPS on nginx
+
+By default, the nginx image run both on http and https protocol, there is no redirection yet, so it can be run with:
+
+```bash
+$ SERVER_NAME=:80 docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d database redis php nginx
 ```
 
 ## 3. Use Symfony console
@@ -254,13 +269,13 @@ $ symfony composer install
 #### Migration
 run the migration:
 ```bash
-$  docker-compose exec php bin/console doctrine:migrations:migrate --no-interaction
+$  php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
 #### Add default data (optional on non production)
 run the following to add dummy data:
 ```bash
-$  docker-compose exec php bin/console doctrine:fixtures:load --no-interaction
+$  php bin/console doctrine:fixtures:load --no-interaction
 ```
 
 Now your app are ready to use:
