@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -72,11 +73,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
     denormalizationContext: [
-        'groups' => ['pegawai:write'],
+        'groups' => ['pegawai:write', 'role:write'],
         'swagger_definition_name' => 'write'
     ],
     normalizationContext: [
-        'groups' => ['pegawai:read'],
+        'groups' => ['pegawai:read', 'role:read'],
         'swagger_definition_name' => 'read'
     ]
 )]
@@ -96,6 +97,7 @@ class Role
      * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"role:read", "role:write"})
      */
     private $id;
 
@@ -104,6 +106,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
+     * @Groups({"pegawai:read", "role:read", "role:write"})
      */
     private ?string $nama;
 
@@ -112,6 +115,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
+     * @Groups({"role:read", "role:write"})
      */
     private ?string $systemName;
 
@@ -119,6 +123,7 @@ class Role
      * @ORM\Column(type="text", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"role:read", "role:write"})
      */
     private ?string $deskripsi;
 
@@ -126,6 +131,7 @@ class Role
      * @ORM\Column(type="integer", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"role:read", "role:write"})
      */
     private ?int $level;
 
@@ -134,6 +140,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"role:read", "role:write"})
      */
     private $subsOfRole;
 
@@ -141,6 +148,7 @@ class Role
      * @ORM\OneToMany(targetEntity=Role::class, mappedBy="subsOfRole")
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"role:read", "role:write"})
      */
     private $containRoles;
 
@@ -158,6 +166,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"role:read", "role:write"})
      */
     private $users;
 
@@ -175,6 +184,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"role:read", "role:write"})
      */
     private $jabatans;
 
@@ -192,6 +202,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"role:read", "role:write"})
      */
     private $units;
 
@@ -209,6 +220,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"role:read", "role:write"})
      */
     private $kantors;
 
@@ -226,6 +238,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"role:read", "role:write"})
      */
     private $eselons;
 
@@ -243,6 +256,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"role:read", "role:write"})
      */
     private $jenisKantors;
 
@@ -260,6 +274,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"role:read", "role:write"})
      */
     private $groups;
 
@@ -267,6 +282,7 @@ class Role
      * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="roles")
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"role:read", "role:write"})
      */
     private $permissions;
 
@@ -277,6 +293,7 @@ class Role
      *          10 => jabatan + unit + kantor"})
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"role:read", "role:write"})
      */
     private $jenis;
 
