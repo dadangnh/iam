@@ -1252,16 +1252,16 @@
         },
         {
             "name": "doctrine/migrations",
-            "version": "3.1.2",
+            "version": "3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/migrations.git",
-                "reference": "1c2780df6b58998f411e64973cfa464ba0a06e00"
+                "reference": "207210c57f6c15835e8d6228075cd235bd061efc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/1c2780df6b58998f411e64973cfa464ba0a06e00",
-                "reference": "1c2780df6b58998f411e64973cfa464ba0a06e00",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/207210c57f6c15835e8d6228075cd235bd061efc",
+                "reference": "207210c57f6c15835e8d6228075cd235bd061efc",
                 "shasum": ""
             },
             "require": {
@@ -1336,7 +1336,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/migrations/issues",
-                "source": "https://github.com/doctrine/migrations/tree/3.1.2"
+                "source": "https://github.com/doctrine/migrations/tree/3.1.4"
             },
             "funding": [
                 {
@@ -1352,7 +1352,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-04-24T12:54:34+00:00"
+            "time": "2021-06-15T18:57:30+00:00"
         },
         {
             "name": "doctrine/orm",
