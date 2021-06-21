@@ -1,0 +1,5 @@
+doctrine:
+    dbal:
+        # "TEST_TOKEN" is typically set by ParaTest
+        # TODO: Commented out at the moment, should be activated on later version with real test scenarios 
+        # dbname: 'main_test%env(default::TEST_TOKEN)%'
