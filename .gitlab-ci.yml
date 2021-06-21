@@ -1,83 +1,98 @@
-# This file is a template, and might need editing before it works on your project.
-# Official framework image. Look for the different tagged releases at:
-# https://hub.docker.com/r/library/php
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 image: php:8
-
 stages:
+  - build_artifact
+  - build
   - test
   - deploy
-
-# Pick zero or more services to be used on all builds.
-# Only needed when using a docker container to run your tests in.
-# Check out: http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
-services:
-  - name: postgres:13-alpine
-    alias: database
-  - redis:latest
-
+  - review
+  - dast
+  - staging
+  - canary
+  - production
+  - incremental rollout 10%
+  - incremental rollout 25%
+  - incremental rollout 50%
+  - incremental rollout 100%
+  - performance
+  - cleanup
 variables:
   POSTGRES_USER: db_user
   POSTGRES_PASSWORD: db_pass
   POSTGRES_DB: db_name
-
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+services:
+  - name: postgres:13-alpine
+    alias: database
+  - name: redis:latest
+    alias: redis
 test:
-  # This is a basic example for a gem or script which doesn't use
-  # services such as redis or postgres
+  image: php:8
+  variables:
+    POSTGRES_USER: db_user
+    POSTGRES_PASSWORD: db_pass
+    POSTGRES_DB: db_name
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - name: postgres:13-alpine
+      alias: database
+    - name: redis:latest
+      alias: redis
   before_script:
-    # Update packages
     - apt-get update -yqq
-    # Generate private and public key for JWT token
     - apt-get install gnupg openssl acl -yqq
     - mkdir -p config/jwt
-    - export jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut -f 2 -d ''='')}
-    - echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 --pass stdin
-    - echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout --passin stdin
+    - export jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut
+      -f 2 -d ''='')}
+    - echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -aes256 -algorithm
+      rsa -pkeyopt rsa_keygen_bits:4096 --pass stdin
+    - echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem
+      -pubout --passin stdin
     - setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
     - setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
-    # Upgrade to Node 15
-    - curl -sL https://deb.nodesource.com/setup_15.x | bash -
-    # Install dependencies
-    - apt-get install git nodejs unzip libcurl4-gnutls-dev libicu-dev libonig-dev libzip-dev libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
-    # Install php extensions
+    - curl -sL https://deb.nodesource.com/setup_14.x | bash -
+    - apt-get install git nodejs unzip libcurl4-gnutls-dev libicu-dev libonig-dev libzip-dev
+      libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev
+      libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev
+      libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
     - docker-php-ext-install pdo_pgsql zip
-    # Install & enable Xdebug for code coverage reports
     - curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
     - echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
     - apt-get update && apt-get install yarn
     - pecl install xdebug
     - docker-php-ext-enable xdebug
-    # Install Composer and project dependencies.
     - curl -sS https://getcomposer.org/installer | php
     - curl -sS https://get.symfony.com/cli/installer | bash
     - export PATH="$HOME/.symfony/bin:$PATH"
     - symfony composer install
-    # Install Node dependencies.
-    # comment this out if you don't have a node dependency
     - npm install
-    # Generate an application key. Re-cache.
     - symfony console doctrine:schema:create
     - symfony console doctrine:fixtures:load --no-interaction
     - symfony server:ca:install
     - symfony serve -d
   script:
-    # run unit tests
-    - php bin/phpunit
-    # run frontend tests
-    # if you have any task for testing frontend
-    # set it in your package.json script
-    # comment this out if you don't have a frontend test
-#    - npm test
+    - php bin/phpunit --log-junit test-report.xml
   cache:
     key: cacheTest
     paths:
       - vendor/
       - node_modules/
-
+  artifacts:
+    when: always
+    reports:
+      junit: test-report.xml
 deploy:
   image: ubuntu:latest
   stage: deploy
   before_script:
-    - 'command -v ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - command -v ssh-agent || ( apt-get update -y && apt-get install openssh-client
+      -y )
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
@@ -95,3 +110,108 @@ deploy:
     paths:
       - vendor/
       - node_modules/
+
+workflow:
+  rules:
+    - if: '$BUILDPACK_URL || $AUTO_DEVOPS_EXPLICITLY_ENABLED == "1" || $DOCKERFILE_PATH'
+
+    - exists:
+        - Dockerfile
+
+    - exists:
+        - project.clj
+
+    - exists:
+        - go.mod
+        - Gopkg.mod
+        - Godeps/Godeps.json
+        - vendor/vendor.json
+        - glide.yaml
+        - src/**/*.go
+
+    - exists:
+        - gradlew
+        - build.gradle
+        - settings.gradle
+
+    - exists:
+        - pom.xml
+        - pom.atom
+        - pom.clj
+        - pom.groovy
+        - pom.rb
+        - pom.scala
+        - pom.yaml
+        - pom.yml
+
+    - exists:
+        - .buildpacks
+
+    - exists:
+        - package.json
+
+    - exists:
+        - composer.json
+        - index.php
+
+    - exists:
+        - '**/conf/application.conf'
+
+    - exists:
+        - requirements.txt
+        - setup.py
+        - Pipfile
+
+    - exists:
+        - Gemfile
+
+    - exists:
+        - '*.sbt'
+        - project/*.scala
+        - .sbt/*.scala
+        - project/build.properties
+
+    - exists:
+        - .static
+
+sast:
+  stage: test
+
+build_artifact:
+  image: docker:dind
+  stage: build_artifact
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    DOCKER_TLS_CERTDIR: ''
+  services:
+    - name: 'docker:20.10.6-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+      alias: docker
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+
+# todo: change the DAST_WEBSITE to DAST_API_SPECIFICATION when the cluster is ready
+dast:
+  variables:
+    DAST_FULL_SCAN_ENABLED: "true"
+    DAST_WEBSITE: "$DAST_WEBSITE"
+
+browser_performance:
+  variables:
+    URL: "$DAST_WEBSITE"
+
+include:
+  - template: Jobs/Build.gitlab-ci.yml
+  - template: Jobs/Test.gitlab-ci.yml
+  - template: Jobs/Code-Quality.gitlab-ci.yml
+  - template: Jobs/Code-Intelligence.gitlab-ci.yml
+  - template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
+  - template: Verify/Browser-Performance.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
