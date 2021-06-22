@@ -91,7 +91,7 @@ deploy:
   image: ubuntu:latest
   stage: deploy
   before_script:
-    - command -v ssh-agent || ( apt-get update -y && apt-get install openssh-client
+    - command -v ssh-agent || ( apt-get update -y && apt-get install openssh-client curl
       -y )
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
