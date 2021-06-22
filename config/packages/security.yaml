@@ -41,9 +41,10 @@ security:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
         refresh:
-            pattern: ^/token/refresh
+            pattern: ^/api/token/refresh
             stateless: true
             anonymous: true
+            provider: app_user_provider
         main:
             anonymous: true
             lazy: true
