@@ -1,0 +1,5 @@
+terminal:
+    image: node:10-alpine
+    before_script:
+        - apk update
+    script: sleep 60
