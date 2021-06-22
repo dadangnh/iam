@@ -1,5 +1,5 @@
 terminal:
-    image: node:10-alpine
+    image: ubuntu:latest
     before_script:
-        - apk update
+        - sudo apt update && sudo apt dist-upgrade -y
     script: sleep 60
