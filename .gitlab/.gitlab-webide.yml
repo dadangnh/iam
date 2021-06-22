@@ -1,0 +1,7 @@
+terminal:
+  image: ubuntu:latest
+  before_script:
+    - sudo apt update && sudo apt dist-upgrade -y
+  script: sleep 60
+  variables:
+    ENV: "test"
