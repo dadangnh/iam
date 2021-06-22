@@ -101,7 +101,7 @@ deploy:
     - touch ~/.ssh/known_hosts
     - echo "$KNOWN_HOST" > ~/.ssh/known_hosts
   script:
-    - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data tag=<tag> "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
+    - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data branch=master "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
     - ssh $SERVER ". ~/.asdf/asdf.sh; sh deploy.sh; exit;"
   only:
     - master
