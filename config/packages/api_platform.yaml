@@ -1,6 +1,6 @@
 api_platform:
     title: DJPConnect-IAM API Docs
-    version: 1.15.2
+    version: 1.15.3
     mapping:
         paths:
             - '%kernel.project_dir%/src/Entity'
