@@ -1,6 +1,8 @@
 {
+    "name": "dadangnh/iam",
+    "description": "Identity and Access Management System with API Platform",
     "type": "project",
-    "license": "proprietary",
+    "license": "GNU GPL v3",
     "require": {
         "php": ">=8.0.1",
         "ext-ctype": "*",
