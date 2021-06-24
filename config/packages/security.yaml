@@ -1,5 +1,9 @@
 security:
-    encoders:
+    # https://symfony.com/doc/current/security/experimental_authenticators.html
+    enable_authenticator_manager: true
+
+    # encoders for the user password
+    password_hashers:
         App\SharedAuthLibrary\Security\User:
             algorithm: auto
         App\Entity\User\User:
@@ -14,6 +18,7 @@ security:
             entity:
                 class: App\Entity\User\User
                 property: username
+        users_in_memory: { memory: null }
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -22,7 +27,6 @@ security:
         login:
             pattern:  ^/api/authentication$
             stateless: true
-            anonymous: true
             provider: app_user_provider
             json_login:
                 check_path: /api/authentication
@@ -34,19 +38,16 @@ security:
         api:
             pattern:  ^/api/
             stateless: true
-            anonymous: true
             provider: service
+            entry_point: lexik_jwt_authentication.jwt_token_authenticator
             guard:
-                entry_point: lexik_jwt_authentication.jwt_token_authenticator
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
         refresh:
             pattern: ^/api/token/refresh
             stateless: true
-            anonymous: true
             provider: app_user_provider
         main:
-            anonymous: true
             lazy: true
             provider: app_user_provider
             guard:
@@ -72,8 +73,9 @@ security:
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/api, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/authentication, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: PUBLIC_ACCESS }
+        - { path: ^/api/authentication, roles: PUBLIC_ACCESS }
+        - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api/change_user_password, roles: ROLE_USER }
         - { path: ^/api/change_password_by_sikka, roles: [ROLE_SUPER_ADMIN, ROLE_HRIS, ROLE_UPK_PUSAT, ROLE_UPK_WILAYAH, ROLE_UPK_LOKAL] }
