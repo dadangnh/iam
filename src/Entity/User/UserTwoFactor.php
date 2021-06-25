@@ -5,7 +5,7 @@ namespace App\Entity\User;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\User\UserTwoFactorRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -56,8 +56,6 @@ class UserTwoFactor
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -86,7 +84,12 @@ class UserTwoFactor
      */
     private ?int $tfaType;
 
-    public function getId()
+    public function __construct()
+    {
+        $this->id = Uuid::v4();
+    }
+
+    public function getId(): Uuid
     {
         return $this->id;
     }

@@ -21,8 +21,8 @@ use JetBrains\PhpStorm\Pure;
 use Monolog\DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -92,8 +92,6 @@ class User implements UserInterface
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Groups({"user:read", "user:write"})
@@ -194,6 +192,7 @@ class User implements UserInterface
 
     #[Pure] public function __construct()
     {
+        $this->id = Uuid::v4();
         $this->userTwoFactors = new ArrayCollection();
         $this->role = new ArrayCollection();
         $this->ownedGroups = new ArrayCollection();
@@ -205,7 +204,7 @@ class User implements UserInterface
         return $this->username;
     }
 
-    public function getId()
+    public function getId(): Uuid
     {
         return $this->id;
     }
