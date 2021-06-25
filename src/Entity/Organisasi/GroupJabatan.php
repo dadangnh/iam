@@ -10,7 +10,8 @@ use App\Repository\Organisasi\GroupJabatanRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UuidV4Generator;
+use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -66,8 +67,6 @@ class GroupJabatan
     /**
      * @ORM\Id
      * @ORM\Column(type="uuid", unique=true)
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class=UuidV4Generator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -95,8 +94,9 @@ class GroupJabatan
      */
     private $jabatans;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
+        $this->id = Uuid::v4();
         $this->jabatans = new ArrayCollection();
     }
 
@@ -105,7 +105,7 @@ class GroupJabatan
         return $this->nama;
     }
 
-    public function getId()
+    public function getId(): Uuid
     {
         return $this->id;
     }
