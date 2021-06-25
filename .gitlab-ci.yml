@@ -20,6 +20,7 @@ stages:
   - incremental rollout 100%
   - performance
   - cleanup
+  - release
 variables:
   POSTGRES_USER: db_user
   POSTGRES_PASSWORD: db_pass
@@ -201,6 +202,19 @@ dast:
 browser_performance:
   variables:
     URL: "$DAST_WEBSITE"
+
+release_job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo 'running release_job'
+  release:
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Created using the release-cli $EXTRA_DESCRIPTION'
+    tag_name: '$CI_COMMIT_TAG'
+    ref: '$CI_COMMIT_TAG'
 
 include:
   - template: Jobs/Build.gitlab-ci.yml
