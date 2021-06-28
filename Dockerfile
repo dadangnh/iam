@@ -148,10 +148,14 @@ COPY --from=dunglas/mercure:v0.11 /srv/public /srv/mercure-assets/
 COPY --from=symfony_caddy_builder /usr/bin/caddy /usr/bin/caddy
 COPY --from=symfony_php /srv/app/public public/
 COPY docker/caddy/Caddyfile /etc/caddy/Caddyfile
-RUN mkdir /etc/caddy/key; \
-    mkdir /etc/caddy/cert
-COPY certs/cert.pem /etc/caddy/cert/cert.pem
-COPY certs/key.pem /etc/caddy/key/key.pem
+
+# Disable the SSL cert injection
+#RUN mkdir /etc/caddy/key; \
+#    mkdir /etc/caddy/cert
+#COPY certs/cert.pem /etc/caddy/cert/cert.pem
+#COPY certs/key.pem /etc/caddy/key/key.pem
+
+
 
 # nginx stage
 FROM alpine:latest AS symfony_nginx
@@ -164,8 +168,9 @@ RUN apk update
 RUN apk add --update nginx
 RUN rm -rf /var/cache/apk/* && rm -rf /tmp/*
 RUN mkdir -p /var/cache/nginx/iam
-COPY certs/cert.pem /etc/certs/live/iam/fullchain.pem
-COPY certs/key.pem /etc/certs/live/iam/privkey.pem
+# Disable the SSL cert injection
+#COPY certs/cert.pem /etc/certs/live/iam/fullchain.pem
+#COPY certs/key.pem /etc/certs/live/iam/privkey.pem
 COPY docker/nginx/nginx.conf /etc/nginx/
 COPY docker/nginx/upstream.conf /etc/nginx/default/
 RUN rm -rf /etc/nginx/http.d/default.conf
