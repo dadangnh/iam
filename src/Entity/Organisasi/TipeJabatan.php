@@ -13,6 +13,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
+use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -69,7 +71,9 @@ class TipeJabatan
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\Column(type="ulid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UlidGenerator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -93,7 +97,6 @@ class TipeJabatan
 
     #[Pure] public function __construct()
     {
-        $this->id = Uuid::v4();
         $this->jabatanPegawais = new ArrayCollection();
     }
 
@@ -102,7 +105,7 @@ class TipeJabatan
         return $this->nama;
     }
 
-    public function getId(): Uuid
+    public function getId(): ?Ulid
     {
         return $this->id;
     }

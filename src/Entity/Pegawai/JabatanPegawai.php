@@ -15,6 +15,8 @@ use App\Repository\Pegawai\JabatanPegawaiRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
+use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -72,7 +74,9 @@ class JabatanPegawai
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\Column(type="ulid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class=UlidGenerator::class)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      */
@@ -161,15 +165,15 @@ class JabatanPegawai
      */
     private $atribut;
 
-    public function __construct()
-    {
-        // if id is not set by client, create the id here
-        if (empty($this->id)) {
-            $this->id = Uuid::v4();
-        }
-    }
+//    public function __construct()
+//    {
+//        // if id is not set by client, create the id here
+//        if (empty($this->id)) {
+//            $this->id = Uuid::v4();
+//        }
+//    }
 
-    public function getId(): Uuid
+    public function getId(): ?Ulid
     {
         return $this->id;
     }
