@@ -10,17 +10,21 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210217100223 extends AbstractMigration
+final class Version20210629092052 extends AbstractMigration
 {
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return '';
     }
 
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
+        $this->addSql('CREATE SEQUENCE ads_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE SEQUENCE news_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE refresh_tokens_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE TABLE ads (id INT NOT NULL, title VARCHAR(255) NOT NULL, link VARCHAR(255) DEFAULT NULL, link_image VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, state BOOLEAN DEFAULT NULL, ads_order INT DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON COLUMN ads.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE aplikasi (id UUID NOT NULL, nama VARCHAR(255) NOT NULL, system_name VARCHAR(255) NOT NULL, status BOOLEAN NOT NULL, create_date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, deskripsi TEXT DEFAULT NULL, host_name VARCHAR(255) DEFAULT NULL, url VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX idx_aplikasi_nama_status ON aplikasi (nama, system_name, status)');
         $this->addSql('CREATE INDEX idx_aplikasi_url ON aplikasi (id, nama, host_name, url)');
@@ -114,6 +118,8 @@ final class Version20210217100223 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN modul.id IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN modul.aplikasi_id IS \'(DC2Type:uuid)\'');
         $this->addSql('COMMENT ON COLUMN modul.create_date IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('CREATE TABLE news (id INT NOT NULL, title VARCHAR(255) NOT NULL, content TEXT DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('COMMENT ON COLUMN news.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE pegawai (id UUID NOT NULL, user_id UUID NOT NULL, nama VARCHAR(255) NOT NULL, tanggal_lahir TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, tempat_lahir VARCHAR(255) NOT NULL, pensiun BOOLEAN NOT NULL, npwp VARCHAR(255) DEFAULT NULL, nik VARCHAR(16) DEFAULT NULL, nip9 VARCHAR(9) DEFAULT NULL, nip18 VARCHAR(18) DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_98835748A76ED395 ON pegawai (user_id)');
         $this->addSql('CREATE INDEX idx_pegawai_data ON pegawai (id, nama, pensiun, nik, nip9, nip18)');
@@ -254,7 +260,7 @@ final class Version20210217100223 extends AbstractMigration
         $this->addSql('ALTER TABLE user_two_factor ADD CONSTRAINT FK_AF21438EA76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
@@ -300,7 +306,10 @@ final class Version20210217100223 extends AbstractMigration
         $this->addSql('ALTER TABLE pegawai DROP CONSTRAINT FK_98835748A76ED395');
         $this->addSql('ALTER TABLE role_user DROP CONSTRAINT FK_332CA4DDA76ED395');
         $this->addSql('ALTER TABLE user_two_factor DROP CONSTRAINT FK_AF21438EA76ED395');
+        $this->addSql('DROP SEQUENCE ads_id_seq CASCADE');
+        $this->addSql('DROP SEQUENCE news_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE refresh_tokens_id_seq CASCADE');
+        $this->addSql('DROP TABLE ads');
         $this->addSql('DROP TABLE aplikasi');
         $this->addSql('DROP TABLE eselon');
         $this->addSql('DROP TABLE "group"');
@@ -313,6 +322,7 @@ final class Version20210217100223 extends AbstractMigration
         $this->addSql('DROP TABLE jenis_kantor');
         $this->addSql('DROP TABLE kantor');
         $this->addSql('DROP TABLE modul');
+        $this->addSql('DROP TABLE news');
         $this->addSql('DROP TABLE pegawai');
         $this->addSql('DROP TABLE permission');
         $this->addSql('DROP TABLE permission_modul');
