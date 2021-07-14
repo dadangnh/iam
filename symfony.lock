@@ -8,7 +8,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "2.5",
-            "ref": "a93061567140e386f107be75340ac2aee3f86cbf"
+            "ref": "f132b33c43cf47b4451d91d2b57057eacb6b8e1d"
         },
         "files": [
             "config/packages/api_platform.yaml",
