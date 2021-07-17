@@ -40,8 +40,8 @@
         "webonyx/graphql-php": "^14.3"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-master",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
+        "roave/security-advisories": "dev-latest",
         "symfony/browser-kit": "5.3.*",
         "symfony/debug-bundle": "^5.3",
         "symfony/http-client": "5.3.*",
