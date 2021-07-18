@@ -1,5 +1,7 @@
 # DJP IAM (Back-end for DJPConnect)
 
+[![pipeline status](https://gitlab.com/dadangnh/djp-iam/badges/master/pipeline.svg)](https://gitlab.com/dadangnh/djp-iam/-/commits/master)
+
 Source code service Identity and Access Management DJP.
 
 ## Canonical source
