@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -80,6 +81,7 @@ class Eselon
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
+     * @Groups({"jabatan:read"})
      */
     private ?string $nama;
 

@@ -113,6 +113,36 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
+        $schemas['GetMappingByRoleRequest'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'role_name' => [
+                    'type' => 'string',
+                    'example' => 'string',
+                ],
+                'key_data' => [
+                    'type' => 'string',
+                    'example' => 'string',
+                ],
+            ],
+        ]);
+
+        $schemas['GetMappingByRoleResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'role_name' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                    'example' => 'ROLE_ADMIN',
+                ],
+                'key_data' => [
+                    'type' => 'String',
+                    'readOnly' => true,
+                    'example' => 'user',
+                ],
+            ],
+        ]);
+
         $roleByJabatanPegawaiItem = new Model\PathItem(
             ref: 'Roles',
             post: new Model\Operation(
@@ -302,6 +332,39 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $mappingByRole = new Model\PathItem(
+            ref: 'Jabatans',
+            post: new Model\Operation(
+                operationId: 'postCredentialsItem',
+                tags: ['Role'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Data Mapping From Role,
+                                        For the key_data field, please select one of the
+                                        <b>user/jabatan/unit/kantor/jenis_kantor/eselon/group</b>',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetMappingByRoleResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get list of data from Role Name',
+                requestBody: new Model\RequestBody(
+                    description: 'Get Mapping Data',
+                    content: new ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/GetMappingByRoleRequest',
+                            ],
+                        ],
+                    ]),
+                ),
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/get_roles_by_jabatan_pegawai', $roleByJabatanPegawaiItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_token', $aplikasiByTokenItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_role_name', $aplikasiByRoleName);
@@ -309,6 +372,7 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/get_all_aplikasi_by_role_name', $allAplikasiByRoleName);
         $openApi->getPaths()->addPath('/api/get_permissions_by_token', $permissionsByTokenItem);
         $openApi->getPaths()->addPath('/api/get_permissions_by_role_name', $permissionsByRoleNameItem);
+        $openApi->getPaths()->addPath('/api/roles/mapping', $mappingByRole);
 
         return $openApi;
     }

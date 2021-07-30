@@ -68,6 +68,14 @@ use Symfony\Component\Validator\Constraints as Assert;
             'nama' => 'ASC'
         ]
     ],
+    denormalizationContext: [
+        'groups' => ['jabatan:write'],
+        'swagger_definition_name' => 'write'
+    ],
+    normalizationContext: [
+        'groups' => ['jabatan:read'],
+        'swagger_definition_name' => 'read'
+    ]
 )]
 #[ApiFilter(SearchFilter::class, properties: [
     'nama' => 'ipartial',
@@ -86,6 +94,7 @@ class Jabatan
      * @ORM\Column(type="uuid", unique=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private $id;
 
@@ -94,6 +103,7 @@ class Jabatan
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
+     * @Groups({"jabatan:read", "jabatan:write"})
      * @Groups({"user:read"})
      * @Groups({"pegawai:read"})
      */
@@ -104,6 +114,7 @@ class Jabatan
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
+     * @Groups({"jabatan:read", "jabatan:write"})
      * @Groups({"pegawai:read"})
      */
     private ?int $level;
@@ -113,6 +124,7 @@ class Jabatan
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
+     * @Groups({"jabatan:read", "jabatan:write"})
      * @Groups({"pegawai:read"})
      */
     private ?string $jenis;
@@ -122,6 +134,7 @@ class Jabatan
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private ?DateTimeImmutable $tanggalAktif;
 
@@ -129,6 +142,7 @@ class Jabatan
      * @ORM\Column(type="datetime_immutable", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private ?DateTimeImmutable $tanggalNonaktif;
 
@@ -136,6 +150,7 @@ class Jabatan
      * @ORM\Column(type="string", length=255, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private ?string $sk;
 
@@ -144,6 +159,7 @@ class Jabatan
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private $eselon;
 
@@ -151,6 +167,7 @@ class Jabatan
      * @ORM\Column(type="string", length=4, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private ?string $legacyKode;
 
@@ -158,6 +175,7 @@ class Jabatan
      * @ORM\Column(type="string", length=4, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private ?string $legacyKodeJabKeu;
 
@@ -165,6 +183,7 @@ class Jabatan
      * @ORM\Column(type="string", length=4, nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private ?string $legacyKodeGradeKeu;
 
@@ -172,6 +191,7 @@ class Jabatan
      * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="jabatan", orphanRemoval=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private $jabatanPegawais;
 
@@ -180,11 +200,13 @@ class Jabatan
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private $units;
 
     /**
      * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="jabatans")
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private $roles;
 
@@ -192,6 +214,7 @@ class Jabatan
      * @ORM\ManyToOne(targetEntity=GroupJabatan::class, inversedBy="jabatans")
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"jabatan:read", "jabatan:write"})
      */
     private $groupJabatan;
 
