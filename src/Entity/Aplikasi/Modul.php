@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -68,6 +69,14 @@ use Symfony\Component\Validator\Constraints as Assert;
             'nama' => 'ASC'
         ]
     ],
+    denormalizationContext: [
+        'groups' => ['modul:write'],
+        'swagger_definition_name' => 'write'
+    ],
+    normalizationContext: [
+        'groups' => ['modul:read'],
+        'swagger_definition_name' => 'read'
+    ]
 )]
 #[ApiFilter(SearchFilter::class, properties: [
     'nama' => 'ipartial',
@@ -84,6 +93,7 @@ class Modul
      * @ORM\Column(type="uuid", unique=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"modul:read", "modul:write"})
      */
     private $id;
 
@@ -94,6 +104,7 @@ class Modul
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
      * @Assert\Valid()
+     * @Groups({"modul:read", "modul:write"})
      */
     private ?Aplikasi $aplikasi;
 
@@ -102,6 +113,7 @@ class Modul
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
+     * @Groups({"modul:read", "modul:write"})
      */
     private ?string $nama;
 
@@ -110,6 +122,7 @@ class Modul
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotBlank()
+     * @Groups({"modul:read", "modul:write"})
      */
     private ?string $systemName;
 
@@ -118,6 +131,7 @@ class Modul
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\NotNull()
+     * @Groups({"modul:read", "modul:write"})
      */
     private ?bool $status;
 
@@ -130,6 +144,7 @@ class Modul
      * @ORM\Column(type="text", nullable=true)
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+     * @Groups({"modul:read", "modul:write"})
      */
     private ?string $deskripsi;
 
