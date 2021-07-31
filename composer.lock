@@ -2094,16 +2094,16 @@
         },
         {
             "name": "lexik/jwt-authentication-bundle",
-            "version": "v2.12.3",
+            "version": "v2.12.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lexik/LexikJWTAuthenticationBundle.git",
-                "reference": "7fb85afb1a63bb7e518a369baa355599f822ff43"
+                "reference": "f2df9f7a371a99a05e5bfe65c634a7e0cdf1c539"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/7fb85afb1a63bb7e518a369baa355599f822ff43",
-                "reference": "7fb85afb1a63bb7e518a369baa355599f822ff43",
+                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/f2df9f7a371a99a05e5bfe65c634a7e0cdf1c539",
+                "reference": "f2df9f7a371a99a05e5bfe65c634a7e0cdf1c539",
                 "shasum": ""
             },
             "require": {
@@ -2189,7 +2189,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lexik/LexikJWTAuthenticationBundle/issues",
-                "source": "https://github.com/lexik/LexikJWTAuthenticationBundle/tree/v2.12.3"
+                "source": "https://github.com/lexik/LexikJWTAuthenticationBundle/tree/v2.12.6"
             },
             "funding": [
                 {
@@ -2201,7 +2201,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-07-07T09:06:05+00:00"
+            "time": "2021-07-29T11:25:22+00:00"
         },
         {
             "name": "monolog/monolog",
