@@ -149,6 +149,72 @@ class CommonController extends AbstractController
     }
 
     /**
+     * @param Request $request
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     * @throws JsonException
+     */
+    #[Route('/api/roles/mapping', methods: ['POST'])]
+    public function getMappingByRole(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'message' => 'Unauthorized API access.',
+                'request' => $request
+            ]);
+        }
+
+        $content    = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $keyData    = strtolower($content['key_data']);
+
+        $role = $this->readRoleFromRoleNameRequest($request);
+
+        if (null === $role) {
+            return $this->json(['warning' => 'No roles associated with this name']);
+        }
+
+        $response = array();
+        if('user' === $keyData){
+            $response['user_count'] = $role->getUsers()->count();
+            $response['user']       = $role->getUsers();
+        }
+
+        if('jabatan' == $keyData){
+            $response['jabatan_count'] = $role->getJabatans()->count();
+            $response['jabatan']       = $role->getJabatans();
+        }
+
+        if('unit' === $keyData){
+            $response['unit_count'] = $role->getUnits()->count();
+            $response['unit']       = $role->getUnits();
+        }
+
+        if('kantor' === $keyData){
+            $response['kantor_count'] = $role->getKantors()->count();
+            $response['kantor']       = $role->getKantors();
+        }
+
+        if('eselon' === $keyData){
+            $response['eselon_count'] = $role->getEselons()->count();
+            $response['eselon']       = $role->getEselons();
+        }
+
+        if('jenis_kantor' === $keyData){
+            $response['jenis_kantor_count'] = $role->getJenisKantors()->count();
+            $response['jenis_kantor']       = $role->getJenisKantors();
+        }
+
+        if('group' === $keyData){
+            $response['group_count'] = $role->getGroups()->count();
+            $response['group']       = $role->getGroups();
+        }
+
+        return $this->json([
+            $response
+        ]);
+    }
+
+    /**
      * This method provide all aplikasis by token, including unreleased one
      * @param Request $request
      * @param IriConverterInterface $iriConverter

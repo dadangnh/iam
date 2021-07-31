@@ -2,12 +2,10 @@ framework:
     cache:
         app: cache.adapter.redis
         # app cache from client config as default adapter/provider
-        default_redis_provider: snc_redis.default
+        default_redis_provider: '%env(REDIS_URL)%'
         pools:
-            some-pool.cache:
-                adapter: cache.adapter.redis
-                # a specific provider, e.g. if you have a snc_redis.clients.cache
-                provider: snc_redis.default
+            doctrine.second_level_cache_pool:
+                adapter: cache.app
         # Unique name of your app: used to compute stable namespaces for cache keys.
         #prefix_seed: your_vendor_name/app_name
 

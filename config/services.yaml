@@ -2,7 +2,7 @@
 # Files in the packages/ subdirectory configure your dependencies.
 
 # Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
 
 services:
@@ -20,12 +20,6 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
             - '../src/Tests/'
-
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    App\Controller\:
-        resource: '../src/Controller/'
-        tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -54,7 +48,21 @@ services:
         public: true
         arguments: [ '@doctrine.orm.default_entity_manager', 'Gesdinet\JWTRefreshTokenBundle\Entity\RefreshToken']
 
-    snc_second_level_cache:
-        class: '%snc_redis.doctrine_cache_predis.class%'
+    Redis:
+        # you can also use \RedisArray, \RedisCluster or \Predis\Client classes
+        class: Redis
+        calls:
+            - connect:
+                  - '%env(REDIS_HOST)%'
+                  - '%env(int:REDIS_PORT)%'
+            # uncomment the following if your Redis server requires a password
+            # - auth:
+            #     - '%env(REDIS_PASSWORD)%'
+
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
         arguments:
-            - '@snc_redis.default'
+            - '@Redis'
+            # you can optionally pass an array of options. The only options are 'prefix' and 'ttl',
+            # which define the prefix to use for the keys to avoid collision on the Redis server
+            # and the expiration time for any given entry (in seconds), defaults are 'sf_s' and null:
+            # - { 'prefix': 'my_prefix', 'ttl': 600 }

@@ -138,7 +138,7 @@ class Role
      * Disable second level cache for further analysis
      * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
      * @Assert\Valid()
-     * @Groups({"role:write"})
+     * @Groups({"role:write","role:read"})
      */
     private $subsOfRole;
 
