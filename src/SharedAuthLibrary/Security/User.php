@@ -88,6 +88,16 @@ class User implements UserInterface
     }
 
     /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
+    }
+
+    /**
      * @return array
      */
     public function getRoles(): array
