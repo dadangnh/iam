@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\SharedAuthLibrary\Security;
 
 use JetBrains\PhpStorm\Pure;
-use Symfony\Component\Form\Exception\ExceptionInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use function get_class;
@@ -35,7 +34,7 @@ class JwtUserProvider implements UserProviderInterface
 
         // If user is not found, throw exception
         if (empty($payload)) {
-            throw new UsernameNotFoundException();
+            throw new UserNotFoundException();
         }
 
         return new User(
