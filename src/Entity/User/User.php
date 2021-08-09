@@ -306,11 +306,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return ['ROLE_INACTIVE'];
     }
     /**
-     * @see UserInterface
+     * @see PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return $this->password;
     }
 
     public function setPassword(string $password): self

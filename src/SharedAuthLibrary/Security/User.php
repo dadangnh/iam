@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace App\SharedAuthLibrary\Security;
 
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @var string
-     */
-    private string $id;
-
     /**
      * @var string
      */
@@ -45,7 +41,6 @@ class User implements UserInterface
 
     /**
      * User constructor.
-     * @param string $id
      * @param string $username
      * @param array $roles
      * @param int $expiredTime
@@ -54,7 +49,6 @@ class User implements UserInterface
      * @param string $salt
      */
     public function __construct(
-        string $id,
         string $username,
         array $roles,
         int $expiredTime,
@@ -62,21 +56,12 @@ class User implements UserInterface
         string $password = '',
         string $salt = '',
     ) {
-        $this->id = $id;
         $this->roles = $roles;
         $this->username = $username;
         $this->expiredTime = $expiredTime;
         $this->pegawai = $pegawai;
         $this->password = $password;
         $this->salt = $salt;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId(): string
-    {
-        return $this->id;
     }
 
     /**
@@ -122,6 +107,7 @@ class User implements UserInterface
     }
 
     /**
+     * @see PasswordAuthenticatedUserInterface
      * @return string
      */
     public function getPassword(): string

@@ -28,7 +28,7 @@ class JwtUserProvider implements UserProviderInterface
      * @param string $username
      * @return User
      */
-    #[Pure] public function loadUserByUsername($username): User
+    #[Pure] public function loadUserByIdentifier($username): User
     {
         $payload = $this->jwtPayloadContainer->getPayload();
 
@@ -38,7 +38,6 @@ class JwtUserProvider implements UserProviderInterface
         }
 
         return new User(
-            $payload['id'],
             $payload['username'],
             $payload['roles'],
             $payload['expired'],
@@ -58,7 +57,7 @@ class JwtUserProvider implements UserProviderInterface
             );
         }
 
-        return $this->loadUserByUsername($user->getUsername());
+        return $this->loadUserByIdentifier($user->getUsername());
     }
 
     /**
@@ -68,5 +67,16 @@ class JwtUserProvider implements UserProviderInterface
     public function supportsClass($class): bool
     {
         return User::class === $class;
+    }
+
+    /**
+     * TODO: remove this on Symfony version 6
+     * @deprecated will be removed on Symfony version 6
+     * @param string $username
+     * @return User
+     */
+    public function loadUserByUsername(string $username)
+    {
+        return $this->loadUserByIdentifier($username);
     }
 }
