@@ -10,8 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -28,12 +28,14 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/login", name="app_login")
-     * @param AuthenticationUtils $authenticationUtils
-     * @return Response
      */
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        // if ($this->getUser()) {
+        //     return $this->redirectToRoute('target_path');
+        // }
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
@@ -120,12 +122,12 @@ class SecurityController extends AbstractController
 
     /**
      * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param UserPasswordHasherInterface $passwordHasher
      * @return JsonResponse
      * @throws JsonException
      */
     #[Route('/api/change_user_password', name: 'app_change_password', methods: ['POST'])]
-    public function change_password(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
+    public function change_password(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         // Make sure every active user can change their own password
         if (!$this->isGranted('ROLE_USER')) {
@@ -150,17 +152,17 @@ class SecurityController extends AbstractController
 
         // Do a cross check so only the user can change their password
         $currentUser = $this->getUser();
-        if ($currentUser->getUsername() !== $user->getUsername()) {
+        if (null === $currentUser || $currentUser->getUsername() !== $user->getUsername()) {
             return $this->json([
                 'code' => 401,
                 'error' => 'Invalid token access.'
             ]);
         }
 
-        $checkPassword = $passwordEncoder->isPasswordValid($user, $oldPassword);
+        $checkPassword = $passwordHasher->isPasswordValid($user, $oldPassword);
         if ($checkPassword) {
             // TODO: check password strength and implement password blacklist
-            $newPasswordEncoded = $passwordEncoder->encodePassword($user, $newPassword);
+            $newPasswordEncoded = $passwordHasher->hashPassword($user, $newPassword);
             $user->setPassword($newPasswordEncoded);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
@@ -178,12 +180,12 @@ class SecurityController extends AbstractController
 
     /**
      * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param UserPasswordHasherInterface $passwordHasher
      * @return JsonResponse
      * @throws JsonException
      */
     #[Route('/api/change_password_by_sikka', name: 'app_change_password_by_sikka', methods: ['POST'])]
-    public function change_password_by_sikka(Request $request, UserPasswordEncoderInterface $passwordEncoder): JsonResponse
+    public function change_password_by_sikka(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         // this endpoint should only used by UPK/ HRIS/ SUPER ADMIN to reset user password
         if (!$this->isGranted('ROLE_SUPER_ADMIN')
@@ -209,7 +211,7 @@ class SecurityController extends AbstractController
             ]);
         } else {
             // TODO: check password strength and implement password blacklist
-            $newPasswordEncoded = $passwordEncoder->encodePassword($user, $newPassword);
+            $newPasswordEncoded = $passwordHasher->hashPassword($user, $newPassword);
             $user->setPassword($newPasswordEncoded);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
