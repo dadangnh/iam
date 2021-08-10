@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\SharedAuthLibrary\Security;
 
 use JetBrains\PhpStorm\Pure;
-use Symfony\Component\Form\Exception\ExceptionInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use function get_class;
@@ -29,17 +28,16 @@ class JwtUserProvider implements UserProviderInterface
      * @param string $username
      * @return User
      */
-    #[Pure] public function loadUserByUsername($username): User
+    #[Pure] public function loadUserByIdentifier($username): User
     {
         $payload = $this->jwtPayloadContainer->getPayload();
 
         // If user is not found, throw exception
         if (empty($payload)) {
-            throw new UsernameNotFoundException();
+            throw new UserNotFoundException();
         }
 
         return new User(
-            $payload['id'],
             $payload['username'],
             $payload['roles'],
             $payload['expired'],
@@ -59,7 +57,7 @@ class JwtUserProvider implements UserProviderInterface
             );
         }
 
-        return $this->loadUserByUsername($user->getUsername());
+        return $this->loadUserByIdentifier($user->getUsername());
     }
 
     /**
@@ -69,5 +67,16 @@ class JwtUserProvider implements UserProviderInterface
     public function supportsClass($class): bool
     {
         return User::class === $class;
+    }
+
+    /**
+     * TODO: remove this on Symfony version 6
+     * @deprecated will be removed on Symfony version 6
+     * @param string $username
+     * @return User
+     */
+    public function loadUserByUsername(string $username)
+    {
+        return $this->loadUserByIdentifier($username);
     }
 }
