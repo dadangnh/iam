@@ -227,6 +227,33 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
         );
 
 
+        $aplikasiByRoleNameNewItem = new Model\PathItem(
+            ref: 'Aplikasi',
+            get: new Model\Operation(
+                operationId: 'getAplikasiByRoleName',
+                tags: ['Role'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get List of Aplikasi',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetAplikasiByRoleNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get list of Aplikasi from Role Name',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the role name in all capital letter',
+                    true
+                )]
+            ),
+        );
+
         $allAplikasiByTokenItem = new Model\PathItem(
             ref: 'Aplikasi',
             post: new Model\Operation(
@@ -373,6 +400,7 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/get_permissions_by_token', $permissionsByTokenItem);
         $openApi->getPaths()->addPath('/api/get_permissions_by_role_name', $permissionsByRoleNameItem);
         $openApi->getPaths()->addPath('/api/roles/mapping', $mappingByRole);
+        $openApi->getPaths()->addPath('/api/roles/{name}/aplikasis', $aplikasiByRoleNameNewItem);
 
         return $openApi;
     }
