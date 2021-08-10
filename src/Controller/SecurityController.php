@@ -231,4 +231,38 @@ class SecurityController extends AbstractController
         return $this->json($this->getUser());
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws JsonException
+     */
+    #[Route('/api/users/check_identifier', name: 'app_check_user_identifier', methods: ['POST'])]
+    public function checkValidUserIdentifier(Request $request): JsonResponse
+    {
+        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $username = $content['username'];
+        /** @var User $user */
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $username]);
+        if (null === $user) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No user found'
+            ], 404);
+        }
+
+        if ($user instanceof User) {
+            return $this->json([
+                'code' => 200,
+                'message' => sprintf(
+                    'User: %s found.',
+                    $username
+                )
+            ]);
+        }
+
+        return $this->json([
+            'code' => 404,
+            'error' => 'No user found'
+        ], 404);
+    }
 }
