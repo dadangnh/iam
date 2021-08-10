@@ -385,6 +385,34 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+
+        $permissionsByRoleNameGetItem = new Model\PathItem(
+            ref: 'Permission',
+            get: new Model\Operation(
+                operationId: 'getPermissionByRoleName',
+                tags: ['Role'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Permissions From Role Name',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetPermissionsByRoleNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Permissions from Role Name.',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the role name in all capital letter',
+                    true
+                )]
+            ),
+        );
+
         $mappingByRole = new Model\PathItem(
             ref: 'Jabatans',
             post: new Model\Operation(
@@ -420,14 +448,12 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
 
         $openApi->getPaths()->addPath('/api/get_roles_by_jabatan_pegawai', $roleByJabatanPegawaiItem);
         $openApi->getPaths()->addPath('/api/get_aplikasi_by_token', $aplikasiByTokenItem);
-        $openApi->getPaths()->addPath('/api/get_aplikasi_by_role_name', $aplikasiByRoleName);
         $openApi->getPaths()->addPath('/api/get_all_aplikasi_by_token', $allAplikasiByTokenItem);
-        $openApi->getPaths()->addPath('/api/get_all_aplikasi_by_role_name', $allAplikasiByRoleName);
         $openApi->getPaths()->addPath('/api/get_permissions_by_token', $permissionsByTokenItem);
-        $openApi->getPaths()->addPath('/api/get_permissions_by_role_name', $permissionsByRoleNameItem);
         $openApi->getPaths()->addPath('/api/roles/mapping', $mappingByRole);
         $openApi->getPaths()->addPath('/api/roles/{name}/aplikasis', $aplikasiByRoleNameNewItem);
         $openApi->getPaths()->addPath('/api/roles/{name}/all_aplikasis', $allAplikasiByRoleNameNewItem);
+        $openApi->getPaths()->addPath('/api/roles/{name}/permissions', $permissionsByRoleNameGetItem);
 
         return $openApi;
     }

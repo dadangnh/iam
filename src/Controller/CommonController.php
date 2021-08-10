@@ -297,7 +297,7 @@ class CommonController extends AbstractController
         if (null === $role) {
             return $this->json([
                 'code' => 404,
-                'warning' => 'No roles associated with this name'
+                'error' => 'No roles associated with this name'
             ], 404);
         }
 
@@ -381,7 +381,10 @@ class CommonController extends AbstractController
         $role = $this->readRoleFromRoleNameRequest($request);
 
         if (null === $role) {
-            return $this->json(['warning' => 'No roles associated with this name']);
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
         }
 
         $permissions = $role->getPermissions();
@@ -429,7 +432,6 @@ class CommonController extends AbstractController
         ]);
     }
 
-
     /**
      * @param string $roleName
      * @param IriConverterInterface $iriConverter
@@ -464,6 +466,40 @@ class CommonController extends AbstractController
         return $this->json([
             'aplikasi_count' => count($listAplikasi),
             'aplikasi' => $listAplikasi,
+        ]);
+    }
+
+    /**
+     * @param string $roleName
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/roles/{roleName}/permissions', methods: ['GET'])]
+    public function showPermissionsByRoleName(string $roleName, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $role = $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findOneBy(['nama' => $roleName]);
+
+        if (null === $role) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
+        }
+
+        $permissions = $role->getPermissions();
+
+        return $this->json([
+            'permissions_count' => count($permissions),
+            'permissions' => $permissions
         ]);
     }
 
