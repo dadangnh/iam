@@ -226,7 +226,6 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-
         $aplikasiByRoleNameNewItem = new Model\PathItem(
             ref: 'Aplikasi',
             get: new Model\Operation(
@@ -245,6 +244,33 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get list of Aplikasi from Role Name',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the role name in all capital letter',
+                    true
+                )]
+            ),
+        );
+
+        $allAplikasiByRoleNameNewItem = new Model\PathItem(
+            ref: 'Aplikasi',
+            get: new Model\Operation(
+                operationId: 'getAllAplikasiByRoleName',
+                tags: ['Role'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get List of All Aplikasi Including the Inactive/On Development One',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetAplikasiByRoleNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get List of All Aplikasi Including the Inactive/On Development from Role Name',
                 parameters: [new Model\Parameter(
                     'name',
                     'path',
@@ -401,6 +427,7 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/get_permissions_by_role_name', $permissionsByRoleNameItem);
         $openApi->getPaths()->addPath('/api/roles/mapping', $mappingByRole);
         $openApi->getPaths()->addPath('/api/roles/{name}/aplikasis', $aplikasiByRoleNameNewItem);
+        $openApi->getPaths()->addPath('/api/roles/{name}/all_aplikasis', $allAplikasiByRoleNameNewItem);
 
         return $openApi;
     }

@@ -429,6 +429,44 @@ class CommonController extends AbstractController
         ]);
     }
 
+
+    /**
+     * @param string $roleName
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/roles/{roleName}/all_aplikasis', methods: ['GET'])]
+    public function showAllAplikasisFromRoleName(string $roleName, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $role = $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findOneBy(['nama' => $roleName]);
+
+        if (null === $role) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
+        }
+
+        $listAplikasi = [];
+        foreach (RoleUtils::getAllAplikasiByRole($role) as $aplikasi) {
+            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        }
+
+        return $this->json([
+            'aplikasi_count' => count($listAplikasi),
+            'aplikasi' => $listAplikasi,
+        ]);
+    }
+
     /**
      * @param Request $request
      * @return Role|null
