@@ -225,7 +225,16 @@ class SecurityController extends AbstractController
     /**
      * @return JsonResponse
      */
-    #[Route('/api/whoami', name: 'app_whoami', methods: ['POST'])]
+    #[Route('/api/whoami', name: 'app_whoami_old', methods: ['POST'])]
+    public function whoamiOld(): JsonResponse
+    {
+        return $this->json($this->getUser());
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    #[Route('/api/token/whoami', name: 'app_whoami', methods: ['POST'])]
     public function whoami(): JsonResponse
     {
         return $this->json($this->getUser());
