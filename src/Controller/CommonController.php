@@ -627,6 +627,48 @@ class CommonController extends AbstractController
     }
 
     /**
+     * @param string $id
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/jabatan_pegawais/{id}/roles', methods: ['GET'])]
+    public function showRolesByJabatanPegawais(string $id, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        /** @var JabatanPegawai $jabatanPegawai */
+        $jabatanPegawai = $this->entityManager
+            ->getRepository(JabatanPegawai::class)
+            ->findOneBy(['id' => $id]);
+
+        if (null === $jabatanPegawai) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No jabatan record found'
+            ], 404);
+        }
+
+        $roles = RoleUtils::getRolesFromJabatanPegawai($jabatanPegawai);
+
+        if (empty($roles)) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this Jabatan Pegawai'
+            ], 404);
+        }
+
+        return $this->json([
+            'roles_count' => count($roles),
+            'roles' => RoleUtils::createRoleDefaultResponseFromArrayOfRoles($roles, $iriConverter)
+        ]);
+    }
+
+    /**
      * @param Request $request
      * @return Role|null
      * @throws JsonException
