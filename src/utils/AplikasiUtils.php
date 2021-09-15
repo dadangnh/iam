@@ -22,7 +22,8 @@ class AplikasiUtils
         'nama' => "null|string",
         'deskripsi' => "null|string",
         'hostname' => "null|string",
-        'url' => "null|string"
+        'url' => "null|string",
+        'status' => "bool"
     ])]
     public static function createReadableAplikasiJsonData(Aplikasi $aplikasi, IriConverterInterface $iriConverter): array
     {
@@ -32,7 +33,8 @@ class AplikasiUtils
             'nama' => $aplikasi->getNama(),
             'deskripsi' => $aplikasi->getDeskripsi(),
             'hostname' => $aplikasi->getHostName(),
-            'url' => $aplikasi->getUrl()
+            'url' => $aplikasi->getUrl(),
+            'status' => $aplikasi->getStatus(),
         ];
     }
 }

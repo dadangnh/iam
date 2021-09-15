@@ -111,16 +111,6 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $schemas['JsonLoginResponse'] = new ArrayObject([
-            'type' => 'object',
-            'properties' => [
-                'data' => [
-                    'type' => 'string',
-                    'readOnly' => true,
-                ],
-            ],
-        ]);
-
         $schemas['WhoAmIResponse'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
@@ -193,8 +183,8 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
         $refreshTokenItem = new Model\PathItem(
             ref: 'Refresh JWT Token',
             post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authentication - Refresh Token'],
+                operationId: 'postRefreshTokenItem',
+                tags: ['Token'],
                 responses: [
                     '200' => [
                         'description' => 'Get new JWT token by refresh token',
@@ -262,42 +252,11 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $jsonLoginItem = new Model\PathItem(
-            ref: 'Json Login',
-            post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authentication - Json Login (deprecated)'],
-                responses: [
-                    '200' => [
-                        'description' => 'User data directly from login',
-                        'content' => [
-                            'application/json' => [
-                                'schema' => [
-                                    '$ref' => '#/components/schemas/JsonLoginResponse',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                summary: 'Make authentication with json response.',
-                requestBody: new Model\RequestBody(
-                    description: 'Generate json user data from login',
-                    content: new ArrayObject([
-                        'application/json' => [
-                            'schema' => [
-                                '$ref' => '#/components/schemas/AuthCredentials',
-                            ],
-                        ],
-                    ]),
-                ),
-            ),
-        );
-
         $changePasswordItem = new Model\PathItem(
             ref: 'Change Password',
             post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authentication - Change User Password'],
+                operationId: 'postCredentialsToChangePasswordItem',
+                tags: ['User'],
                 responses: [
                     '200' => [
                         'description' => 'Status',
@@ -324,7 +283,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $whoAmIItem = new Model\PathItem(
+        $whoAmIOldItem = new Model\PathItem(
             ref: 'Who Am I?',
             post: new Model\Operation(
                 operationId: 'postCredentialsItem',
@@ -346,11 +305,33 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $whoAmIItem = new Model\PathItem(
+            ref: 'Token',
+            post: new Model\Operation(
+                operationId: 'postWhoAmIItem',
+                tags: ['Token'],
+                responses: [
+                    '200' => [
+                        'description' => 'Status',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/WhoAmIResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get User Identifier Data From Token.',
+                requestBody: null,
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/authentication', $authItem);
         $openApi->getPaths()->addPath('/api/token/refresh', $refreshTokenItem);
-        $openApi->getPaths()->addPath('/json_login', $jsonLoginItem);
-        $openApi->getPaths()->addPath('/api/change_user_password', $changePasswordItem);
-        $openApi->getPaths()->addPath('/api/whoami', $whoAmIItem);
+        $openApi->getPaths()->addPath('/api/users/change_password', $changePasswordItem);
+        $openApi->getPaths()->addPath('/api/whoami', $whoAmIOldItem);
+        $openApi->getPaths()->addPath('/api/token/whoami', $whoAmIItem);
         $openApi->getPaths()->addPath('/api/users/check_identifier', $checkUserIdentifierItem);
 
         return $openApi;

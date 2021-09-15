@@ -169,7 +169,7 @@ class RoleUtils
                         if ($modul->getStatus()) {
                             /** @var Aplikasi $aplikasi */
                             $aplikasi = $modul->getAplikasi();
-                            if ($aplikasi->getStatus()) {
+                            if ($aplikasi->getStatus() && !in_array($aplikasi, $listAplikasi, true)) {
                                 $listAplikasi[] = $aplikasi;
                             }
                         }
@@ -208,7 +208,10 @@ class RoleUtils
                 $moduls = $permission->getModul();
                 if (null !== $moduls) {
                     foreach ($moduls as $modul) {
-                        $listAplikasi[] = $modul->getAplikasi();
+                        $aplikasi = $modul->getAplikasi();
+                        if (!in_array($aplikasi, $listAplikasi, true)) {
+                            $listAplikasi[] = $aplikasi;
+                        }
                     }
                 }
             }
