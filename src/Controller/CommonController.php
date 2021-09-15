@@ -577,6 +577,57 @@ class CommonController extends AbstractController
 
     /**
      * @param Request $request
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/token/permissions', methods: ['POST'])]
+    public function showPermissionsByToken(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $listOfPlainRoles = $this->getUser()->getRoles();
+        $uniquePermissions = $listPermissionsOnRoles = $listRoles = [];
+        $uniquePermissionsCount = 0;
+        foreach ($listOfPlainRoles as $plainRole) {
+            $role = $this->getDoctrine()
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $plainRole]);
+            if (null !== $role) {
+                $listRoles[] = $role;
+            }
+        }
+
+        foreach ($listRoles as $role) {
+            $permissions = $role->getPermissions();
+            if (null !== $permissions) {
+                /** @var Permission $permission */
+                foreach ($permissions as $permission) {
+                    $iri = $iriConverter->getIriFromItem($permission);
+                    if (!in_array($iri, $uniquePermissions, true)) {
+                        $uniquePermissionsCount++;
+                        $uniquePermissions[] = $iri;
+                    }
+                }
+                $listPermissionsOnRoles[] = [
+                    $role->getNama() => $permissions
+                ];
+            }
+        }
+
+        return $this->json([
+            'unique_permissions_count' => $uniquePermissionsCount,
+            'unique_permissions' => $uniquePermissions,
+            'list_per_role' => $listPermissionsOnRoles
+        ]);
+    }
+
+    /**
+     * @param Request $request
      * @return Role|null
      * @throws JsonException
      */
