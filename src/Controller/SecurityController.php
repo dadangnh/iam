@@ -126,7 +126,19 @@ class SecurityController extends AbstractController
      * @return JsonResponse
      * @throws JsonException
      */
-    #[Route('/api/change_user_password', name: 'app_change_password', methods: ['POST'])]
+    #[Route('/api/change_user_password', name: 'app_change_password_old', methods: ['POST'])]
+    public function change_password_old(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    {
+        return $this->change_password($request, $passwordHasher);
+    }
+
+    /**
+     * @param Request $request
+     * @param UserPasswordHasherInterface $passwordHasher
+     * @return JsonResponse
+     * @throws JsonException
+     */
+    #[Route('/api/users/change_password', name: 'app_change_password', methods: ['POST'])]
     public function change_password(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         // Make sure every active user can change their own password
@@ -184,7 +196,19 @@ class SecurityController extends AbstractController
      * @return JsonResponse
      * @throws JsonException
      */
-    #[Route('/api/change_password_by_sikka', name: 'app_change_password_by_sikka', methods: ['POST'])]
+    #[Route('/api/change_password_by_sikka', name: 'app_change_password_by_sikka_old', methods: ['POST'])]
+    public function change_password_by_sikka_old(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    {
+        return $this->change_password_by_sikka($request, $passwordHasher);
+    }
+
+    /**
+     * @param Request $request
+     * @param UserPasswordHasherInterface $passwordHasher
+     * @return JsonResponse
+     * @throws JsonException
+     */
+    #[Route('/api/users/change_password_by_sikka', name: 'app_change_password_by_sikka', methods: ['POST'])]
     public function change_password_by_sikka(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         // this endpoint should only used by UPK/ HRIS/ SUPER ADMIN to reset user password
@@ -204,22 +228,23 @@ class SecurityController extends AbstractController
         $username = $content['username'];
         $newPassword = $content['new_password'];
         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $username]);
+
         if (null === $user) {
             return $this->json([
                 'code' => 404,
                 'error' => 'No user found'
             ], 404);
-        } else {
-            // TODO: check password strength and implement password blacklist
-            $newPasswordEncoded = $passwordHasher->hashPassword($user, $newPassword);
-            $user->setPassword($newPasswordEncoded);
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
-            return $this->json([
-                'code' => 200,
-                'message' => 'password successfully changed.'
-            ]);
         }
+
+        // TODO: check password strength and implement password blacklist
+        $newPasswordEncoded = $passwordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($newPasswordEncoded);
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        return $this->json([
+            'code' => 200,
+            'message' => 'password successfully changed.'
+        ]);
     }
 
     /**

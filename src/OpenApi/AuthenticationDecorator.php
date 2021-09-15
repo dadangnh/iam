@@ -296,8 +296,8 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
         $changePasswordItem = new Model\PathItem(
             ref: 'Change Password',
             post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authentication - Change User Password'],
+                operationId: 'postCredentialsToChangePasswordItem',
+                tags: ['User'],
                 responses: [
                     '200' => [
                         'description' => 'Status',
@@ -371,7 +371,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/authentication', $authItem);
         $openApi->getPaths()->addPath('/api/token/refresh', $refreshTokenItem);
         $openApi->getPaths()->addPath('/json_login', $jsonLoginItem);
-        $openApi->getPaths()->addPath('/api/change_user_password', $changePasswordItem);
+        $openApi->getPaths()->addPath('/api/users/change_password', $changePasswordItem);
         $openApi->getPaths()->addPath('/api/whoami', $whoAmIOldItem);
         $openApi->getPaths()->addPath('/api/token/whoami', $whoAmIItem);
         $openApi->getPaths()->addPath('/api/users/check_identifier', $checkUserIdentifierItem);
