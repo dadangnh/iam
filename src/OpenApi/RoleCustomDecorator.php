@@ -177,11 +177,11 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
         $aplikasiByTokenItem = new Model\PathItem(
             ref: 'Aplikasi',
             post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authorization - Get List of Aplikasi From Token'],
+                operationId: 'postTokenToGetAplikasis',
+                tags: ['Token'],
                 responses: [
                     '200' => [
-                        'description' => 'Get Aplikasi',
+                        'description' => 'List all aplikasis granted for a token',
                         'content' => [
                             'application/json' => [
                                 'schema' => [
@@ -191,7 +191,7 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
                         ],
                     ],
                 ],
-                summary: 'Get Aplikasi from Token.',
+                summary: 'List all aplikasis granted for a token.',
             ),
         );
 
@@ -226,12 +226,65 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $aplikasiByRoleNameNewItem = new Model\PathItem(
+            ref: 'Aplikasi',
+            get: new Model\Operation(
+                operationId: 'getAplikasiByRoleName',
+                tags: ['Role'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get List of Aplikasi',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetAplikasiByRoleNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get list of Aplikasi from Role Name',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the role name in all capital letter',
+                    true
+                )]
+            ),
+        );
+
+        $allAplikasiByRoleNameNewItem = new Model\PathItem(
+            ref: 'Aplikasi',
+            get: new Model\Operation(
+                operationId: 'getAllAplikasiByRoleName',
+                tags: ['Role'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get List of All Aplikasi Including the Inactive/On Development One',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetAplikasiByRoleNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get List of All Aplikasi Including the Inactive/On Development from Role Name',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the role name in all capital letter',
+                    true
+                )]
+            ),
+        );
 
         $allAplikasiByTokenItem = new Model\PathItem(
             ref: 'Aplikasi',
             post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authorization - Get List of All Aplikasi From Token (including unreleased one)'],
+                operationId: 'postTokenToGetAllAplikasis',
+                tags: ['Token'],
                 responses: [
                     '200' => [
                         'description' => 'Get Aplikasi data from Token, including unreleased application',
@@ -244,7 +297,7 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
                         ],
                     ],
                 ],
-                summary: 'Get Aplikasi from Token.',
+                summary: 'Get All Aplikasi from Token Including the Inactive/On Development One.',
             ),
         );
 
@@ -282,11 +335,11 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
         $permissionsByTokenItem = new Model\PathItem(
             ref: 'Permission',
             post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authorization - Get List of Permissions From Token'],
+                operationId: 'postTokenShowPermissions',
+                tags: ['Token'],
                 responses: [
                     '200' => [
-                        'description' => 'Get Permissions',
+                        'description' => 'Show Permissions from Token',
                         'content' => [
                             'application/json' => [
                                 'schema' => [
@@ -296,7 +349,7 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
                         ],
                     ],
                 ],
-                summary: 'Get Permissions from Token.',
+                summary: 'Show Permissions from Token.',
             ),
         );
 
@@ -329,6 +382,33 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
                     ]),
                 ),
 
+            ),
+        );
+
+        $permissionsByRoleNameGetItem = new Model\PathItem(
+            ref: 'Permission',
+            get: new Model\Operation(
+                operationId: 'getPermissionByRoleName',
+                tags: ['Role'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Permissions From Role Name',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetPermissionsByRoleNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Permissions from Role Name.',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the role name in all capital letter',
+                    true
+                )]
             ),
         );
 
@@ -365,14 +445,41 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $openApi->getPaths()->addPath('/api/get_roles_by_jabatan_pegawai', $roleByJabatanPegawaiItem);
-        $openApi->getPaths()->addPath('/api/get_aplikasi_by_token', $aplikasiByTokenItem);
-        $openApi->getPaths()->addPath('/api/get_aplikasi_by_role_name', $aplikasiByRoleName);
-        $openApi->getPaths()->addPath('/api/get_all_aplikasi_by_token', $allAplikasiByTokenItem);
-        $openApi->getPaths()->addPath('/api/get_all_aplikasi_by_role_name', $allAplikasiByRoleName);
-        $openApi->getPaths()->addPath('/api/get_permissions_by_token', $permissionsByTokenItem);
-        $openApi->getPaths()->addPath('/api/get_permissions_by_role_name', $permissionsByRoleNameItem);
+        $roleByJabatanPegawaisIdGetItem = new Model\PathItem(
+            ref: 'Roles',
+            get: new Model\Operation(
+                operationId: 'getRoleByJabatanPegawaisId',
+                tags: ['JabatanPegawai'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Roles From Jabatan Pegawais ID',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetRoleByJabatanPegawaiResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Roles from Jabatan Pegawais.',
+                parameters: [new Model\Parameter(
+                    'id',
+                    'path',
+                    'Please provide the jabatan pegawais UUID',
+                    true
+                )]
+            ),
+        );
+
+        $openApi->getPaths()->addPath('/api/jabatan_pegawais/{id}/roles', $roleByJabatanPegawaisIdGetItem);
         $openApi->getPaths()->addPath('/api/roles/mapping', $mappingByRole);
+        $openApi->getPaths()->addPath('/api/roles/{name}/aplikasis', $aplikasiByRoleNameNewItem);
+        $openApi->getPaths()->addPath('/api/roles/{name}/all_aplikasis', $allAplikasiByRoleNameNewItem);
+        $openApi->getPaths()->addPath('/api/roles/{name}/permissions', $permissionsByRoleNameGetItem);
+        $openApi->getPaths()->addPath('/api/token/aplikasis', $aplikasiByTokenItem);
+        $openApi->getPaths()->addPath('/api/token/all_aplikasis', $allAplikasiByTokenItem);
+        $openApi->getPaths()->addPath('/api/token/permissions', $permissionsByTokenItem);
 
         return $openApi;
     }

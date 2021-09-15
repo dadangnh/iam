@@ -50,9 +50,9 @@ class CommonController extends AbstractController
     {
         if (!$this->isGranted('ROLE_USER')) {
             return $this->json([
-                'message' => 'Unauthorized API access.',
-                'request' => $request
-            ]);
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
         }
 
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -64,13 +64,19 @@ class CommonController extends AbstractController
             ->findOneBy(['id' => $idJabatan]);
 
         if (null === $jabatanPegawai) {
-            return $this->json(['error' => 'No jabatan record found']);
+            return $this->json([
+                'code' => 404,
+                'error' => 'No jabatan record found'
+            ], 404);
         }
 
         $roles = RoleUtils::getRolesFromJabatanPegawai($jabatanPegawai);
 
         if (empty($roles)) {
-            return $this->json(['warning' => 'No roles associated with this Jabatan Pegawai']);
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this Jabatan Pegawai'
+            ], 404);
         }
 
         return $this->json([
@@ -89,9 +95,9 @@ class CommonController extends AbstractController
     {
         if (!$this->isGranted('ROLE_USER')) {
             return $this->json([
-                'message' => 'Unauthorized API access.',
-                'request' => $request
-            ]);
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
         }
 
         $listOfPlainRoles = $this->getUser()->getRoles();
@@ -126,15 +132,18 @@ class CommonController extends AbstractController
     {
         if (!$this->isGranted('ROLE_USER')) {
             return $this->json([
-                'message' => 'Unauthorized API access.',
-                'request' => $request
-            ]);
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
         }
 
         $role = $this->readRoleFromRoleNameRequest($request);
 
         if (null === $role) {
-            return $this->json(['warning' => 'No roles associated with this name']);
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
         }
 
         $listAplikasi = [];
@@ -159,54 +168,69 @@ class CommonController extends AbstractController
     {
         if (!$this->isGranted('ROLE_USER')) {
             return $this->json([
-                'message' => 'Unauthorized API access.',
-                'request' => $request
-            ]);
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
         }
 
-        $content    = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        $keyData    = strtolower($content['key_data']);
+        $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $keyData = strtolower($content['key_data']);
 
         $role = $this->readRoleFromRoleNameRequest($request);
 
         if (null === $role) {
-            return $this->json(['warning' => 'No roles associated with this name']);
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
+        }
+
+        // Make sure that only valid parameter allowed
+        if (!in_array(
+            $keyData,
+            ['user', 'jabatan', 'unit', 'kantor', 'eselon', 'jenis_kantor', 'group'],
+            true)
+        ) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'Invalid key_data parameter'
+            ], 404);
         }
 
         $response = array();
-        if('user' === $keyData){
+        if ('user' === $keyData) {
             $response['user_count'] = $role->getUsers()->count();
-            $response['user']       = $role->getUsers();
+            $response['user'] = $role->getUsers();
         }
 
-        if('jabatan' == $keyData){
+        if ('jabatan' === $keyData) {
             $response['jabatan_count'] = $role->getJabatans()->count();
-            $response['jabatan']       = $role->getJabatans();
+            $response['jabatan'] = $role->getJabatans();
         }
 
-        if('unit' === $keyData){
+        if ('unit' === $keyData) {
             $response['unit_count'] = $role->getUnits()->count();
-            $response['unit']       = $role->getUnits();
+            $response['unit'] = $role->getUnits();
         }
 
-        if('kantor' === $keyData){
+        if ('kantor' === $keyData) {
             $response['kantor_count'] = $role->getKantors()->count();
-            $response['kantor']       = $role->getKantors();
+            $response['kantor'] = $role->getKantors();
         }
 
-        if('eselon' === $keyData){
+        if ('eselon' === $keyData) {
             $response['eselon_count'] = $role->getEselons()->count();
-            $response['eselon']       = $role->getEselons();
+            $response['eselon'] = $role->getEselons();
         }
 
-        if('jenis_kantor' === $keyData){
+        if ('jenis_kantor' === $keyData) {
             $response['jenis_kantor_count'] = $role->getJenisKantors()->count();
-            $response['jenis_kantor']       = $role->getJenisKantors();
+            $response['jenis_kantor'] = $role->getJenisKantors();
         }
 
-        if('group' === $keyData){
+        if ('group' === $keyData) {
             $response['group_count'] = $role->getGroups()->count();
-            $response['group']       = $role->getGroups();
+            $response['group'] = $role->getGroups();
         }
 
         return $this->json([
@@ -225,9 +249,9 @@ class CommonController extends AbstractController
     {
         if (!$this->isGranted('ROLE_USER')) {
             return $this->json([
-                'message' => 'Unauthorized API access.',
-                'request' => $request
-            ]);
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
         }
 
         $listOfPlainRoles = $this->getUser()->getRoles();
@@ -263,15 +287,18 @@ class CommonController extends AbstractController
     {
         if (!$this->isGranted('ROLE_USER')) {
             return $this->json([
-                'message' => 'Unauthorized API access.',
-                'request' => $request
-            ]);
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
         }
 
         $role = $this->readRoleFromRoleNameRequest($request);
 
         if (null === $role) {
-            return $this->json(['warning' => 'No roles associated with this name']);
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
         }
 
         $listAplikasi = [];
@@ -295,9 +322,9 @@ class CommonController extends AbstractController
     {
         if (!$this->isGranted('ROLE_USER')) {
             return $this->json([
-                'message' => 'Unauthorized API access.',
-                'request' => $request
-            ]);
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
         }
 
         $listOfPlainRoles = $this->getUser()->getRoles();
@@ -346,15 +373,18 @@ class CommonController extends AbstractController
     {
         if (!$this->isGranted('ROLE_USER')) {
             return $this->json([
-                'message' => 'Unauthorized API access.',
-                'request' => $request
-            ]);
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
         }
 
         $role = $this->readRoleFromRoleNameRequest($request);
 
         if (null === $role) {
-            return $this->json(['warning' => 'No roles associated with this name']);
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
         }
 
         $permissions = $role->getPermissions();
@@ -362,6 +392,279 @@ class CommonController extends AbstractController
         return $this->json([
             'permissions_count' => count($permissions),
             'permissions' => $permissions
+        ]);
+    }
+
+    /**
+     * @param string $roleName
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/roles/{roleName}/aplikasis', methods: ['GET'])]
+    public function showAplikasisFromRoleName(string $roleName, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $role = $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findOneBy(['nama' => $roleName]);
+
+        if (null === $role) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
+        }
+
+        $listAplikasi = [];
+        foreach (RoleUtils::getAplikasiByRole($role) as $aplikasi) {
+            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        }
+
+        return $this->json([
+            'aplikasi_count' => count($listAplikasi),
+            'aplikasi' => $listAplikasi,
+        ]);
+    }
+
+    /**
+     * @param string $roleName
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/roles/{roleName}/all_aplikasis', methods: ['GET'])]
+    public function showAllAplikasisFromRoleName(string $roleName, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $role = $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findOneBy(['nama' => $roleName]);
+
+        if (null === $role) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
+        }
+
+        $listAplikasi = [];
+        foreach (RoleUtils::getAllAplikasiByRole($role) as $aplikasi) {
+            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        }
+
+        return $this->json([
+            'aplikasi_count' => count($listAplikasi),
+            'aplikasi' => $listAplikasi,
+        ]);
+    }
+
+    /**
+     * @param string $roleName
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/roles/{roleName}/permissions', methods: ['GET'])]
+    public function showPermissionsByRoleName(string $roleName, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $role = $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findOneBy(['nama' => $roleName]);
+
+        if (null === $role) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 404);
+        }
+
+        $permissions = $role->getPermissions();
+
+        return $this->json([
+            'permissions_count' => count($permissions),
+            'permissions' => $permissions
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/token/aplikasis', methods: ['POST'])]
+    public function showAplikasiFromToken(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $listOfPlainRoles = $this->getUser()->getRoles();
+        $listAplikasi = $listRoles = [];
+        foreach ($listOfPlainRoles as $plainRole) {
+            $role = $this->getDoctrine()
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $plainRole]);
+            if (null !== $role) {
+                $listRoles[] = $role;
+            }
+        }
+
+        foreach (RoleUtils::getAplikasiByArrayOfRoles($listRoles) as $aplikasi) {
+            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        }
+
+        return $this->json([
+            'aplikasi_count' => count($listAplikasi),
+            'aplikasi' => $listAplikasi,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/token/all_aplikasis', methods: ['POST'])]
+    public function showAllAplikasiFromToken(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $listOfPlainRoles = $this->getUser()->getRoles();
+        $listAplikasi = $listRoles = [];
+        foreach ($listOfPlainRoles as $plainRole) {
+            $role = $this->getDoctrine()
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $plainRole]);
+            if (null !== $role) {
+                $listRoles[] = $role;
+            }
+        }
+
+        foreach (RoleUtils::getAllAplikasiByArrayOfRoles($listRoles) as $aplikasi) {
+            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        }
+
+        return $this->json([
+            'aplikasi_count' => count($listAplikasi),
+            'aplikasi' => $listAplikasi,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/token/permissions', methods: ['POST'])]
+    public function showPermissionsByToken(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $listOfPlainRoles = $this->getUser()->getRoles();
+        $uniquePermissions = $listPermissionsOnRoles = $listRoles = [];
+        $uniquePermissionsCount = 0;
+        foreach ($listOfPlainRoles as $plainRole) {
+            $role = $this->getDoctrine()
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $plainRole]);
+            if (null !== $role) {
+                $listRoles[] = $role;
+            }
+        }
+
+        foreach ($listRoles as $role) {
+            $permissions = $role->getPermissions();
+            if (null !== $permissions) {
+                /** @var Permission $permission */
+                foreach ($permissions as $permission) {
+                    $iri = $iriConverter->getIriFromItem($permission);
+                    if (!in_array($iri, $uniquePermissions, true)) {
+                        $uniquePermissionsCount++;
+                        $uniquePermissions[] = $iri;
+                    }
+                }
+                $listPermissionsOnRoles[] = [
+                    $role->getNama() => $permissions
+                ];
+            }
+        }
+
+        return $this->json([
+            'unique_permissions_count' => $uniquePermissionsCount,
+            'unique_permissions' => $uniquePermissions,
+            'list_per_role' => $listPermissionsOnRoles
+        ]);
+    }
+
+    /**
+     * @param string $id
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/jabatan_pegawais/{id}/roles', methods: ['GET'])]
+    public function showRolesByJabatanPegawais(string $id, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        /** @var JabatanPegawai $jabatanPegawai */
+        $jabatanPegawai = $this->entityManager
+            ->getRepository(JabatanPegawai::class)
+            ->findOneBy(['id' => $id]);
+
+        if (null === $jabatanPegawai) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No jabatan record found'
+            ], 404);
+        }
+
+        $roles = RoleUtils::getRolesFromJabatanPegawai($jabatanPegawai);
+
+        if (empty($roles)) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this Jabatan Pegawai'
+            ], 404);
+        }
+
+        return $this->json([
+            'roles_count' => count($roles),
+            'roles' => RoleUtils::createRoleDefaultResponseFromArrayOfRoles($roles, $iriConverter)
         ]);
     }
 

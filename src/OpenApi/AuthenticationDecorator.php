@@ -48,6 +48,16 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
+        $schemas['RefreshTokenRequest'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'refresh_token' => [
+                    'type' => 'string',
+                    'example' => 'your_refresh_token_here',
+                ],
+            ],
+        ]);
+
         $schemas['RefreshTokenResponse'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
@@ -62,10 +72,39 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $schemas['JsonLoginResponse'] = new ArrayObject([
+
+        $schemas['CheckUserIdentifierRequest'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
-                'data' => [
+                'username' => [
+                    'type' => 'string',
+                    'example' => 'the_user_name',
+                ],
+            ],
+        ]);
+
+        $schemas['CheckUserIdentifierValidResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'code' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'message' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
+        $schemas['CheckUserIdentifierInvalidResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'code' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'error' => [
                     'type' => 'string',
                     'readOnly' => true,
                 ],
@@ -78,16 +117,6 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                 'data' => [
                     'type' => 'string',
                     'readOnly' => true,
-                ],
-            ],
-        ]);
-
-        $schemas['RefreshTokenRequest'] = new ArrayObject([
-            'type' => 'object',
-            'properties' => [
-                'refresh_token' => [
-                    'type' => 'string',
-                    'example' => 'your_refresh_token_here',
                 ],
             ],
         ]);
@@ -154,8 +183,8 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
         $refreshTokenItem = new Model\PathItem(
             ref: 'Refresh JWT Token',
             post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authentication - Refresh Token'],
+                operationId: 'postRefreshTokenItem',
+                tags: ['Token'],
                 responses: [
                     '200' => [
                         'description' => 'Get new JWT token by refresh token',
@@ -182,30 +211,40 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $jsonLoginItem = new Model\PathItem(
-            ref: 'Json Login',
+        $checkUserIdentifierItem = new Model\PathItem(
+            ref: 'Check user identifier',
             post: new Model\Operation(
                 operationId: 'postCredentialsItem',
-                tags: ['Authentication - Json Login (deprecated)'],
+                tags: ['User'],
                 responses: [
                     '200' => [
-                        'description' => 'User data directly from login',
+                        'description' => 'Valid user identifier',
                         'content' => [
                             'application/json' => [
                                 'schema' => [
-                                    '$ref' => '#/components/schemas/JsonLoginResponse',
+                                    '$ref' => '#/components/schemas/CheckUserIdentifierValidResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                    '404' => [
+                        'description' => 'Invalid user identifier',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/CheckUserIdentifierInvalidResponse',
                                 ],
                             ],
                         ],
                     ],
                 ],
-                summary: 'Make authentication with json response.',
+                summary: 'Check whether username is valid or not.',
                 requestBody: new Model\RequestBody(
-                    description: 'Generate json user data from login',
+                    description: 'Check whether username is valid or not',
                     content: new ArrayObject([
                         'application/json' => [
                             'schema' => [
-                                '$ref' => '#/components/schemas/AuthCredentials',
+                                '$ref' => '#/components/schemas/CheckUserIdentifierRequest',
                             ],
                         ],
                     ]),
@@ -216,8 +255,8 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
         $changePasswordItem = new Model\PathItem(
             ref: 'Change Password',
             post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authentication - Change User Password'],
+                operationId: 'postCredentialsToChangePasswordItem',
+                tags: ['User'],
                 responses: [
                     '200' => [
                         'description' => 'Status',
@@ -244,7 +283,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $whoAmIItem = new Model\PathItem(
+        $whoAmIOldItem = new Model\PathItem(
             ref: 'Who Am I?',
             post: new Model\Operation(
                 operationId: 'postCredentialsItem',
@@ -266,11 +305,34 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $whoAmIItem = new Model\PathItem(
+            ref: 'Token',
+            post: new Model\Operation(
+                operationId: 'postWhoAmIItem',
+                tags: ['Token'],
+                responses: [
+                    '200' => [
+                        'description' => 'Status',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/WhoAmIResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get User Identifier Data From Token.',
+                requestBody: null,
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/authentication', $authItem);
         $openApi->getPaths()->addPath('/api/token/refresh', $refreshTokenItem);
-        $openApi->getPaths()->addPath('/json_login', $jsonLoginItem);
-        $openApi->getPaths()->addPath('/api/change_user_password', $changePasswordItem);
-        $openApi->getPaths()->addPath('/api/whoami', $whoAmIItem);
+        $openApi->getPaths()->addPath('/api/users/change_password', $changePasswordItem);
+        $openApi->getPaths()->addPath('/api/whoami', $whoAmIOldItem);
+        $openApi->getPaths()->addPath('/api/token/whoami', $whoAmIItem);
+        $openApi->getPaths()->addPath('/api/users/check_identifier', $checkUserIdentifierItem);
 
         return $openApi;
     }
