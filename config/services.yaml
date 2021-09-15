@@ -26,11 +26,11 @@ services:
 
     App\OpenApi\AuthenticationDecorator:
         decorates: 'api_platform.openapi.factory'
-        autoconfigure: false
+        arguments: ['@.inner']
 
     App\OpenApi\RoleCustomDecorator:
         decorates: 'api_platform.openapi.factory'
-        autoconfigure: false
+        arguments: ['@.inner']
 
     shared_auth_library_jwt_user_provider:
         class: App\SharedAuthLibrary\Security\JwtUserProvider
