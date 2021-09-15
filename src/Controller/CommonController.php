@@ -505,6 +505,42 @@ class CommonController extends AbstractController
 
     /**
      * @param Request $request
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/token/aplikasis', methods: ['POST'])]
+    public function showAplikasiFromToken(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    {
+        if (!$this->isGranted('ROLE_USER')) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 401);
+        }
+
+        $listOfPlainRoles = $this->getUser()->getRoles();
+        $listAplikasi = $listRoles = [];
+        foreach ($listOfPlainRoles as $plainRole) {
+            $role = $this->getDoctrine()
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $plainRole]);
+            if (null !== $role) {
+                $listRoles[] = $role;
+            }
+        }
+
+        foreach (RoleUtils::getAplikasiByArrayOfRoles($listRoles) as $aplikasi) {
+            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        }
+
+        return $this->json([
+            'aplikasi_count' => count($listAplikasi),
+            'aplikasi' => $listAplikasi,
+        ]);
+    }
+
+    /**
+     * @param Request $request
      * @return Role|null
      * @throws JsonException
      */
