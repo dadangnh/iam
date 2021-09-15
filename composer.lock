@@ -1600,16 +1600,16 @@
         },
         {
             "name": "easycorp/easyadmin-bundle",
-            "version": "v3.5.5",
+            "version": "v3.5.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EasyCorp/EasyAdminBundle.git",
-                "reference": "11c73c0a53ccbc82d4b4b7518912e51eece47025"
+                "reference": "5a64895ca6a09970fd416c385e7bd65bb7ef13c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/11c73c0a53ccbc82d4b4b7518912e51eece47025",
-                "reference": "11c73c0a53ccbc82d4b4b7518912e51eece47025",
+                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/5a64895ca6a09970fd416c385e7bd65bb7ef13c8",
+                "reference": "5a64895ca6a09970fd416c385e7bd65bb7ef13c8",
                 "shasum": ""
             },
             "require": {
@@ -1683,7 +1683,7 @@
             ],
             "support": {
                 "issues": "https://github.com/EasyCorp/EasyAdminBundle/issues",
-                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v3.5.5"
+                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v3.5.8"
             },
             "funding": [
                 {
@@ -1691,7 +1691,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-08-08T09:25:33+00:00"
+            "time": "2021-09-03T18:19:43+00:00"
         },
         {
             "name": "fig/link-util",
