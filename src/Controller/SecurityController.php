@@ -103,24 +103,6 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @param IriConverterInterface $iriConverter
-     * @return Response
-     */
-    #[Route('/json_login', name: 'app_json_login', methods: ['POST'])]
-    public function json_login(IriConverterInterface $iriConverter): Response
-    {
-        return $this->json([
-            'user' => $this->getUser() ? $iriConverter->getIriFromItem($this->getUser()) : null,
-            'username' => $this->getUser() ? $this->getUser()->getUsername() : null,
-            'role' => $this->getUser() ? $this->getUser()->getRoles() : null,
-            'pegawai' => $this->getUser()->getPegawai() ? $iriConverter->getIriFromItem($this->getUser()->getPegawai()) : null,
-            'nama' => $this->getUser()->getPegawai() ? $this->getUser()->getPegawai()->getNama() : null,
-            'nip9' => $this->getUser()->getPegawai() ? $this->getUser()->getPegawai()->getNip9() : null,
-            'nip18' => $this->getUser()->getPegawai() ? $this->getUser()->getPegawai()->getNip18() : null,
-        ]);
-    }
-
-    /**
      * @param Request $request
      * @param UserPasswordHasherInterface $passwordHasher
      * @return JsonResponse

@@ -111,16 +111,6 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $schemas['JsonLoginResponse'] = new ArrayObject([
-            'type' => 'object',
-            'properties' => [
-                'data' => [
-                    'type' => 'string',
-                    'readOnly' => true,
-                ],
-            ],
-        ]);
-
         $schemas['WhoAmIResponse'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
@@ -262,37 +252,6 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $jsonLoginItem = new Model\PathItem(
-            ref: 'Json Login',
-            post: new Model\Operation(
-                operationId: 'postCredentialsItem',
-                tags: ['Authentication - Json Login (deprecated)'],
-                responses: [
-                    '200' => [
-                        'description' => 'User data directly from login',
-                        'content' => [
-                            'application/json' => [
-                                'schema' => [
-                                    '$ref' => '#/components/schemas/JsonLoginResponse',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                summary: 'Make authentication with json response.',
-                requestBody: new Model\RequestBody(
-                    description: 'Generate json user data from login',
-                    content: new ArrayObject([
-                        'application/json' => [
-                            'schema' => [
-                                '$ref' => '#/components/schemas/AuthCredentials',
-                            ],
-                        ],
-                    ]),
-                ),
-            ),
-        );
-
         $changePasswordItem = new Model\PathItem(
             ref: 'Change Password',
             post: new Model\Operation(
@@ -370,7 +329,6 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
 
         $openApi->getPaths()->addPath('/api/authentication', $authItem);
         $openApi->getPaths()->addPath('/api/token/refresh', $refreshTokenItem);
-        $openApi->getPaths()->addPath('/json_login', $jsonLoginItem);
         $openApi->getPaths()->addPath('/api/users/change_password', $changePasswordItem);
         $openApi->getPaths()->addPath('/api/whoami', $whoAmIOldItem);
         $openApi->getPaths()->addPath('/api/token/whoami', $whoAmIItem);
