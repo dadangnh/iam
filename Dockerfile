@@ -50,12 +50,14 @@ RUN set -eux; \
 	pecl install \
 		apcu-${APCU_VERSION} \
 		redis \
+		xdebug \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
 		redis.so \
+		xdebug \
 	; \
 	\
 	runDeps="$( \
