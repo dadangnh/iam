@@ -77,8 +77,9 @@ test:
     - symfony console doctrine:fixtures:load --no-interaction
     - symfony server:ca:install
     - symfony serve -d
+    - echo "xdebug.mode=develop,coverage,debug" >> /usr/local/etc/php/php.ini
   script:
-    - php bin/phpunit --log-junit test-report.xml
+    - php bin/phpunit --coverage-text --colors=never --log-junit test-report.xml
   cache:
     key: cacheTest
     paths:
