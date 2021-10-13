@@ -292,7 +292,7 @@ class Jabatan
     public function setTanggalAktifValue(): void
     {
         // Only create tanggal Aktif if no date provided
-        if (null === $this->getTanggalAktif()) {
+        if (!isset($this->tanggalAktif)) {
             $this->tanggalAktif = new DateTimeImmutable();
         }
     }
