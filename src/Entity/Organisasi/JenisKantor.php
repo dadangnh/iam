@@ -224,7 +224,7 @@ class JenisKantor
     public function setTanggalAktifValue(): void
     {
         // Only create tanggal Aktif if no date provided
-        if (null === $this->tanggalAktif) {
+        if (null === $this->getTanggalAktif()) {
             $this->tanggalAktif = new DateTimeImmutable();
         }
     }
