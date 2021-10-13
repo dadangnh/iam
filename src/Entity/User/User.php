@@ -191,7 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $groupMembers;
 
-    #[Pure] public function __construct()
+    public function __construct()
     {
         $this->id = Uuid::v4();
         $this->userTwoFactors = new ArrayCollection();
@@ -280,7 +280,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Method to get the direct relation of role and user
      * @return array
      */
-    public function getDirectRoles(): array
+    #[Pure] public function getDirectRoles(): array
     {
         // check whether user is still active or not
         if ($this->isActive()) {
