@@ -41,7 +41,7 @@ test:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
   services:
-    - name: postgres:13-alpine
+    - name: postgres:14-alpine
       alias: database
     - name: redis:latest
       alias: redis

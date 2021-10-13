@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   database:
-    image: postgres:13-alpine
+    image: postgres:14-alpine
     environment:
       POSTGRES_USER: db_user
       POSTGRES_PASSWORD: db_pass
@@ -49,7 +49,7 @@ services:
       - djp
     environment:
       # Run "composer require symfony/orm-pack" to install and configure Doctrine ORM
-      DATABASE_URL: postgresql://${POSTGRES_USER:-db_user}:${POSTGRES_PASSWORD:-db_pass}@database:5432/${POSTGRES_DB:-db_name}?serverVersion=${POSTGRES_VERSION:-13}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-db_user}:${POSTGRES_PASSWORD:-db_pass}@database:5432/${POSTGRES_DB:-db_name}?serverVersion=${POSTGRES_VERSION:-14}
       # Run "composer require symfony/mercure-bundle" to install and configure the Mercure integration
       MERCURE_URL: ${CADDY_MERCURE_URL:-http://caddy/.well-known/mercure}
       MERCURE_PUBLIC_URL: https://${SERVER_NAME:-localhost}/.well-known/mercure
