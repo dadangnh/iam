@@ -14,7 +14,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -24,6 +23,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="jenis_kantor", indexes={
  *     @ORM\Index(name="idx_jenis_kantor_nama_status", columns={"id", "nama", "tipe", "klasifikasi"}),
  *     @ORM\Index(name="idx_jenis_kantor_legacy", columns={"id", "legacy_kode", "legacy_id"}),
+ *     @ORM\Index(name="idx_jenis_kantor_active", columns={"id", "nama", "legacy_kode",
+ *          "tanggal_aktif", "tanggal_nonaktif"}),
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
@@ -151,7 +152,7 @@ class JenisKantor
      */
     private $roles;
 
-    #[Pure] public function __construct()
+    public function __construct()
     {
         $this->id = Uuid::v4();
         $this->kantors = new ArrayCollection();
@@ -222,7 +223,10 @@ class JenisKantor
      */
     public function setTanggalAktifValue(): void
     {
-        $this->tanggalAktif = new DateTimeImmutable();
+        // Only create tanggal Aktif if no date provided
+        if (null === $this->tanggalAktif) {
+            $this->tanggalAktif = new DateTimeImmutable();
+        }
     }
 
     public function getTanggalNonaktif(): ?DateTimeImmutable

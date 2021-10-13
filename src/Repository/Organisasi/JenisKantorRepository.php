@@ -3,6 +3,7 @@
 namespace App\Repository\Organisasi;
 
 use App\Entity\Organisasi\JenisKantor;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +20,55 @@ class JenisKantorRepository extends ServiceEntityRepository
         parent::__construct($registry, JenisKantor::class);
     }
 
-    // /**
-    //  * @return JenisKantor[] Returns an array of JenisKantor objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public function findJenisKantorByNameKeyword($keyword): mixed
     {
+        $lowerKeyword = strtolower($keyword);
         return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('j.id', 'ASC')
+            ->andWhere('lower(j.nama) LIKE :val')
+            ->setParameter('val', '%' . $lowerKeyword . '%')
+            ->addOrderBy('j.klasifikasi', 'ASC')
+            ->addOrderBy('j.nama', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?JenisKantor
+    /**
+     * @return mixed
+     */
+    public function findAllActiveJenisKantor(): mixed
     {
         return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('j.tanggalAktif < :now')
+            ->andWhere('j.tanggalNonaktif is null or j.tanggalNonaktif > :now')
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('j.klasifikasi', 'ASC')
+            ->addOrderBy('j.nama', 'ASC')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public function findActiveJenisKantorByNameKeyword($keyword): mixed
+    {
+        $lowerKeyword = strtolower($keyword);
+        return $this->createQueryBuilder('j')
+            ->andWhere('lower(j.nama) LIKE :val')
+            ->andWhere('j.tanggalAktif < :now')
+            ->andWhere('j.tanggalNonaktif is null or j.tanggalNonaktif > :now')
+            ->setParameter('val', '%' . $lowerKeyword . '%')
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('j.klasifikasi', 'ASC')
+            ->addOrderBy('j.nama', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
 }

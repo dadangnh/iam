@@ -15,7 +15,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -27,6 +26,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_jabatan_nama_status", columns={"id", "nama", "level", "jenis"}),
  *     @ORM\Index(name="idx_jabatan_legacy", columns={"id", "legacy_kode"}),
  *     @ORM\Index(name="idx_jabatan_relation", columns={"id", "eselon_id"}),
+ *     @ORM\Index(name="idx_jabatan_active", columns={"id", "nama", "legacy_kode",
+ *          "tanggal_aktif", "tanggal_nonaktif"}),
+
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
@@ -218,7 +220,7 @@ class Jabatan
      */
     private $groupJabatan;
 
-    #[Pure] public function __construct()
+    public function __construct()
     {
         $this->id = Uuid::v4();
         $this->jabatanPegawais = new ArrayCollection();
@@ -289,7 +291,10 @@ class Jabatan
      */
     public function setTanggalAktifValue(): void
     {
-        $this->tanggalAktif = new DateTimeImmutable();
+        // Only create tanggal Aktif if no date provided
+        if (null === $this->tanggalAktif) {
+            $this->tanggalAktif = new DateTimeImmutable();
+        }
     }
 
     public function getTanggalNonaktif(): ?DateTimeImmutable
