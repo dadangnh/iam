@@ -3,6 +3,7 @@
 namespace App\Repository\Organisasi;
 
 use App\Entity\Organisasi\Jabatan;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +20,55 @@ class JabatanRepository extends ServiceEntityRepository
         parent::__construct($registry, Jabatan::class);
     }
 
-    // /**
-    //  * @return Jabatan[] Returns an array of Jabatan objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public function findJabatanByNameKeyword($keyword): mixed
     {
+        $lowerKeyword = strtolower($keyword);
         return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('j.id', 'ASC')
+            ->andWhere('lower(j.nama) LIKE :val')
+            ->setParameter('val', '%' . $lowerKeyword . '%')
+            ->addOrderBy('j.level', 'ASC')
+            ->addOrderBy('j.nama', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Jabatan
+    /**
+     * @return mixed
+     */
+    public function findAllActiveJabatan(): mixed
     {
         return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('j.tanggalAktif < :now')
+            ->andWhere('j.tanggalNonaktif is null or j.tanggalNonaktif > :now')
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('j.level', 'ASC')
+            ->addOrderBy('j.nama', 'ASC')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public function findActiveJabatanByNameKeyword($keyword): mixed
+    {
+        $lowerKeyword = strtolower($keyword);
+        return $this->createQueryBuilder('j')
+            ->andWhere('lower(j.nama) LIKE :val')
+            ->andWhere('j.tanggalAktif < :now')
+            ->andWhere('j.tanggalNonaktif is null or j.tanggalNonaktif > :now')
+            ->setParameter('val', '%' . $lowerKeyword . '%')
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('j.level', 'ASC')
+            ->addOrderBy('j.nama', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
 }

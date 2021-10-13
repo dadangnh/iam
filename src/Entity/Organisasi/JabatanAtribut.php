@@ -11,7 +11,6 @@ use App\Repository\Organisasi\JabatanAtributRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -89,7 +88,7 @@ class JabatanAtribut
      */
     private $jabatanPegawais;
 
-    #[Pure] public function __construct()
+    public function __construct()
     {
         $this->id = Uuid::v4();
         $this->jabatanPegawais = new ArrayCollection();

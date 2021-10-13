@@ -18,7 +18,6 @@ use App\Repository\Core\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -295,7 +294,7 @@ class Role
      */
     private $jenis;
 
-    #[Pure] public function __construct()
+    public function __construct()
     {
         $this->id = Uuid::v4();
         $this->containRoles = new ArrayCollection();
