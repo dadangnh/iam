@@ -50,12 +50,14 @@ RUN set -eux; \
 	pecl install \
 		apcu-${APCU_VERSION} \
 		redis \
+		xdebug \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
 		redis.so \
+		xdebug \
 	; \
 	\
 	runDeps="$( \
@@ -70,9 +72,6 @@ RUN set -eux; \
 
 COPY docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 RUN chmod +x /usr/local/bin/docker-healthcheck
-
-#RUN apk add shadow && usermod -u 1000 www-data && groupmod -g 1000 www-data
-#RUN usermod -u 1000 www-data
 
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 
@@ -108,7 +107,7 @@ ARG SYMFONY_VERSION=""
 ENV SYMFONY_VERSION ${SYMFONY_VERSION}
 
 # Download the Symfony skeleton and leverage Docker cache layers
-#RUN composer create-project "symfony/skeleton ${SYMFONY_VERSION}" . --stability=$STABILITY --prefer-dist --no-dev --no-progress --no-interaction; \
+#RUN composer create-project "${SKELETON} ${SYMFONY_VERSION}" . --stability=$STABILITY --prefer-dist --no-dev --no-progress --no-interaction; \
 #	composer clear-cache
 
 ###> recipes ###

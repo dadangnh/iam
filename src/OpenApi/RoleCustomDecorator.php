@@ -8,6 +8,7 @@ use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\Core\OpenApi\OpenApi;
 use ApiPlatform\Core\OpenApi\Model;
 use ArrayObject;
+
 class RoleCustomDecorator implements OpenApiFactoryInterface
 {
     public function __construct(

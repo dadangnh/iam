@@ -1,7 +1,18 @@
 # DJP IAM (Back-end for DJPConnect)
 
 [![pipeline status](https://gitlab.com/dadangnh/djp-iam/badges/master/pipeline.svg)](https://gitlab.com/dadangnh/djp-iam/-/commits/master)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5074/badge)](https://bestpractices.coreinfrastructure.org/projects/5074)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/44690bc332194c26a94dc8bb062a67f1)](https://www.codacy.com/gl/dadangnh/djp-iam/dashboard?utm_source=gitlab.com&amp;utm_medium=referral&amp;utm_content=dadangnh/djp-iam&amp;utm_campaign=Badge_Grade)
+[![coverage report](https://gitlab.com/dadangnh/djp-iam/badges/master/coverage.svg)](https://gitlab.com/dadangnh/djp-iam/-/commits/master)
+
+![Lines of code](https://img.shields.io/tokei/lines/gitlab.com/dadangnh/djp-iam)
+![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/dadang/djp-iam_php)
+![Packagist License](https://img.shields.io/packagist/l/dadangnh/iam)
+
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/dadangnh/iam)
+![Packagist Version](https://img.shields.io/packagist/v/dadangnh/iam)
+![GitLab tag (latest by SemVer)](https://img.shields.io/gitlab/v/tag/dadangnh/djp-iam)
+![Docker Image Version (latest semver)](https://img.shields.io/docker/v/dadang/djp-iam_php)
 
 Source code service Identity and Access Management DJP.
 

@@ -15,7 +15,6 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -27,6 +26,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\Index(name="idx_unit_nama", columns={"id", "nama", "level"}),
  *     @ORM\Index(name="idx_unit_legacy", columns={"id", "legacy_kode", "pembina_id"}),
  *     @ORM\Index(name="idx_unit_relation", columns={"id", "jenis_kantor_id", "parent_id", "eselon_id"}),
+ *     @ORM\Index(name="idx_unit_active", columns={"id", "nama", "legacy_kode",
+ *          "tanggal_aktif", "tanggal_nonaktif"}),
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
@@ -194,7 +195,7 @@ class Unit
      */
     private $membina;
 
-    #[Pure] public function __construct()
+    public function __construct()
     {
         $this->id = Uuid::v4();
         $this->childs = new ArrayCollection();
@@ -321,7 +322,10 @@ class Unit
      */
     public function setTanggalAktifValue(): void
     {
-        $this->tanggalAktif = new DateTimeImmutable();
+        // Only create tanggal Aktif if no date provided
+        if (!isset($this->tanggalAktif)) {
+            $this->tanggalAktif = new DateTimeImmutable();
+        }
     }
 
     public function getTanggalNonaktif(): ?DateTimeImmutable
