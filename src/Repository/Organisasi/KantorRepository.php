@@ -71,4 +71,26 @@ class KantorRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findLegacyDataFromArrayOfIds($ids): mixed
+    {
+        return $this->createQueryBuilder('k')
+            ->select([
+                'k.id',
+                'k.nama',
+                'k.level',
+                'k.legacyKode',
+                'k.legacyKodeKpp',
+                'k.legacyKodeKanwil'
+            ])
+            ->andWhere('k.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->addOrderBy('k.level', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
