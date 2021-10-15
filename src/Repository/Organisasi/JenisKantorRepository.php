@@ -71,4 +71,27 @@ class JenisKantorRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findLegacyDataFromArrayOfIds($ids): mixed
+    {
+        return $this->createQueryBuilder('j')
+            ->select([
+                'j.id',
+                'j.nama',
+                'j.tipe',
+                'j.klasifikasi',
+                'j.legacyId',
+                'j.legacyKode'
+            ])
+            ->andWhere('j.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->addOrderBy('j.klasifikasi', 'ASC')
+            ->addOrderBy('j.tipe', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
