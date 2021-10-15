@@ -36,6 +36,10 @@ services:
         decorates: 'api_platform.openapi.factory'
         arguments: ['@.inner']
 
+    App\OpenApi\ReferensiCustomDecorator:
+        decorates: 'api_platform.openapi.factory'
+        arguments: ['@.inner']
+
     shared_auth_library_jwt_user_provider:
         class: App\SharedAuthLibrary\Security\JwtUserProvider
 

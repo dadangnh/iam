@@ -19,32 +19,18 @@ class EselonRepository extends ServiceEntityRepository
         parent::__construct($registry, Eselon::class);
     }
 
-    // /**
-    //  * @return Eselon[] Returns an array of Eselon objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findLegacyDataFromArrayOfIds($ids): mixed
     {
         return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
+            ->select(['e.id', 'e.nama', 'e.tingkat', 'e.kode', 'e.legacyKode'])
+            ->andWhere('e.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->addOrderBy('e.tingkat', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Eselon
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
