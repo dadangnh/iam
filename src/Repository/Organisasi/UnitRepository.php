@@ -71,4 +71,20 @@ class UnitRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findLegacyDataFromArrayOfIds($ids)
+    {
+        return $this->createQueryBuilder('u')
+            ->select([
+                'u.id',
+                'u.nama',
+                'u.level',
+                'u.legacyKode'
+            ])
+            ->andWhere('u.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->addOrderBy('u.level', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

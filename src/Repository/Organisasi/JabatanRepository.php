@@ -71,4 +71,27 @@ class JabatanRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public function findLegacyDataFromArrayOfIds($ids): mixed
+    {
+        return $this->createQueryBuilder('j')
+            ->select([
+                'j.id',
+                'j.nama',
+                'j.level',
+                'j.jenis',
+                'j.legacyKode',
+                'j.legacyKodeJabKeu',
+                'j.legacyKodeGradeKeu'
+            ])
+            ->andWhere('j.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->addOrderBy('j.level', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
