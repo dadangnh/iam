@@ -27,7 +27,9 @@ class JabatanController extends AbstractController
     #[Route('/api/jabatans/active/{name}', methods: ['GET'])]
     public function getActiveJabatanByKeyword(String $name): JsonResponse
     {
-        if (3 < strlen($name)) {
+        $this->ensureUserLoggedIn();
+
+        if (3 > strlen($name)) {
             return $this->json([
                 'code' => 406,
                 'error' => 'Please use 3 char or more for keyword'
@@ -47,8 +49,6 @@ class JabatanController extends AbstractController
      */
     private function formatReturnData(?array $jabatans): JsonResponse
     {
-        $this->ensureUserLoggedIn();
-
         if (empty($jabatans)) {
             return $this->json([
                 'code' => 404,

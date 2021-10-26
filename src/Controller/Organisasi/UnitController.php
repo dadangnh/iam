@@ -29,7 +29,7 @@ class UnitController extends AbstractController
     {
         $this->ensureUserLoggedIn();
 
-        if (3 < strlen($name)) {
+        if (3 > strlen($name)) {
             return $this->json([
                 'code' => 406,
                 'error' => 'Please use 3 char or more for keyword'
