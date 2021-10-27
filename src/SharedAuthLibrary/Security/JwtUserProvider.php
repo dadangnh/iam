@@ -38,6 +38,7 @@ class JwtUserProvider implements UserProviderInterface
         }
 
         return new User(
+            $payload['id'],
             $payload['username'],
             $payload['roles'],
             $payload['expired'],

@@ -12,7 +12,7 @@ use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\Pegawai;
 use App\Repository\User\UserRepository;
-use App\utils\RoleUtils;
+use App\Helper\RoleHelper;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -255,7 +255,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if (!$this->getPegawai()->getPensiun()) {
                 /** @var JabatanPegawai $jabatanPegawai */
                 foreach ($this->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
-                    $arrayOfRoles[] = RoleUtils::getPlainRolesNameFromJabatanPegawai($jabatanPegawai);
+                    $arrayOfRoles[] = RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai);
                 }
             } else {
                 return ['ROLE_RETIRED'];
