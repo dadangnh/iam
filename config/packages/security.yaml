@@ -21,8 +21,8 @@ security:
         api_token_refresh:
             pattern: ^/api/token/refresh
             stateless: true
-        #            TOFO: besok comment dihapus pas upgrade jadi nyala
-        #            refresh_jwt: ~
+            refresh_jwt:
+                provider: app_user_provider
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
