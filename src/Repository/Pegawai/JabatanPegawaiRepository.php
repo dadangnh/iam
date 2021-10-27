@@ -3,7 +3,9 @@
 namespace App\Repository\Pegawai;
 
 use App\Entity\Pegawai\JabatanPegawai;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +21,48 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
         parent::__construct($registry, JabatanPegawai::class);
     }
 
-    // /**
-    //  * @return JabatanPegawai[] Returns an array of JabatanPegawai objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findJabatanPegawaiActiveFromKantorUnitEselon($kantorId, $unitId, $eselonTingkat)
     {
-        return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('j.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('jp')
+            ->leftJoin('jp.kantor', 'kantor')
+            ->leftJoin('jp.unit', 'unit')
+            ->leftJoin('jp.jabatan', 'jabatan')
+            ->leftJoin('jabatan.eselon', 'eselon')
+            ->andWhere('kantor.id = :kantorId')
+            ->andWhere('unit.id = :unitId')
+            ->andWhere('eselon.tingkat = :eselonTingkat')
+            ->andWhere('jp.tanggalMulai < :now')
+            ->andWhere('jp.tanggalSelesai is null or jp.tanggalSelesai > :now')
+            ->setParameter('kantorId', $kantorId)
+            ->setParameter('unitId', $unitId)
+            ->setParameter('eselonTingkat', $eselonTingkat)
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('jp.tanggalMulai', 'DESC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?JabatanPegawai
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findJabatanPegawaiActiveFromKantorAndEselon($kantorId, $eselonTingkat)
     {
-        return $this->createQueryBuilder('j')
-            ->andWhere('j.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('jp')
+            ->leftJoin('jp.kantor', 'kantor')
+            ->leftJoin('jp.jabatan', 'jabatan')
+            ->leftJoin('jabatan.eselon', 'eselon')
+            ->andWhere('kantor.id = :kantorId')
+            ->andWhere('eselon.tingkat = :eselonTingkat')
+            ->andWhere('jp.tanggalMulai < :now')
+            ->andWhere('jp.tanggalSelesai is null or jp.tanggalSelesai > :now')
+            ->setParameter('kantorId', $kantorId)
+            ->setParameter('eselonTingkat', $eselonTingkat)
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('jp.tanggalMulai', 'DESC')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
-    */
 }

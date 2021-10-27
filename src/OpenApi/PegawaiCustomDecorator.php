@@ -41,6 +41,27 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
+        $schemas['PostAtasanFromPegawaiUidRequest'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'pegawaiId' => [
+                    'type' => 'string',
+                    'example' => "uuid_1",
+                ],
+            ],
+        ]);
+
+        $schemas['PostAtasanFromPegawaiUidResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'pegawaiIds' => [
+                    'type' => 'array',
+                    'example' => [],
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
         $bulkPegawaiDataFromIdsItem = new Model\PathItem(
             ref: 'Pegawai',
             post: new Model\Operation(
@@ -72,7 +93,40 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+
+        $fetchAtasanFromPegawaiIdItem = new Model\PathItem(
+            ref: 'Pegawai',
+            post: new Model\Operation(
+                operationId: 'postAtasanFromPegawaiIdItem',
+                tags: ['Pegawai'],
+                responses: [
+                    '200' => [
+                        'description' => 'Successful response',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/PostAtasanFromPegawaiUidResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Atasan data of Pegawai Uid',
+                requestBody: new Model\RequestBody(
+                    description: 'Get Atasan data from pegawai uuid',
+                    content: new ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/PostAtasanFromPegawaiUidRequest',
+                            ],
+                        ],
+                    ]),
+                ),
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/pegawais/mass_fetch', $bulkPegawaiDataFromIdsItem);
+        $openApi->getPaths()->addPath('/api/pegawais/atasan', $fetchAtasanFromPegawaiIdItem);
 
         return $openApi;
     }
