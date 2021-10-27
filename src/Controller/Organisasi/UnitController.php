@@ -3,10 +3,15 @@
 namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\Unit;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Restrict access to this controller only for user
+ * @Security("is_granted('ROLE_USER')")
+ */
 class UnitController extends AbstractController
 {
     /**
@@ -15,8 +20,6 @@ class UnitController extends AbstractController
     #[Route('/api/units/active/show_all', methods: ['GET'])]
     public function getAllActiveUnit(): JsonResponse
     {
-        $this->ensureUserLoggedIn();
-
         $units = $this->getDoctrine()
             ->getRepository(Unit::class)
             ->findAllActiveUnit();
@@ -24,11 +27,13 @@ class UnitController extends AbstractController
         return $this->formatReturnData($units);
     }
 
+    /**
+     * @param String $name
+     * @return JsonResponse
+     */
     #[Route('/api/units/active/{name}', methods: ['GET'])]
     public function getActiveUnitByKeyword(String $name): JsonResponse
     {
-        $this->ensureUserLoggedIn();
-
         if (3 > strlen($name)) {
             return $this->json([
                 'code' => 406,
@@ -60,20 +65,5 @@ class UnitController extends AbstractController
             'unit_count' => count($units),
             'units' => $units,
         ]);
-    }
-
-    /**
-     * @return JsonResponse|null
-     */
-    private function ensureUserLoggedIn(): ?JsonResponse
-    {
-        if (!$this->isGranted('ROLE_USER')) {
-            return $this->json([
-                'code' => 401,
-                'error' => 'Unauthorized API access.',
-            ], 401);
-        }
-
-        return null;
     }
 }

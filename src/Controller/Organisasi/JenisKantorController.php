@@ -4,10 +4,15 @@ namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\JenisKantor;
 use App\Entity\Organisasi\Kantor;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Restrict access to this controller only for user
+ * @Security("is_granted('ROLE_USER')")
+ */
 class JenisKantorController extends AbstractController
 {
     /**
@@ -16,8 +21,6 @@ class JenisKantorController extends AbstractController
     #[Route('/api/jenis_kantors/active/show_all', methods: ['GET'])]
     public function getAllActiveJenisKantor(): JsonResponse
     {
-        $this->ensureUserLoggedIn();
-
         $jenisKantors = $this->getDoctrine()
             ->getRepository(JenisKantor::class)
             ->findAllActiveJenisKantor();
@@ -25,11 +28,13 @@ class JenisKantorController extends AbstractController
         return $this->formatReturnData($jenisKantors);
     }
 
+    /**
+     * @param String $name
+     * @return JsonResponse
+     */
     #[Route('/api/jenis_kantors/active/{name}', methods: ['GET'])]
     public function getActiveJenisKantorByKeyword(String $name): JsonResponse
     {
-        $this->ensureUserLoggedIn();
-
         if (3 > strlen($name)) {
             return $this->json([
                 'code' => 406,
@@ -61,20 +66,5 @@ class JenisKantorController extends AbstractController
             'jenis_kantor_count' => count($jenisKantors),
             'jenis_kantors' => $jenisKantors,
         ]);
-    }
-
-    /**
-     * @return JsonResponse|null
-     */
-    private function ensureUserLoggedIn(): ?JsonResponse
-    {
-        if (!$this->isGranted('ROLE_USER')) {
-            return $this->json([
-                'code' => 401,
-                'error' => 'Unauthorized API access.',
-            ], 401);
-        }
-
-        return null;
     }
 }
