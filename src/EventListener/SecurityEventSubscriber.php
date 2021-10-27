@@ -11,7 +11,7 @@ use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\User\User;
-use App\utils\RoleUtils;
+use App\Helper\RoleHelper;
 use DateTimeImmutable;
 use JetBrains\PhpStorm\ArrayShape;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
@@ -72,7 +72,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                     'kantor_name' => $namaKantor,
                     'unit_name' => $namaUnit,
                     'tipeJabatan_name' => $namaTipe,
-                    'roles' => RoleUtils::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
+                    'roles' => RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
                 ];
             }
         }

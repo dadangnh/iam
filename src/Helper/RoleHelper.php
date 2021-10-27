@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\utils;
+namespace App\Helper;
 
 
 use ApiPlatform\Core\Api\IriConverterInterface;
@@ -11,7 +11,7 @@ use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use JetBrains\PhpStorm\ArrayShape;
 
-class RoleUtils
+class RoleHelper
 {
 
     /**
