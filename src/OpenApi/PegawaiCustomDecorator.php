@@ -93,7 +93,6 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-
         $fetchAtasanFromPegawaiIdItem = new Model\PathItem(
             ref: 'Pegawai',
             post: new Model\Operation(
