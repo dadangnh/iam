@@ -8,12 +8,17 @@ use App\Entity\Organisasi\JenisKantor;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\Unit;
 use JsonException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ * Restrict access to this controller only for user
+ * @Security("is_granted('ROLE_USER')")
+ */
 class LegacyDataController extends AbstractController
 {
     private const VALID_KEYS = [
@@ -38,9 +43,6 @@ class LegacyDataController extends AbstractController
     #[Route('/api/referensi/legacy_data', methods: ['POST'])]
     public function showLegacyData(Request $request): JsonResponse
     {
-        // Check token
-        $this->ensureUserLoggedIn();
-
         // Get the request data
         $requestData = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
@@ -136,20 +138,5 @@ class LegacyDataController extends AbstractController
             'code' => 404,
             'errors' => 'The specified keyword is invalid.'
         ];
-    }
-
-    /**
-     * @return JsonResponse|null
-     */
-    private function ensureUserLoggedIn(): ?JsonResponse
-    {
-        if (!$this->isGranted('ROLE_USER')) {
-            return $this->json([
-                'code' => 401,
-                'error' => 'Unauthorized API access.',
-            ], 401);
-        }
-
-        return null;
     }
 }

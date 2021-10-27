@@ -8,8 +8,8 @@ use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
-use App\utils\AplikasiUtils;
-use App\utils\RoleUtils;
+use App\Helper\AplikasiHelper;
+use App\Helper\RoleHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -87,8 +87,8 @@ class CommonController extends AbstractController
         }
 
         $listAplikasi = [];
-        foreach (RoleUtils::getAplikasiByRole($role) as $aplikasi) {
-            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        foreach (RoleHelper::getAplikasiByRole($role) as $aplikasi) {
+            $listAplikasi[] = AplikasiHelper::createReadableAplikasiJsonData($aplikasi, $iriConverter);
         }
 
         return $this->json([
@@ -205,8 +205,8 @@ class CommonController extends AbstractController
         }
 
         $listAplikasi = [];
-        foreach (RoleUtils::getAllAplikasiByRole($role) as $aplikasi) {
-            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        foreach (RoleHelper::getAllAplikasiByRole($role) as $aplikasi) {
+            $listAplikasi[] = AplikasiHelper::createReadableAplikasiJsonData($aplikasi, $iriConverter);
         }
 
         return $this->json([
@@ -274,8 +274,8 @@ class CommonController extends AbstractController
         }
 
         $listAplikasi = [];
-        foreach (RoleUtils::getAplikasiByRole($role) as $aplikasi) {
-            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        foreach (RoleHelper::getAplikasiByRole($role) as $aplikasi) {
+            $listAplikasi[] = AplikasiHelper::createReadableAplikasiJsonData($aplikasi, $iriConverter);
         }
 
         return $this->json([
@@ -306,8 +306,8 @@ class CommonController extends AbstractController
         }
 
         $listAplikasi = [];
-        foreach (RoleUtils::getAllAplikasiByRole($role) as $aplikasi) {
-            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        foreach (RoleHelper::getAllAplikasiByRole($role) as $aplikasi) {
+            $listAplikasi[] = AplikasiHelper::createReadableAplikasiJsonData($aplikasi, $iriConverter);
         }
 
         return $this->json([
@@ -436,7 +436,7 @@ class CommonController extends AbstractController
             ], 404);
         }
 
-        $roles = RoleUtils::getRolesFromJabatanPegawai($jabatanPegawai);
+        $roles = RoleHelper::getRolesFromJabatanPegawai($jabatanPegawai);
 
         if (empty($roles)) {
             return $this->json([
@@ -447,7 +447,7 @@ class CommonController extends AbstractController
 
         return $this->json([
             'roles_count' => count($roles),
-            'roles' => RoleUtils::createRoleDefaultResponseFromArrayOfRoles($roles, $iriConverter)
+            'roles' => RoleHelper::createRoleDefaultResponseFromArrayOfRoles($roles, $iriConverter)
         ]);
     }
 
@@ -460,8 +460,8 @@ class CommonController extends AbstractController
         $listAplikasi = [];
         $listRoles = $this->findRolesFromCurrentUser();
 
-        foreach (RoleUtils::getAplikasiByArrayOfRoles($listRoles) as $aplikasi) {
-            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        foreach (RoleHelper::getAplikasiByArrayOfRoles($listRoles) as $aplikasi) {
+            $listAplikasi[] = AplikasiHelper::createReadableAplikasiJsonData($aplikasi, $iriConverter);
         }
 
         return $this->json([
@@ -500,8 +500,8 @@ class CommonController extends AbstractController
         $listAplikasi = [];
         $listRoles = $this->findRolesFromCurrentUser();
 
-        foreach (RoleUtils::getAllAplikasiByArrayOfRoles($listRoles) as $aplikasi) {
-            $listAplikasi[] = AplikasiUtils::createReadableAplikasiJsonData($aplikasi, $iriConverter);
+        foreach (RoleHelper::getAllAplikasiByArrayOfRoles($listRoles) as $aplikasi) {
+            $listAplikasi[] = AplikasiHelper::createReadableAplikasiJsonData($aplikasi, $iriConverter);
         }
 
         return $this->json([

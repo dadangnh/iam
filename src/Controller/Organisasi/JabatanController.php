@@ -3,10 +3,15 @@
 namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\Jabatan;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Restrict access to this controller only for user
+ * @Security("is_granted('ROLE_USER')")
+ */
 class JabatanController extends AbstractController
 {
     /**
@@ -15,8 +20,6 @@ class JabatanController extends AbstractController
     #[Route('/api/jabatans/active/show_all', methods: ['GET'])]
     public function getAllActiveJabatan(): JsonResponse
     {
-        $this->ensureUserLoggedIn();
-
         $jabatans = $this->getDoctrine()
             ->getRepository(Jabatan::class)
             ->findAllActiveJabatan();
@@ -24,11 +27,13 @@ class JabatanController extends AbstractController
         return $this->formatReturnData($jabatans);
     }
 
+    /**
+     * @param String $name
+     * @return JsonResponse
+     */
     #[Route('/api/jabatans/active/{name}', methods: ['GET'])]
     public function getActiveJabatanByKeyword(String $name): JsonResponse
     {
-        $this->ensureUserLoggedIn();
-
         if (3 > strlen($name)) {
             return $this->json([
                 'code' => 406,
@@ -60,20 +65,5 @@ class JabatanController extends AbstractController
             'jabatan_count' => count($jabatans),
             'jabatans' => $jabatans,
         ]);
-    }
-
-    /**
-     * @return JsonResponse|null
-     */
-    private function ensureUserLoggedIn(): ?JsonResponse
-    {
-        if (!$this->isGranted('ROLE_USER')) {
-            return $this->json([
-                'code' => 401,
-                'error' => 'Unauthorized API access.',
-            ], 401);
-        }
-
-        return null;
     }
 }
