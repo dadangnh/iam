@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6af1ac463a720795952704436d725f49",
+    "content-hash": "0f90d2ebc592855b5c03ffa2a2560ece",
     "packages": [
         {
             "name": "api-platform/core",
@@ -1838,29 +1838,49 @@
         },
         {
             "name": "gesdinet/jwt-refresh-token-bundle",
-            "version": "v0.12.0",
+            "version": "v1.0.0-beta4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/markitosgv/JWTRefreshTokenBundle.git",
-                "reference": "4a7109df39b84b5bc41e6ee16da8cdcb9e0093fb"
+                "reference": "503c69d397c2edb8d20093030ea338befca0a725"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markitosgv/JWTRefreshTokenBundle/zipball/4a7109df39b84b5bc41e6ee16da8cdcb9e0093fb",
-                "reference": "4a7109df39b84b5bc41e6ee16da8cdcb9e0093fb",
+                "url": "https://api.github.com/repos/markitosgv/JWTRefreshTokenBundle/zipball/503c69d397c2edb8d20093030ea338befca0a725",
+                "reference": "503c69d397c2edb8d20093030ea338befca0a725",
                 "shasum": ""
             },
             "require": {
-                "lexik/jwt-authentication-bundle": "^1.1|^2.0@dev",
-                "php": "^5.5.9|>=7.0.8",
-                "symfony/framework-bundle": "~3.4|~4.0|~5.0",
-                "symfony/validator": "~3.4|~4.0|~5.0"
+                "lexik/jwt-authentication-bundle": "^2.0",
+                "php": ">=7.4",
+                "symfony/config": "^3.4|^4.4|^5.2",
+                "symfony/console": "^3.4|^4.4|^5.2",
+                "symfony/dependency-injection": "^3.4|^4.4|^5.2",
+                "symfony/deprecation-contracts": "^2.1",
+                "symfony/event-dispatcher": "^3.4|^4.4|^5.2",
+                "symfony/http-foundation": "^3.4|^4.4|^5.2",
+                "symfony/http-kernel": "^3.4|^4.4|^5.2",
+                "symfony/polyfill-php80": "^1.15",
+                "symfony/property-access": "^3.4|^4.4|^5.2",
+                "symfony/security-bundle": "^3.4|^4.0|^5.2",
+                "symfony/security-core": "^3.4|^4.4|^5.2",
+                "symfony/security-guard": "^3.4|^4.4|^5.2",
+                "symfony/security-http": "^3.4|^4.4|^5.2"
+            },
+            "conflict": {
+                "doctrine/persistence": "<1.3.3"
             },
             "require-dev": {
-                "doctrine/doctrine-bundle": "~1.4|~2.0",
+                "akeneo/phpspec-skip-example-extension": "^4.0|^5.0",
+                "doctrine/cache": "^1.11|^2.0",
+                "doctrine/doctrine-bundle": "^1.12|^2.0",
                 "doctrine/mongodb-odm-bundle": "^3.4|^4.0",
-                "doctrine/orm": "^2.4.8",
-                "phpspec/phpspec": "^3.0|^4.0|^5.0|^6.0"
+                "doctrine/orm": "^2.7",
+                "doctrine/persistence": "^1.3.3|^2.0",
+                "matthiasnoback/symfony-dependency-injection-test": "^4.0",
+                "phpspec/phpspec": "^7.0",
+                "phpunit/phpunit": "^8.5|^9.5",
+                "symfony/cache": "^3.4|^4.4|^5.2"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -1871,7 +1891,10 @@
             "autoload": {
                 "psr-4": {
                     "Gesdinet\\JWTRefreshTokenBundle\\": ""
-                }
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1889,9 +1912,9 @@
             ],
             "support": {
                 "issues": "https://github.com/markitosgv/JWTRefreshTokenBundle/issues",
-                "source": "https://github.com/markitosgv/JWTRefreshTokenBundle/tree/v0.12.0"
+                "source": "https://github.com/markitosgv/JWTRefreshTokenBundle/tree/v1.0.0-beta4"
             },
-            "time": "2021-04-23T16:47:20+00:00"
+            "time": "2021-07-29T06:31:17+00:00"
         },
         {
             "name": "laminas/laminas-code",
@@ -9287,6 +9310,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "gesdinet/jwt-refresh-token-bundle": 10,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
