@@ -3,6 +3,7 @@
 namespace App\Helper;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
+use App\Entity\Organisasi\Kantor;
 use App\Entity\Pegawai\JabatanPegawai;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -34,6 +35,7 @@ class PosisiHelper
     }
 
     /**
+     * Method to fetch atasan from jabatan pegawai
      * @param JabatanPegawai $jabatanPegawai
      * @return array
      */
@@ -149,24 +151,65 @@ class PosisiHelper
 
         // Make sure the output is instanceof JabatanPegawai
         if ($jabatanPegawaiAtasan instanceof JabatanPegawai) {
-            return [
-                'userIri' => $this->iriConverter->getIriFromItem($jabatanPegawaiAtasan->getPegawai()?->getUser()),
-                'userIdentifier' => $jabatanPegawaiAtasan->getPegawai()?->getUser()?->getUserIdentifier(),
-                'pegawaiIri' => $this->iriConverter->getIriFromItem($jabatanPegawaiAtasan->getPegawai()),
-                'name' => $jabatanPegawaiAtasan->getPegawai()?->getNama(),
-                'nip9' => $jabatanPegawaiAtasan->getPegawai()?->getNip9(),
-                'nip18' => $jabatanPegawaiAtasan->getPegawai()?->getNip18(),
-                'jabatanIri' => $this->iriConverter->getIriFromItem($jabatanPegawaiAtasan->getJabatan()),
-                'jabatanName' => $jabatanPegawaiAtasan->getJabatan()?->getNama(),
-                'kantorIri' => $this->iriConverter->getIriFromItem($jabatanPegawaiAtasan->getKantor()),
-                'kantorName' => $jabatanPegawaiAtasan->getKantor()?->getNama(),
-                'unitIri' => $this->iriConverter->getIriFromItem($jabatanPegawaiAtasan->getUnit()),
-                'unitName' => $jabatanPegawaiAtasan->getUnit()?->getNama(),
-                'eselonTingkat' => $jabatanPegawaiAtasan->getJabatan()?->getEselon()?->getTingkat()
-            ];
+            return $this->makeOutputSinglePegawaiFromJabatanPegawai($jabatanPegawaiAtasan);
         }
 
         // If no result found
-        return ['no atasan found.'];
+        return ['No atasan found.'];
+    }
+
+    /**
+     * Method to fetch Kepala Kantor from Kantor Data
+     * @param Kantor $kantor
+     * @return array
+     */
+    public function getKepalaKantorFromKantor(Kantor $kantor): array
+    {
+        $jabatanPegawaiKepalaKantor = $this->entityManager
+            ->getRepository(JabatanPegawai::class)
+            ->findJabatanPegawaiActiveFromKantorAndEselon(
+                $kantor?->getId(),
+                $kantor->getLevel()
+            );
+
+        if (null === $jabatanPegawaiKepalaKantor) {
+            return ['No Kepala Kantor found.'];
+        }
+
+        if ($jabatanPegawaiKepalaKantor instanceof JabatanPegawai) {
+            return $this->makeOutputSinglePegawaiFromJabatanPegawai($jabatanPegawaiKepalaKantor);
+        }
+
+        return ['No Kepala Kantor found.'];
+    }
+
+    /**
+     * Method to create single output of pegawai data from jabatan pegawai
+     * @param JabatanPegawai $jabatanPegawai
+     * @return array
+     */
+    private function makeOutputSinglePegawaiFromJabatanPegawai(JabatanPegawai $jabatanPegawai): array
+    {
+        return [
+            'userIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getPegawai()?->getUser()),
+            'usedId' => $jabatanPegawai->getPegawai()?->getUser()?->getId(),
+            'userIdentifier' => $jabatanPegawai->getPegawai()?->getUser()?->getUserIdentifier(),
+            'pegawaiIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getPegawai()),
+            'pegawaiId' => $jabatanPegawai->getPegawai()?->getId(),
+            'name' => $jabatanPegawai->getPegawai()?->getNama(),
+            'nip9' => $jabatanPegawai->getPegawai()?->getNip9(),
+            'nip18' => $jabatanPegawai->getPegawai()?->getNip18(),
+            'jabatanIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getJabatan()),
+            'jabatanId' => $jabatanPegawai->getJabatan()?->getId(),
+            'jabatanName' => $jabatanPegawai->getJabatan()?->getNama(),
+            'kantorIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getKantor()),
+            'kantorId' => $jabatanPegawai->getKantor()?->getId(),
+            'kantorName' => $jabatanPegawai->getKantor()?->getNama(),
+            'unitIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getUnit()),
+            'unitId' => $jabatanPegawai->getUnit()?->getId(),
+            'unitName' => $jabatanPegawai->getUnit()?->getNama(),
+            'eselonName' => $jabatanPegawai->getJabatan()?->getEselon()?->getNama(),
+            'eselonKode' => $jabatanPegawai->getJabatan()?->getEselon()?->getKode(),
+        ];
     }
 }
