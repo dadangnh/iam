@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\User\User;
-use App\utils\RoleUtils;
+use App\Helper\RoleHelper;
 use DateTimeImmutable;
 use JetBrains\PhpStorm\ArrayShape;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
@@ -19,6 +20,14 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SecurityEventSubscriber implements EventSubscriberInterface
 {
+    /** @var IriConverterInterface  */
+    private IriConverterInterface $iriConverter;
+
+    public function __construct(IriConverterInterface $iriConverter)
+    {
+        $this->iriConverter = $iriConverter;
+    }
+
     #[ArrayShape([Events::JWT_CREATED => "string"])]
     public static function getSubscribedEvents(): array
     {
@@ -50,47 +59,38 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                 /** @var TipeJabatan $tipe */
                 $tipe = $jabatanPegawai->getTipe();
 
-                $namaJabatan = $namaKantor = $namaUnit = $namaTipe = null;
-                if (null !== $jabatan) {
-                    $namaJabatan = $jabatan->getNama();
-                }
+                // Get the name from related entity
+                $namaJabatan = $jabatan?->getNama();
+                $namaKantor = $kantor?->getNama();
+                $namaUnit = $unit?->getNama();
+                $namaTipe = $tipe?->getNama();
 
-                if (null !== $kantor) {
-                    $namaKantor = $kantor->getNama();
-                }
-
-                if (null !== $unit) {
-                    $namaUnit = $unit->getNama();
-                }
-
-                if (null !== $tipe) {
-                    $namaTipe = $tipe->getNama();
-                }
-
+                // Assign to jabatanPegawais array
                 $jabatanPegawais[] = [
-                    'id_jabatan_pegawai' => $jabatanPegawai->getId(),
-                    'nama_jabatan' => $namaJabatan,
-                    'nama_kantor' => $namaKantor,
-                    'nama_unit' => $namaUnit,
-                    'nama_tipe_jabatan' => $namaTipe,
-                    'roles' => RoleUtils::getPlainRolesNameFromJabatanPegawai($jabatanPegawai)
+                    'jabatanPegawai_iri' => $this->iriConverter->getIriFromItem($jabatanPegawai),
+                    'jabatan_name' => $namaJabatan,
+                    'kantor_name' => $namaKantor,
+                    'unit_name' => $namaUnit,
+                    'tipeJabatan_name' => $namaTipe,
+                    'roles' => RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
                 ];
             }
         }
 
         $payload = $event->getData();
+        $payload['id'] = $user->getId();
         $payload['roles'] = $user->getRoles();
         $payload['username'] = $user->getUserIdentifier();
         $payload['exp'] = (new DateTimeImmutable())->getTimestamp() + 3600;
         $payload['expired'] = (new DateTimeImmutable())->getTimestamp() + 3600;
         $payload['pegawai'] = null !== $user->getPegawai()
             ? [
-                'id' => $user->getPegawai()->getId(),
+                'pegawaiId' => $user->getPegawai()->getId(),
                 'nama' => $user->getPegawai()->getNama(),
                 'nip9' => $user->getPegawai()->getNip9(),
                 'nip18' => $user->getPegawai()->getNip18(),
                 'pensiun' => $user->getPegawai()->getPensiun(),
-                'jabatan_pegawais' => $jabatanPegawais
+                'jabatanPegawais' => $jabatanPegawais
             ] : null;
 
         $event->setData($payload);

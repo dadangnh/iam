@@ -1,16 +1,15 @@
 <?php
 
 
-namespace App\utils;
+namespace App\Helper;
 
 
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\Aplikasi\Aplikasi;
 use JetBrains\PhpStorm\ArrayShape;
 
-class AplikasiUtils
+class AplikasiHelper
 {
-
     /**
      * @param Aplikasi $aplikasi
      * @param IriConverterInterface $iriConverter

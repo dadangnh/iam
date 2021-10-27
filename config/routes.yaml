@@ -8,5 +8,3 @@ api_authentication:
 
 gesdinet_jwt_refresh_token:
     path: /api/token/refresh
-    # TODO: dibawah ini besok dihapus
-    controller: gesdinet.jwtrefreshtoken::refresh
