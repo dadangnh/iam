@@ -40,6 +40,10 @@ services:
         decorates: 'api_platform.openapi.factory'
         arguments: ['@.inner']
 
+    App\OpenApi\PegawaiCustomDecorator:
+        decorates: 'api_platform.openapi.factory'
+        arguments: ['@.inner']
+
     shared_auth_library_jwt_user_provider:
         class: App\SharedAuthLibrary\Security\JwtUserProvider
 
@@ -50,11 +54,6 @@ services:
     App\SharedAuthLibrary\Listener\JwtPayloadListener:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded}
-
-    gesdinet.jwtrefreshtoken.refresh_token_manager:
-        class: App\Doctrine\RefreshTokenManager
-        public: true
-        arguments: [ '@doctrine.orm.default_entity_manager', 'Gesdinet\JWTRefreshTokenBundle\Entity\RefreshToken']
 
     Redis:
         # you can also use \RedisArray, \RedisCluster or \Predis\Client classes

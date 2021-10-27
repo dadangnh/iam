@@ -12,6 +12,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string
      */
+    private string $id;
+
+    /**
+     * @var string
+     */
     private string $username;
 
     /**
@@ -41,6 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * User constructor.
+     * @param string $id
      * @param string $username
      * @param array $roles
      * @param int $expiredTime
@@ -49,6 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @param string $salt
      */
     public function __construct(
+        string $id,
         string $username,
         array $roles,
         int $expiredTime,
@@ -56,12 +63,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         string $password = '',
         string $salt = '',
     ) {
+        $this->id = $id;
         $this->roles = $roles;
         $this->username = $username;
         $this->expiredTime = $expiredTime;
         $this->pegawai = $pegawai;
         $this->password = $password;
         $this->salt = $salt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     /**

@@ -308,8 +308,61 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $schemas['postKepalaKantorFromKantorIdRequest'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'kantorId' => [
+                    'type' => 'string',
+                    'example' => "uuid",
+                ],
+            ],
+        ]);
+
+        $schemas['postKepalaKantorFromKantorIdResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'kantor' => [
+                    'type' => 'array',
+                    'example' => [],
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
+        $fetchKepalaKantorFromKantorIdItem = new Model\PathItem(
+            ref: 'Kantor',
+            post: new Model\Operation(
+                operationId: 'postKepalaKantorFromKantorIdItem',
+                tags: ['Kantor'],
+                responses: [
+                    '200' => [
+                        'description' => 'Successful response',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/postKepalaKantorFromKantorIdResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Kepala Kantor data from Kantor Id',
+                requestBody: new Model\RequestBody(
+                    description: 'Get Kepala kantor data from kantor uuid',
+                    content: new ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/postKepalaKantorFromKantorIdRequest',
+                            ],
+                        ],
+                    ]),
+                ),
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/kantors/active/show_all', $allActiveKantorItem);
         $openApi->getPaths()->addPath('/api/kantors/active/{name}', $activeKantorByKantorNameItem);
+        $openApi->getPaths()->addPath('/api/kantors/kepala_kantor', $fetchKepalaKantorFromKantorIdItem);
         $openApi->getPaths()->addPath('/api/units/active/show_all', $allActiveUnitItem);
         $openApi->getPaths()->addPath('/api/units/active/{name}', $activeUnitByUnitNameItem);
         $openApi->getPaths()->addPath('/api/jenis_kantors/active/show_all', $allActiveJenisKantorItem);
