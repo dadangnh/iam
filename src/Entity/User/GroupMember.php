@@ -2,7 +2,9 @@
 
 namespace App\Entity\User;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\User\GroupMemberRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
@@ -53,6 +55,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         'security_message' => 'Only a valid user can access this.',
     ],
 )]
+#[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
+])]
 class GroupMember
 {
     /**

@@ -72,6 +72,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
     'nama' => 'ipartial',
     'nip9' => 'partial',
     'nip18' => 'partial',

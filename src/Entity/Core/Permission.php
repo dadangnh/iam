@@ -63,9 +63,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
 )]
 #[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
     'nama' => 'ipartial',
     'systemName' => 'ipartial',
     'deskripsi' => 'ipartial',
+    'roles.id' => 'exact',
+    'roles.nama' => 'exact',
 ])]
 #[ApiFilter(PropertyFilter::class)]
 class Permission

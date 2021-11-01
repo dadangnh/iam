@@ -78,12 +78,18 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
     'nama' => 'ipartial',
     'systemName' => 'ipartial',
     'deskripsi' => 'ipartial',
+    'aplikasi.id' => 'exact',
+    'aplikasi.nama' => 'iexact'
 ])]
 #[ApiFilter(DateFilter::class, properties: ['createDate'])]
-#[ApiFilter(BooleanFilter::class, properties: ['status'])]
+#[ApiFilter(BooleanFilter::class, properties: [
+    'status',
+    'aplikasi.status'
+])]
 #[ApiFilter(PropertyFilter::class)]
 class Modul
 {
