@@ -80,11 +80,23 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
     'nama' => 'ipartial',
     'jenis' => 'ipartial',
     'legacyKode' => 'partial',
     'legacyKodeJabKeu' => 'partial',
     'legacyKodeGradeKeu' => 'partial',
+    'eselon.id' => 'exact',
+    'eselon.nama' => 'ipartial',
+    "eselon.kode" => "ipartial",
+    'units.id' => 'exact',
+    'units.nama' => 'ipartial',
+    'units.legacyKode' => 'partial',
+    'kantor.id' => 'exact',
+    'kantor.nama' => 'ipartial',
+    'kantor.legacyKode' => 'partial',
+    'kantor.legacyKodeKpp' => 'partial',
+    'kantor.legacyKodeKanwil' => 'partial',
 ])]
 #[ApiFilter(DateFilter::class, properties: ['tanggalAktif', 'tanggalNonaktif'])]
 #[ApiFilter(NumericFilter::class, properties: ['level'])]

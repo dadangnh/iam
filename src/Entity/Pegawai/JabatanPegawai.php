@@ -27,8 +27,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * Disable second level cache for further analysis
  * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ApiFilter(SearchFilter::class, properties={"referensi": "ipartial"})
- * @ApiFilter(PropertyFilter::class)
  */
 #[ApiResource(
     collectionOperations: [
@@ -65,7 +63,27 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
 )]
 #[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
     'referensi' => 'ipartial',
+    'pegawai.id' => 'exact',
+    'pegawai.nama' => 'ipartial',
+    'pegawai.nip9' => 'partial',
+    'pegawai.nip18' => 'partial',
+    'pegawai.user.username' => 'ipartial',
+    'jabatan.id' => 'exact',
+    'jabatan.nama' => 'ipartial',
+    'jabatan.jenis' => 'ipartial',
+    'jabatan.legacyKode' => 'partial',
+    'jabatan.legacyKodeJabKeu' => 'partial',
+    'jabatan.legacyKodeGradeKeu' => 'partial',
+    'eselon.id' => 'exact',
+    'eselon.nama' => 'ipartial',
+    "eselon.kode" => "ipartial",
+    'tipe.id' => 'exact',
+    'tipe.nama' => 'ipartial',
+    'unit.id' => 'exact',
+    'unit.nama' => 'ipartial',
+    'unit.legacyKode' => 'partial'
 ])]
 #[ApiFilter(PropertyFilter::class)]
 class JabatanPegawai

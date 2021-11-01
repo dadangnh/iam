@@ -71,8 +71,27 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
 )]
 #[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
     'nama' => 'ipartial',
     'legacyKode' => 'partial',
+    'parent.id' => 'exact',
+    'parent.nama' => 'iexact',
+    'parent.legacyKode' => 'exact',
+    'childs.id' => 'exact',
+    'childs.nama' => 'iexact',
+    'childs.legacyKode' => 'exact',
+    'pembina.id' => 'exact',
+    'pembina.nama' => 'iexact',
+    'pembina.legacyKode' => 'exact',
+    'membina.id' => 'exact',
+    'membina.nama' => 'iexact',
+    'membina.legacyKode' => 'exact',
+    'jenisKantor.id' => 'exact',
+    'jenisKantor.nama' => 'iexact',
+    'jenisKantor.tipe' => 'iexact',
+    'eselon.id' => 'exact',
+    'eselon.nama' => 'ipartial',
+    "eselon.kode" => "ipartial",
 ])]
 #[ApiFilter(DateFilter::class, properties: ['tanggalAktif', 'tanggalNonaktif'])]
 #[ApiFilter(NumericFilter::class, properties: ['level'])]

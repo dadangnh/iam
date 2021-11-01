@@ -72,14 +72,39 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
 )]
 #[ApiFilter(SearchFilter::class, properties: [
+    'id' => 'exact',
     'nama' => 'ipartial',
     'sk' => 'ipartial',
     'legacyKode' => 'partial',
     'legacyKodeKpp' => 'partial',
-    'legacyKodeKanwil' => 'partial'
+    'legacyKodeKanwil' => 'partial',
+    'parent.id' => 'exact',
+    'parent.nama' => 'iexact',
+    'parent.legacyKode' => 'exact',
+    'childs.id' => 'exact',
+    'childs.nama' => 'iexact',
+    'childs.legacyKode' => 'exact',
+    'pembina.id' => 'exact',
+    'pembina.nama' => 'iexact',
+    'pembina.legacyKode' => 'exact',
+    'membina.id' => 'exact',
+    'membina.nama' => 'iexact',
+    'membina.legacyKode' => 'exact',
+    'alamat' => 'ipartial',
+    'telp' => 'exact',
+    'fax' => 'exact',
+    'zonaWaktu' => 'exact',
+    'jenisKantor.id' => 'exact',
+    'jenisKantor.nama' => 'iexact',
+    'jenisKantor.tipe' => 'iexact',
 ])]
 #[ApiFilter(DateFilter::class, properties: ['tanggalAktif', 'tanggalNonaktif'])]
-#[ApiFilter(NumericFilter::class, properties: ['level'])]
+#[ApiFilter(NumericFilter::class, properties: [
+    'level',
+    'jenisKantor.klasifikasi',
+    'jenisKantor.legacyId',
+    'jenisKantor.legacyKode'
+])]
 #[ApiFilter(PropertyFilter::class)]
 class Kantor
 {
