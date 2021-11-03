@@ -17,14 +17,29 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=EselonRepository::class)
- * @ORM\Table(name="eselon", indexes={
- *     @ORM\Index(name="idx_eselon_nama_status", columns={"id", "nama", "tingkat"}),
- *     @ORM\Index(name="idx_eselon_legacy", columns={"id", "legacy_kode"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Eselon Class
  */
+#[ORM\Entity(
+    repositoryClass: EselonRepository::class
+)]
+#[ORM\Table(
+    name: 'eselon'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'tingkat'
+    ],
+    name: 'idx_eselon_nama_status'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'legacy_kode'
+    ],
+    name: 'idx_eselon_legacy'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -59,72 +74,78 @@ use Symfony\Component\Validator\Constraints as Assert;
         'security_message' => 'Only a valid user can access this.',
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'id' => 'exact',
-    'nama' => 'ipartial',
-    "kode" => "ipartial",
-])]
-#[ApiFilter(NumericFilter::class, properties: ['tingkat', 'legacyKode'])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'kode' => 'ipartial'
+    ]
+)]
+#[ApiFilter(
+    NumericFilter::class,
+    properties: [
+        'tingkat',
+        'legacyKode'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class Eselon
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"jabatan:read"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'jabatan:read'
+        ]
+    )]
     private ?string $nama;
 
-    /**
-     * @ORM\Column(type="integer")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\Column(
+        type: 'integer'
+    )]
+    #[Assert\NotNull]
     private ?int $tingkat;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
     private ?string $kode;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'integer',
+        nullable: true
+    )]
     private ?int $legacyKode;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="eselon")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'eselon',
+        targetEntity: Unit::class
+    )]
     private $units;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Jabatan::class, mappedBy="eselon")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'eselon',
+        targetEntity: Jabatan::class
+    )]
     private $jabatans;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="eselons")
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Role::class,
+        mappedBy: 'eselons'
+    )]
     private $roles;
 
     public function __construct()

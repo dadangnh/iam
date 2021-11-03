@@ -18,17 +18,42 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=JenisKantorRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="jenis_kantor", indexes={
- *     @ORM\Index(name="idx_jenis_kantor_nama_status", columns={"id", "nama", "tipe", "klasifikasi"}),
- *     @ORM\Index(name="idx_jenis_kantor_legacy", columns={"id", "legacy_kode", "legacy_id"}),
- *     @ORM\Index(name="idx_jenis_kantor_active", columns={"id", "nama", "legacy_kode",
- *          "tanggal_aktif", "tanggal_nonaktif"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * JenisKantor Class
  */
+#[ORM\Entity(
+    repositoryClass: JenisKantorRepository::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: 'jenis_kantor'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'tipe',
+        'klasifikasi'
+    ],
+    name: 'idx_jenis_kantor_nama_status'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'legacy_kode',
+        'legacy_id'
+    ],
+    name: 'idx_jenis_kantor_legacy'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'legacy_kode',
+        'tanggal_aktif',
+        'tanggal_nonaktif'
+    ],
+    name: 'idx_jenis_kantor_active'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -63,94 +88,99 @@ use Symfony\Component\Validator\Constraints as Assert;
         'security_message' => 'Only a valid user can access this.',
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'id' => 'exact',
-    'nama' => 'ipartial',
-    'tipe' => 'ipartial',
-])]
-#[ApiFilter(DateFilter::class, properties: ['tanggalAktif', 'tanggalNonaktif'])]
-#[ApiFilter(NumericFilter::class, properties: ['klasifikasi', 'legacyId', 'legacyKode'])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'tipe' => 'ipartial',
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'tanggalAktif',
+        'tanggalNonaktif'
+    ]
+)]
+#[ApiFilter(
+    NumericFilter::class,
+    properties: [
+        'klasifikasi',
+        'legacyId',
+        'legacyKode'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class JenisKantor
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
     private ?string $nama;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotNull]
     private ?string $tipe;
 
-    /**
-     * @ORM\Column(type="integer")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\Column(
+        type: 'integer'
+    )]
+    #[Assert\NotNull]
     private ?int $klasifikasi;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable'
+    )]
+    #[Assert\NotNull]
     private ?DateTimeImmutable $tanggalAktif;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable',
+        nullable: true
+    )]
     private ?DateTimeImmutable $tanggalNonaktif;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'integer',
+        nullable: true
+    )]
     private ?int $legacyId;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'integer',
+        nullable: true
+    )]
     private ?int $legacyKode;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="jenisKantor")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'jenisKantor',
+        targetEntity: Kantor::class
+    )]
     private $kantors;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="jenisKantor")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'jenisKantor',
+        targetEntity: Unit::class
+    )]
     private $units;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="jenisKantors")
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Role::class,
+        mappedBy: 'jenisKantors'
+    )]
     private $roles;
 
     public function __construct()
@@ -219,9 +249,7 @@ class JenisKantor
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setTanggalAktifValue(): void
     {
         // Only create tanggal Aktif if no date provided
