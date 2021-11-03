@@ -32,7 +32,8 @@ class RoleCrudController extends AbstractCrudController
                 }),
             TextEditorField::new('deskripsi', 'Deskripsi'),
             IntegerField::new('level', 'Level ROLE')->setHelp('Silakan isikan nomor level ROLE'),
-            AssociationField::new('subsOfRole', 'Parent Role'),
+            AssociationField::new('subsOfRole', 'Parent Role')
+                ->autocomplete(),
             ChoiceField::new('jenis', 'Jenis Relasi Role')
                 ->setChoices([
                     'User' => 1,
@@ -49,34 +50,41 @@ class RoleCrudController extends AbstractCrudController
                 ])
                 ->setRequired(true),
             AssociationField::new('users', 'Users')
+                ->autocomplete()
                 ->setHelp('Wajib diisi apabila jenis role = User')
                 ->hideOnIndex(),
             AssociationField::new('groups', 'Groups')
+                ->autocomplete()
                 ->setHelp('Wajib diisi apabila jenis role = Groups')
                 ->hideOnIndex(),
             AssociationField::new('jabatans', 'Jabatan')
+                ->autocomplete()
                 ->setHelp('
                     Wajib diisi apabila jenis role = jabatan/ jabatan + unit/ jabatan + kantor/
                     jabatan + unit + kantor /  jabatan + unit + jenis kantor
                 ')
                 ->hideOnIndex(),
             AssociationField::new('units', 'Unit Organisasi')
+                ->autocomplete()
                 ->setHelp('
                     Wajib diisi apabila jenis role = unit/ jabatan + unit/ jabatan + unit + kantor/
                     jabatan + unit + jenis kantor
                 ')
                 ->hideOnIndex(),
             AssociationField::new('kantors', 'Kantors')
+                ->autocomplete()
                 ->setHelp('
                     Wajib diisi apabila jenis role = kantor/  jabatan + kantor/ jabatan + unit + kantor
                 ')
                 ->hideOnIndex(),
             AssociationField::new('eselons', 'Eselon')
+                ->autocomplete()
                 ->setHelp('
                     Wajib diisi apabila jenis role = eselon
                 ')
                 ->hideOnIndex(),
             AssociationField::new('jenisKantors', 'Jenis Kantor')
+                ->autocomplete()
                 ->setHelp('
                     Wajib diisi apabila jenis role = jenis kantor/ jabatan + unit + jenis kantor
                 ')
