@@ -19,16 +19,40 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=PegawaiRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="pegawai", indexes={
- *     @ORM\Index(name="idx_pegawai_data", columns={"id", "nama", "pensiun", "nik", "nip9", "nip18"}),
- *     @ORM\Index(name="idx_pegawai_legacy", columns={"id", "nip9"}),
- *     @ORM\Index(name="idx_pegawai_relation", columns={"id", "user_id"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Pegawai Class
  */
+#[ORM\Entity(
+    repositoryClass: PegawaiRepository::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: 'pegawai'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'pensiun',
+        'nik',
+        'nip9',
+        'nip18'
+    ],
+    name: 'idx_pegawai_data'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nip9'
+    ],
+    name: 'idx_pegawai_legacy'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'user_id'
+    ],
+    name: 'idx_pegawai_relation'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -71,114 +95,184 @@ use Symfony\Component\Validator\Constraints as Assert;
         'swagger_definition_name' => 'read'
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'id' => 'exact',
-    'nama' => 'ipartial',
-    'nip9' => 'partial',
-    'nip18' => 'partial',
-    'user.username' => 'ipartial',
-])]
-#[ApiFilter(DateFilter::class, properties: ['tanggalLahir'])]
-#[ApiFilter(BooleanFilter::class, properties: ['pensiun'])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'nip9' => 'partial',
+        'nip18' => 'partial',
+        'user.username' => 'ipartial',
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'tanggalLahir'
+    ]
+)]
+#[ApiFilter(
+    BooleanFilter::class,
+    properties: [
+        'pensiun'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class Pegawai
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
+    #[Groups(
+        groups: [
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private $id;
 
-    /**
-     * @ORM\OneToOne(targetEntity=User::class, inversedBy="pegawai", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\OneToOne(
+        inversedBy: 'pegawai',
+        targetEntity: User::class,
+        cascade: [
+            'persist',
+            'remove'
+        ]
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private $user;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'user:read',
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private ?string $nama;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'user:read',
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private ?DateTimeImmutable $tanggalLahir;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'user:read',
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private ?string $tempatLahir;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\Column(
+        type: 'boolean'
+    )]
+    #[Groups(
+        groups: [
+            'user:read',
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private ?bool $pensiun;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private ?string $npwp;
 
-    /**
-     * @ORM\Column(type="string", length=16, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 16,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private ?string $nik;
 
-    /**
-     * @ORM\Column(type="string", length=9, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 9,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'user:read',
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private ?string $nip9;
 
-    /**
-     * @ORM\Column(type="string", length=18, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 18,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'user:read',
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private ?string $nip18;
 
-    /**
-     * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="pegawai", orphanRemoval=true)
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read", "pegawai:write"})
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'pegawai',
+        targetEntity: JabatanPegawai::class,
+        orphanRemoval: true
+    )]
+    #[Groups(
+        groups: [
+            'user:read',
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
     private $jabatanPegawais;
 
     public function __construct()
@@ -305,9 +399,7 @@ class Pegawai
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setPensiunValue(): void
     {
         $this->pensiun = false;

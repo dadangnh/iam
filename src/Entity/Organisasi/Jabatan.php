@@ -20,19 +20,48 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=JabatanRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="jabatan", indexes={
- *     @ORM\Index(name="idx_jabatan_nama_status", columns={"id", "nama", "level", "jenis"}),
- *     @ORM\Index(name="idx_jabatan_legacy", columns={"id", "legacy_kode"}),
- *     @ORM\Index(name="idx_jabatan_relation", columns={"id", "eselon_id"}),
- *     @ORM\Index(name="idx_jabatan_active", columns={"id", "nama", "legacy_kode",
- *          "tanggal_aktif", "tanggal_nonaktif"}),
-
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Jabatan Class
  */
+#[ORM\Entity(
+    repositoryClass: JabatanRepository::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: 'jabatan'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'level',
+        'jenis'
+    ],
+    name: 'idx_jabatan_nama_status'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'legacy_kode'
+    ],
+    name: 'idx_jabatan_legacy'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'eselon_id'
+    ],
+    name: 'idx_jabatan_relation'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'legacy_kode',
+        'tanggal_aktif',
+        'tanggal_nonaktif'
+    ],
+    name: 'idx_jabatan_active'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -79,157 +108,236 @@ use Symfony\Component\Validator\Constraints as Assert;
         'swagger_definition_name' => 'read'
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'id' => 'exact',
-    'nama' => 'ipartial',
-    'jenis' => 'ipartial',
-    'legacyKode' => 'partial',
-    'legacyKodeJabKeu' => 'partial',
-    'legacyKodeGradeKeu' => 'partial',
-    'eselon.id' => 'exact',
-    'eselon.nama' => 'ipartial',
-    "eselon.kode" => "ipartial",
-    'units.id' => 'exact',
-    'units.nama' => 'ipartial',
-    'units.legacyKode' => 'partial',
-    'kantor.id' => 'exact',
-    'kantor.nama' => 'ipartial',
-    'kantor.legacyKode' => 'partial',
-    'kantor.legacyKodeKpp' => 'partial',
-    'kantor.legacyKodeKanwil' => 'partial',
-])]
-#[ApiFilter(DateFilter::class, properties: ['tanggalAktif', 'tanggalNonaktif'])]
-#[ApiFilter(NumericFilter::class, properties: ['level'])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'jenis' => 'ipartial',
+        'legacyKode' => 'partial',
+        'legacyKodeJabKeu' => 'partial',
+        'legacyKodeGradeKeu' => 'partial',
+        'eselon.id' => 'exact',
+        'eselon.nama' => 'ipartial',
+        'eselon.kode' => 'ipartial',
+        'units.id' => 'exact',
+        'units.nama' => 'ipartial',
+        'units.legacyKode' => 'partial',
+        'kantor.id' => 'exact',
+        'kantor.nama' => 'ipartial',
+        'kantor.legacyKode' => 'partial',
+        'kantor.legacyKodeKpp' => 'partial',
+        'kantor.legacyKodeKanwil' => 'partial',
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'tanggalAktif',
+        'tanggalNonaktif'
+    ]
+)]
+#[ApiFilter(
+    NumericFilter::class,
+    properties: [
+        'level'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class Jabatan
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"jabatan:read", "jabatan:write"})
-     * @Groups({"user:read"})
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write',
+            'user:read',
+            'pegawai:read'
+        ]
+    )]
     private ?string $nama;
 
-    /**
-     * @ORM\Column(type="integer")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Groups({"jabatan:read", "jabatan:write"})
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\Column(
+        type: 'integer'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write',
+            'pegawai:read'
+        ]
+    )]
     private ?int $level;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Groups({"jabatan:read", "jabatan:write"})
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write',
+            'pegawai:read'
+        ]
+    )]
     private ?string $jenis;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private ?DateTimeImmutable $tanggalAktif;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable',
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private ?DateTimeImmutable $tanggalNonaktif;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private ?string $sk;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="jabatans")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Eselon::class,
+        inversedBy: 'jabatans'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private $eselon;
 
-    /**
-     * @ORM\Column(type="string", length=4, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 4,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private ?string $legacyKode;
 
-    /**
-     * @ORM\Column(type="string", length=4, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 4,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private ?string $legacyKodeJabKeu;
 
-    /**
-     * @ORM\Column(type="string", length=4, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 4,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private ?string $legacyKodeGradeKeu;
 
-    /**
-     * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="jabatan", orphanRemoval=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'jabatan',
+        targetEntity: JabatanPegawai::class,
+        orphanRemoval: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private $jabatanPegawais;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Unit::class, inversedBy="jabatans")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Unit::class,
+        inversedBy: 'jabatans'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private $units;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="jabatans")
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Role::class,
+        mappedBy: 'jabatans'
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private $roles;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=GroupJabatan::class, inversedBy="jabatans")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"jabatan:read", "jabatan:write"})
-     */
+    #[ORM\ManyToOne(
+        targetEntity: GroupJabatan::class,
+        inversedBy: 'jabatans'
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
     private $groupJabatan;
 
     public function __construct()
@@ -298,9 +406,7 @@ class Jabatan
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setTanggalAktifValue(): void
     {
         // Only create tanggal Aktif if no date provided

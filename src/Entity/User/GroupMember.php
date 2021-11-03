@@ -12,15 +12,31 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=GroupMemberRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="group_member", indexes={
- *     @ORM\Index(name="idx_group_member_data", columns={"id", "status", "user_id"}),
- *     @ORM\Index(name="idx_group_member_relation", columns={"id", "group_id_id", "user_id"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * GroupMember Class
  */
+#[ORM\Entity(
+    repositoryClass: GroupMemberRepository::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: 'group_member'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'status',
+        'user_id'
+    ],
+    name: 'idx_group_member_data'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'group_id_id',
+        'user_id'
+    ],
+    name: 'idx_group_member_relation'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -55,49 +71,49 @@ use Symfony\Component\Validator\Constraints as Assert;
         'security_message' => 'Only a valid user can access this.',
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'id' => 'exact',
-])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+    ]
+)]
 class GroupMember
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Group::class, inversedBy="groupMembers")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Group::class,
+        inversedBy: 'groupMembers'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
     private $groupId;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="groupMembers")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: User::class,
+        inversedBy: 'groupMembers'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
     private $user;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable'
+    )]
     private ?DateTimeImmutable $joinDate;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'boolean'
+    )]
     private ?bool $status;
 
     public function __construct()
@@ -146,9 +162,7 @@ class GroupMember
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setJoinDateValue(): void
     {
         $this->joinDate = new DateTimeImmutable();

@@ -15,13 +15,21 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=JabatanAtributRepository::class)
- * @ORM\Table(name="jabatan_atribut", indexes={
- *     @ORM\Index(name="idx_jabatan_atribut_nama", columns={"id", "nama"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Jabatan Atribut Class
  */
+#[ORM\Entity(
+    repositoryClass: JabatanAtributRepository::class
+)]
+#[ORM\Table(
+    name: 'jabatan_atribut'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama'
+    ],
+    name: 'idx_jabatan_atribut_nama'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -59,34 +67,34 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'id' => 'exact',
-    'nama' => 'ipartial',
-])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class JabatanAtribut
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
     private ?string $nama;
 
-    /**
-     * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="atribut")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'atribut',
+        targetEntity: JabatanPegawai::class
+    )]
     private $jabatanPegawais;
 
     public function __construct()

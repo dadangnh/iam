@@ -24,16 +24,37 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=RoleRepository::class)
- * @ORM\Table(name="role", indexes={
- *     @ORM\Index(name="idx_role_nama_status", columns={"id", "nama", "system_name", "jenis"}),
- *     @ORM\Index(name="idx_role_relation", columns={"id", "level", "subs_of_role_id"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @UniqueEntity(fields={"nama"})
- * @UniqueEntity(fields={"systemName"})
+ * Role Class
  */
+#[ORM\Entity(
+    repositoryClass: RoleRepository::class
+)]
+#[ORM\Table(
+    name: 'role'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'system_name',
+        'jenis'
+    ],
+    name: 'idx_role_nama_status'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'level',
+        'subs_of_role_id'
+    ],
+    name: 'idx_role_relation'
+)]
+#[UniqueEntity(
+    fields: [
+        'nama',
+        'systemName'
+    ]
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -80,219 +101,317 @@ use Symfony\Component\Validator\Constraints as Assert;
         'swagger_definition_name' => 'read'
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'id' => 'exact',
-    'nama' => 'ipartial',
-    'systemName' => 'ipartial',
-    'deskripsi' => 'ipartial',
-])]
-#[ApiFilter(NumericFilter::class, properties: ['level', 'jenis'])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'systemName' => 'ipartial',
+        'deskripsi' => 'ipartial',
+    ]
+)]
+#[ApiFilter(
+    NumericFilter::class,
+    properties: [
+        'level',
+        'jenis'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class Role
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"role:read", "role:write"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"pegawai:read", "role:read", "role:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'pegawai:read',
+            'role:read',
+            'role:write'
+        ]
+    )]
     private ?string $nama;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"role:read", "role:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
     private ?string $systemName;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"role:read", "role:write"})
-     */
+    #[ORM\Column(
+        type: 'text',
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
     private ?string $deskripsi;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"role:read", "role:write"})
-     */
+    #[ORM\Column(
+        type: 'integer',
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
     private ?int $level;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="containRoles")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"role:write","role:read"})
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Role::class,
+        inversedBy: 'containRoles'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
     private $subsOfRole;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Role::class, mappedBy="subsOfRole")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"role:write"})
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'subsOfRole',
+        targetEntity: Role::class
+    )]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $containRoles;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="role", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="role_user",
-     *     joinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     *     },
-     *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     *     }
-     * )
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"role:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: User::class,
+        inversedBy: 'role',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_user'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'user_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $users;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Jabatan::class, inversedBy="roles", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="role_jabatan",
-     *     joinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     *     },
-     *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="jabatan_id", referencedColumnName="id")
-     *     }
-     * )
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"role:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Jabatan::class,
+        inversedBy: 'roles',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_jabatan'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'jabatan_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $jabatans;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Unit::class, inversedBy="roles", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="role_unit",
-     *     joinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     *     },
-     *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
-     *     }
-     * )
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"role:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Unit::class,
+        inversedBy: 'roles',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_unit'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'unit_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $units;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Kantor::class, inversedBy="roles", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="role_kantor",
-     *     joinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     *     },
-     *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="kantor_id", referencedColumnName="id")
-     *     }
-     * )
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"role:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Kantor::class,
+        inversedBy: 'roles',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_kantor'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'kantor_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $kantors;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Eselon::class, inversedBy="roles", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="role_eselon",
-     *     joinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     *     },
-     *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="eselon_id", referencedColumnName="id")
-     *     }
-     * )
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"role:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Eselon::class,
+        inversedBy: 'roles',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_eselon'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'eselon_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $eselons;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=JenisKantor::class, inversedBy="roles", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="role_jenis_kantor",
-     *     joinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     *     },
-     *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="jenis_kantor_id", referencedColumnName="id")
-     *     }
-     * )
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"role:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: JenisKantor::class,
+        inversedBy: 'roles',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_jenis_kantor'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'jenis_kantor_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $jenisKantors;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Group::class, inversedBy="roles", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="role_group",
-     *     joinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     *     },
-     *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="group_id", referencedColumnName="id")
-     *     }
-     * )
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     * @Groups({"role:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Group::class,
+        inversedBy: 'roles',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_group'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'group_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $groups;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="roles")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"role:write"})
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Permission::class,
+        mappedBy: 'roles'
+    )]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $permissions;
 
-    /**
-     * @ORM\Column(type="integer", options={
-     *     "comment":"Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
-     *          6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
-     *          10 => jabatan + unit + kantor"})
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"role:read", "role:write"})
-     */
+    #[ORM\Column(
+        type: 'integer',
+        options: [
+            'comment' => 'Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon, 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor, 10 => jabatan + unit + kantor'
+        ]
+    )]
+    #[Groups(
+        groups: [
+            'role:write'
+        ]
+    )]
     private $jenis;
 
     public function __construct()

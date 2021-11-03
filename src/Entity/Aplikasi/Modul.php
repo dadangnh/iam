@@ -20,17 +20,37 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=ModulRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="modul", indexes={
- *     @ORM\Index(name="idx_modul_nama_status", columns={"nama", "system_name", "status"}),
- *     @ORM\Index(name="idx_modul_nama_aplikasi", columns={"aplikasi_id", "nama", "system_name"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @UniqueEntity(fields={"nama"})
- * @UniqueEntity(fields={"systemName"})
+ * Modul Class
  */
+#[ORM\Entity(
+    repositoryClass: ModulRepository::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: 'modul'
+)]
+#[ORM\Index(
+    columns: [
+        'nama',
+        'system_name',
+        'status'
+    ],
+    name: 'idx_modul_nama_status'
+)]
+#[ORM\Index(
+    columns: [
+        'aplikasi_id',
+        'nama',
+        'system_name'
+    ],
+    name: 'idx_modul_nama_aplikasi'
+)]
+#[UniqueEntity(
+    fields: [
+        'nama',
+        'systemName'
+    ]
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -77,85 +97,122 @@ use Symfony\Component\Validator\Constraints as Assert;
         'swagger_definition_name' => 'read'
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'id' => 'exact',
-    'nama' => 'ipartial',
-    'systemName' => 'ipartial',
-    'deskripsi' => 'ipartial',
-    'aplikasi.id' => 'exact',
-    'aplikasi.nama' => 'iexact'
-])]
-#[ApiFilter(DateFilter::class, properties: ['createDate'])]
-#[ApiFilter(BooleanFilter::class, properties: [
-    'status',
-    'aplikasi.status'
-])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'systemName' => 'ipartial',
+        'deskripsi' => 'ipartial',
+        'aplikasi.id' => 'exact',
+        'aplikasi.nama' => 'iexact'
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'createDate'
+    ]
+)]
+#[ApiFilter(
+    BooleanFilter::class,
+    properties: [
+        'status',
+        'aplikasi.status'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class Modul
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"modul:read", "modul:write"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
+    #[Groups(
+        groups: [
+            'modul:read',
+            'modul:write'
+        ]
+    )]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Aplikasi::class, inversedBy="moduls")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     * @Groups({"modul:read", "modul:write"})
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Aplikasi::class,
+        inversedBy: 'moduls'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'modul:read',
+            'modul:write'
+        ]
+    )]
     private ?Aplikasi $aplikasi;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"modul:read", "modul:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'modul:read',
+            'modul:write'
+        ]
+    )]
     private ?string $nama;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"modul:read", "modul:write"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'modul:read',
+            'modul:write'
+        ]
+    )]
     private ?string $systemName;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Groups({"modul:read", "modul:write"})
-     */
+    #[ORM\Column(
+        type: 'boolean'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'modul:read',
+            'modul:write'
+        ]
+    )]
     private ?bool $status;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable'
+    )]
     private ?DateTimeImmutable $createDate;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"modul:read", "modul:write"})
-     */
+    #[ORM\Column(
+        type: 'text',
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'modul:read',
+            'modul:write'
+        ]
+    )]
     private ?string $deskripsi;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="modul")
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Permission::class,
+        mappedBy: 'modul'
+    )]
     private $permissions;
 
     public function __construct()
@@ -234,9 +291,7 @@ class Modul
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setCreateDateValue(): void
     {
         $this->createDate = new DateTimeImmutable();
