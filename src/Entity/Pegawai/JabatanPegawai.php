@@ -22,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * JabatanPegawai Class
  */
 #[ORM\Entity(
-    repositoryClass: JabatanPegawai::class
+    repositoryClass: JabatanPegawaiRepository::class
 )]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Table(

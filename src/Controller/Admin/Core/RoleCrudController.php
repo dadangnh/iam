@@ -54,7 +54,6 @@ class RoleCrudController extends AbstractCrudController
                 ->setHelp('Wajib diisi apabila jenis role = User')
                 ->hideOnIndex(),
             AssociationField::new('groups', 'Groups')
-                ->autocomplete()
                 ->setHelp('Wajib diisi apabila jenis role = Groups')
                 ->hideOnIndex(),
             AssociationField::new('jabatans', 'Jabatan')
