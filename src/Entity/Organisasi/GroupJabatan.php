@@ -14,15 +14,26 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=GroupJabatanRepository::class)
- * @ORM\Table(name="group_jabatan", indexes={
- *     @ORM\Index(name="idx_group_jabatan_nama", columns={"id", "nama"}),
- *     @ORM\Index(name="idx_group_jabatan_legacy", columns={"id", "legacy_kode"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- */
+#[ORM\Entity(
+    repositoryClass: GroupJabatanRepository::class
+)]
+#[ORM\Table(
+    name: 'group_jabatan'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama'
+    ],
+    name: 'idx_group_jabatan_nama'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'legacy_kode'
+    ],
+    name: 'idx_group_jabatan_legacy'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -57,42 +68,47 @@ use Symfony\Component\Validator\Constraints as Assert;
         'security_message' => 'Only a valid user can access this.',
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'nama' => 'ipartial',
-    "legacyKode" => "iexact",
-])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'legacyKode' => 'iexact'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class GroupJabatan
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"jabatan:read"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'jabatan:read'
+        ]
+    )]
     private ?string $nama;
 
-    /**
-     * @ORM\Column(type="string", length=4, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 4,
+        nullable: true
+    )]
     private ?string $legacyKode;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Jabatan::class, mappedBy="groupJabatan")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'groupJabatan',
+        targetEntity: Jabatan::class
+    )]
     private $jabatans;
 
     public function __construct()

@@ -1,5 +1,13 @@
 # DJPConnect - IAM Changelog
 
+## Version 1.18.1
+* Upgrade Symfony to v5.3.10 (#57)
+* Add Filter By ID on Entity (#58)
+* Use PHP 8 Attributes on Doctrine Annotations (#59)
+* Use Autocomplete on AssociationField (#61)
+* Allow client app to configure item per page (#62)
+* Upgraded Dependencies and Components
+
 ## Version 1.18.0
 * Add new endpoint to get atasan and kepala kantor (#52)
 * Add new endpoint to get data current in bulk data (#53)

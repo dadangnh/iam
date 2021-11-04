@@ -19,17 +19,37 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=GroupRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="`group`", indexes={
- *     @ORM\Index(name="idx_group_data", columns={"id", "nama", "system_name", "status"}),
- *     @ORM\Index(name="idx_group_relation", columns={"id", "owner_id"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @UniqueEntity(fields={"nama"})
- * @UniqueEntity(fields={"systemName"})
+ * Group Class
  */
+#[ORM\Entity(
+    repositoryClass: GroupRepository::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: '`group`'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'system_name',
+        'status'
+    ],
+    name: 'idx_group_data'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'owner_id'
+    ],
+    name: 'idx_group_relation'
+)]
+#[UniqueEntity(
+    fields: [
+        'nama',
+        'systemName'
+    ]
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -68,79 +88,89 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'nama' => 'ipartial',
-    'systemName' => 'ipartial',
-    'deskripsi' => 'ipartial',
-])]
-#[ApiFilter(DateFilter::class, properties: ['createDate'])]
-#[ApiFilter(BooleanFilter::class, properties: ['status'])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'systemName' => 'ipartial',
+        'deskripsi' => 'ipartial',
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'createDate'
+    ]
+)]
+#[ApiFilter(
+    BooleanFilter::class,
+    properties: [
+        'status'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class Group
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
     private ?string $nama;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
     private ?string $systemName;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'text',
+        nullable: true
+    )]
     private ?string $deskripsi;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="ownedGroups")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: User::class,
+        inversedBy: 'ownedGroups'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
     private $owner;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable'
+    )]
     private ?DateTimeImmutable $createDate;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\Column(
+        type: 'boolean'
+    )]
+    #[Assert\NotNull]
     private ?bool $status;
 
-    /**
-     * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="groupId", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'groupId',
+        targetEntity: GroupMember::class,
+        orphanRemoval: true
+    )]
     private $groupMembers;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="groups")
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Role::class,
+        mappedBy: 'groups'
+    )]
     private $roles;
 
     public function __construct()
@@ -215,9 +245,7 @@ class Group
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setCreateDateValue(): void
     {
         $this->createDate = new DateTimeImmutable();

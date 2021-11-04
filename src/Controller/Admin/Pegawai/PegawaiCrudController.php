@@ -25,6 +25,7 @@ class PegawaiCrudController extends AbstractCrudController
                 ->setMaxLength(255),
             AssociationField::new('user')
                 ->setRequired(true)
+                ->autocomplete()
                 ->setHelp('Silakan pilih nama user yang telah didaftarkan'),
             TextField::new('tempatLahir', 'Tempat lahir')
                 ->setRequired(true)

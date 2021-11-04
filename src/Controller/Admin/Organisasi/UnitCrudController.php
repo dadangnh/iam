@@ -24,19 +24,23 @@ class UnitCrudController extends AbstractCrudController
                 ->setMaxLength(255),
             AssociationField::new('jenisKantor', 'Jenis Kantor')
                 ->setRequired(true)
+                ->autocomplete()
                 ->setHelp('Jenis Kantor dimana unit organisasi ini ada'),
             IntegerField::new('level', 'Level')
                 ->setRequired(true)
                 ->setHelp('
                     Level Unit Organisasi, <br>misal: Kementerian Keuangan = 0, DJP = 1, Kanwil Modern = 2, dst
                 '),
-            AssociationField::new('parent', 'Unit Induk'),
+            AssociationField::new('parent', 'Unit Induk')
+                ->autocomplete(),
             AssociationField::new('childs', 'Unit Dibawahnya')
                 ->onlyOnDetail(),
             AssociationField::new('eselon', 'Eselon')
                 ->setRequired(true)
+                ->autocomplete()
                 ->setHelp('Eselon tertinggi yang menjabat di unit organisasi ini'),
-            AssociationField::new('pembina', 'Unit Induk Pembina'),
+            AssociationField::new('pembina', 'Unit Induk Pembina')
+                ->autocomplete(),
             AssociationField::new('membina', 'Unit yang Dibina')
                 ->onlyOnDetail(),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
