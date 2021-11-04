@@ -17,6 +17,11 @@ framework:
     php_errors:
         log: true
 
+    # Add trusted proxies
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    # Add trusted headers
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-proto']
+
 when@test:
     framework:
         test: true
