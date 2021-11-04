@@ -28,7 +28,7 @@ variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
 services:
-  - name: postgres:13-alpine
+  - name: postgres:14-alpine
     alias: database
   - name: redis:latest
     alias: redis
@@ -116,65 +116,6 @@ deploy:
 workflow:
   rules:
     - if: '$BUILDPACK_URL || $AUTO_DEVOPS_EXPLICITLY_ENABLED == "1" || $DOCKERFILE_PATH'
-
-    - exists:
-        - Dockerfile
-
-    - exists:
-        - project.clj
-
-    - exists:
-        - go.mod
-        - Gopkg.mod
-        - Godeps/Godeps.json
-        - vendor/vendor.json
-        - glide.yaml
-        - src/**/*.go
-
-    - exists:
-        - gradlew
-        - build.gradle
-        - settings.gradle
-
-    - exists:
-        - pom.xml
-        - pom.atom
-        - pom.clj
-        - pom.groovy
-        - pom.rb
-        - pom.scala
-        - pom.yaml
-        - pom.yml
-
-    - exists:
-        - .buildpacks
-
-    - exists:
-        - package.json
-
-    - exists:
-        - composer.json
-        - index.php
-
-    - exists:
-        - '**/conf/application.conf'
-
-    - exists:
-        - requirements.txt
-        - setup.py
-        - Pipfile
-
-    - exists:
-        - Gemfile
-
-    - exists:
-        - '*.sbt'
-        - project/*.scala
-        - .sbt/*.scala
-        - project/build.properties
-
-    - exists:
-        - .static
 
 sast:
   stage: test
