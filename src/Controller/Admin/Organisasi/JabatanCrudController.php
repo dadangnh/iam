@@ -37,8 +37,10 @@ class JabatanCrudController extends AbstractCrudController
                     'Jabatan Ad-hoc' => 'ADHOC'
                 ]),
             AssociationField::new('eselon', 'Eselon')
+                ->autocomplete()
                 ->setHelp('Untuk jabatan struktural, isi eselon'),
             AssociationField::new('groupJabatan', 'Group Jabatan')
+                ->autocomplete()
                 ->setHelp('Pilih group jabatannya (normalnya untuk fungsional)'),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
                 ->setRequired(true)

@@ -22,6 +22,7 @@ class PermissionCrudController extends AbstractCrudController
         return [
             FormField::addPanel('Modul'),
             AssociationField::new('modul', 'Modul')
+                ->autocomplete()
                 ->setRequired(true)
                 ->setHelp('Masukkan nama modul yang akan memiliki permission ini'),
             FormField::addPanel('Permission'),
@@ -34,6 +35,8 @@ class PermissionCrudController extends AbstractCrudController
             TextEditorField::new('deskripsi'),
             FormField::addPanel('Role'),
             AssociationField::new('roles', 'Role')
+                ->autocomplete()
+                ->setRequired(true)
                 ->setHelp('Masukkan nama ROLE yang dapat menggunakan permission ini')
         ];
     }

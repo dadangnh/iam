@@ -27,16 +27,36 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity(fields={"username"})
- * @ORM\Table(name="`user`", indexes={
- *     @ORM\Index(name="idx_user_data", columns={"id", "username", "password"}),
- *     @ORM\Index(name="idx_user_active", columns={"id", "active", "locked"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * User Class
  */
+#[ORM\Entity(
+    repositoryClass: UserRepository::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: '`user`'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'username',
+        'password'
+    ],
+    name: 'idx_user_data'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'active',
+        'locked'
+    ],
+    name: 'idx_user_active'
+)]
+#[UniqueEntity(
+    fields: [
+        'username'
+    ]
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -79,116 +99,194 @@ use Symfony\Component\Validator\Constraints as Assert;
         'swagger_definition_name' => 'read'
     ]
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'username' => 'ipartial',
-    'pegawai.nama' => 'ipartial',
-    'pegawai.nip9' => 'partial',
-    'pegawai.nip18' => 'partial'
-])]
-#[ApiFilter(DateFilter::class, properties: ['lastChange'])]
-#[ApiFilter(BooleanFilter::class, properties: ['active', 'locked'])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'username' => 'ipartial',
+        'pegawai.nama' => 'ipartial',
+        'pegawai.nip9' => 'partial',
+        'pegawai.nip18' => 'partial'
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'lastChange'
+    ]
+)]
+#[ApiFilter(
+    BooleanFilter::class,
+    properties: [
+        'active',
+        'locked'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"user:read", "user:write"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write'
+        ]
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"user:read", "user:write", "pegawai:read"})
-     * @Assert\NotBlank()
-     * @Assert\Length(
-     *     min="3",
-     *     max="150",
-     *     maxMessage="username tidak boleh kurang dari 3 dan lebih dari 150 karakter"
-     * )
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 180,
+        unique: true
+    )]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 150,
+        maxMessage: 'username cannot less than 3 char and more than 150 char.'
+    )]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write',
+            'pegawai:read'
+        ]
+    )]
     private string $username;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="users")
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Role::class,
+        mappedBy: 'users'
+    )]
     private $role;
 
     /**
      * Default Symfony Guard Role
      * This is a virtual attributes
      * @var null|array
-     * @Groups({"user:read", "pegawai:read"})
      */
+    #[Groups(
+        groups: [
+            'user:read',
+            'pegawai:read'
+        ]
+    )]
     private ?array $roles = [];
 
     /**
      * @var string The hashed password
-     * @ORM\Column(type="string")
      */
+    #[ORM\Column(
+        type: 'string'
+    )]
     private string $password;
 
     /**
      * @var null|string plain password
-     * @Assert\Length(min=5, max=128)
      */
+    #[Assert\Length(
+        min: 5,
+        max: 128
+    )]
     private ?string $plainPassword = null;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"user:read", "user:write"})
-     * @Assert\NotNull()
-     */
+    #[ORM\Column(
+        type: 'boolean'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write'
+        ]
+    )]
     private ?bool $active;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"user:read", "user:write"})
-     * @Assert\NotNull()
-     */
+    #[ORM\Column(
+        type: 'boolean'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write'
+        ]
+    )]
     private ?bool $locked;
 
-    /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"user:write"})
-     * @Assert\NotNull()
-     */
+    #[ORM\Column(
+        type: 'boolean'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'user:write'
+        ]
+    )]
     private ?bool $twoFactorEnabled;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Groups({"user:write"})
-     */
+    #[ORM\Column(
+        type: 'datetime'
+    )]
+    #[Groups(
+        groups: [
+            'user:write'
+        ]
+    )]
     private ?DateTimeInterface $lastChange;
 
-    /**
-     * @ORM\OneToMany(targetEntity=UserTwoFactor::class, mappedBy="user", orphanRemoval=true)
-     * @Groups({"user:write"})
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'user',
+        targetEntity: UserTwoFactor::class,
+        orphanRemoval: true
+    )]
+    #[Groups(
+        groups: [
+            'user:write'
+        ]
+    )]
     private $userTwoFactors;
 
-    /**
-     * @ORM\OneToOne(targetEntity=Pegawai::class, mappedBy="user", cascade={"persist", "remove"})
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"user:read", "user:write"})
-     */
+    #[ORM\OneToOne(
+        mappedBy: 'user',
+        targetEntity: Pegawai::class,
+        cascade: ['persist', 'remove']
+    )]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write'
+        ]
+    )]
     private $pegawai;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Group::class, mappedBy="owner")
-     * @Groups({"user:read", "user:write"})
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'owner',
+        targetEntity: Group::class
+    )]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write'
+        ]
+    )]
     private $ownedGroups;
 
-    /**
-     * @ORM\OneToMany(targetEntity=GroupMember::class, mappedBy="user", orphanRemoval=true)
-     * @Groups({"user:read", "user:write"})
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'user',
+        targetEntity: GroupMember::class,
+        orphanRemoval: true
+    )]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write'
+        ]
+    )]
     private $groupMembers;
 
     public function __construct()
@@ -395,10 +493,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function setLastChangeValue(): void
     {
         $this->lastChange = new DateTimeImmutable(true);

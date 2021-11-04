@@ -20,19 +20,61 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=KantorRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="kantor", indexes={
- *     @ORM\Index(name="idx_kantor_nama_status", columns={"id", "nama", "level", "sk"}),
- *     @ORM\Index(name="idx_kantor_legacy", columns={"id", "legacy_kode", "legacy_kode_kpp", "legacy_kode_kanwil"}),
- *     @ORM\Index(name="idx_kantor_relation", columns={"id", "jenis_kantor_id", "parent_id", "level", "pembina_id"}),
- *     @ORM\Index(name="idx_kantor_location", columns={"id", "latitude", "longitude"}),
- *     @ORM\Index(name="idx_kantor_active", columns={"id", "nama", "legacy_kode",
- *          "tanggal_aktif", "tanggal_nonaktif"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Kantor Class
  */
+#[ORM\Entity(
+    repositoryClass: KantorRepository::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: 'kantor'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'level',
+        'sk'
+    ],
+    name: 'idx_kantor_nama_status'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'legacy_kode',
+        'legacy_kode_kpp',
+        'legacy_kode_kanwil'
+    ],
+    name: 'idx_kantor_legacy'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'jenis_kantor_id',
+        'parent_id',
+        'level',
+        'pembina_id'
+    ],
+    name: 'idx_kantor_relation'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'latitude',
+        'longitude'
+    ],
+    name: 'idx_kantor_location'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'legacy_kode',
+        'tanggal_aktif',
+        'tanggal_nonaktif'
+    ],
+    name: 'idx_kantor_active'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -71,177 +113,207 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'nama' => 'ipartial',
-    'sk' => 'ipartial',
-    'legacyKode' => 'partial',
-    'legacyKodeKpp' => 'partial',
-    'legacyKodeKanwil' => 'partial'
-])]
-#[ApiFilter(DateFilter::class, properties: ['tanggalAktif', 'tanggalNonaktif'])]
-#[ApiFilter(NumericFilter::class, properties: ['level'])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'sk' => 'ipartial',
+        'legacyKode' => 'partial',
+        'legacyKodeKpp' => 'partial',
+        'legacyKodeKanwil' => 'partial',
+        'parent.id' => 'exact',
+        'parent.nama' => 'iexact',
+        'parent.legacyKode' => 'exact',
+        'childs.id' => 'exact',
+        'childs.nama' => 'iexact',
+        'childs.legacyKode' => 'exact',
+        'pembina.id' => 'exact',
+        'pembina.nama' => 'iexact',
+        'pembina.legacyKode' => 'exact',
+        'membina.id' => 'exact',
+        'membina.nama' => 'iexact',
+        'membina.legacyKode' => 'exact',
+        'alamat' => 'ipartial',
+        'telp' => 'exact',
+        'fax' => 'exact',
+        'zonaWaktu' => 'exact',
+        'jenisKantor.id' => 'exact',
+        'jenisKantor.nama' => 'iexact',
+        'jenisKantor.tipe' => 'iexact',
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'tanggalAktif',
+        'tanggalNonaktif'
+    ]
+)]
+#[ApiFilter(
+    NumericFilter::class,
+    properties: [
+        'level',
+        'jenisKantor.klasifikasi',
+        'jenisKantor.legacyId',
+        'jenisKantor.legacyKode'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class Kantor
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"pegawai:read"})
-     * @Groups({"user:read"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'pegawai:read',
+            'user:read'
+        ]
+    )]
     private ?string $nama;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="kantors")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: JenisKantor::class,
+        inversedBy: 'kantors'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
     private $jenisKantor;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'integer',
+        nullable: true
+    )]
     private ?int $level;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="childs")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Kantor::class,
+        inversedBy: 'childs'
+    )]
+    #[Assert\Valid]
     private $parent;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="parent")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'parent',
+        targetEntity: Kantor::class
+    )]
     private $childs;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable'
+    )]
+    #[Assert\NotNull]
     private ?DateTimeImmutable $tanggalAktif;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable',
+        nullable: true
+    )]
     private ?DateTimeImmutable $tanggalNonaktif;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255,
+        nullable: true
+    )]
     private ?string $sk;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'text',
+        nullable: true
+    )]
     private ?string $alamat;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255,
+        nullable: true
+    )]
     private ?string $telp;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255,
+        nullable: true
+    )]
     private ?string $fax;
 
-    /**
-     * @ORM\Column(type="string", length=4, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 4,
+        nullable: true
+    )]
     private ?string $zonaWaktu;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'float',
+        nullable: true
+    )]
     private ?float $latitude;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'float',
+        nullable: true
+    )]
     private ?float $longitude;
 
-    /**
-     * @ORM\Column(type="string", length=10, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 10,
+        nullable: true
+    )]
     private ?string $legacyKode;
 
-    /**
-     * @ORM\Column(type="string", length=3, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 3,
+        nullable: true
+    )]
     private ?string $legacyKodeKpp;
 
-    /**
-     * @ORM\Column(type="string", length=3, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 3,
+        nullable: true
+    )]
     private ?string $legacyKodeKanwil;
 
-    /**
-     * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="kantor", orphanRemoval=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'kantor',
+        targetEntity: JabatanPegawai::class,
+        orphanRemoval: true
+    )]
     private $jabatanPegawais;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="kantors")
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Role::class,
+        mappedBy: 'kantors'
+    )]
     private $roles;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="membina")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Kantor::class,
+        inversedBy: 'membina'
+    )]
     private $pembina;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Kantor::class, mappedBy="pembina")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'pembina',
+        targetEntity: Kantor::class
+    )]
     private $membina;
 
     public function __construct()
@@ -353,9 +425,7 @@ class Kantor
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setTanggalAktifValue(): void
     {
         // Only create tanggal Aktif if no date provided

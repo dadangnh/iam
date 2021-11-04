@@ -19,17 +19,23 @@ class JabatanPegawaiCrudController extends AbstractCrudController
     {
         return [
             AssociationField::new('pegawai', 'Pegawai')
+                ->autocomplete()
                 ->setRequired(true),
             AssociationField::new('jabatan', 'Jabatan')
+                ->autocomplete()
                 ->setRequired(true),
             AssociationField::new('tipe', 'Tipe Jabatan')
+                ->autocomplete()
                 ->setRequired(true),
             AssociationField::new('atribut', 'Jabatan Atribut')
+                ->autocomplete()
                 ->setHelp('Khusus jabatan AR/ PK/ Pelaksana yang memiliki atribut 1-100')
                 ->hideOnIndex(),
             AssociationField::new('kantor', 'Kantor')
+                ->autocomplete()
                 ->setRequired(true),
             AssociationField::new('unit', 'Unit Organisasi')
+                ->autocomplete()
                 ->setRequired(true),
             TextField::new('referensi', 'Referensi'),
             DateTimeField::new('tanggalMulai', 'Tanggal Mulai')

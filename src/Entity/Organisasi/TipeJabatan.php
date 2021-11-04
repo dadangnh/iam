@@ -16,13 +16,21 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=TipeJabatanRepository::class)
- * @ORM\Table(name="tipe_jabatan", indexes={
- *     @ORM\Index(name="idx_tipe_jabatan", columns={"id", "nama"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * TipeJabatan Class
  */
+#[ORM\Entity(
+    repositoryClass: TipeJabatanRepository::class
+)]
+#[ORM\Table(
+    name: 'tipe_jabatan'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama'
+    ],
+    name: 'idx_tipe_jabatan'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -60,34 +68,39 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'nama' => 'ipartial',
-])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class TipeJabatan
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"user:read"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'user:read'
+        ]
+    )]
     private ?string $nama;
 
-    /**
-     * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="tipe")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'tipe',
+        targetEntity: JabatanPegawai::class
+    )]
     private $jabatanPegawais;
 
     public function __construct()

@@ -26,7 +26,8 @@ class ModulCrudController extends AbstractCrudController
                 ->setIcon('fa fa-desktop'),
             AssociationField::new('aplikasi')
                 ->setRequired(true)
-                ->setHelp('Silakan pilih nama aplikasi induk dari modul yang akan dibuat'),
+                ->setHelp('Silakan pilih nama aplikasi induk dari modul yang akan dibuat')
+                ->autocomplete(),
             FormField::addPanel('Modul')
                 ->setIcon('fa fa-code'),
             TextField::new('nama', 'Nama Modul')
