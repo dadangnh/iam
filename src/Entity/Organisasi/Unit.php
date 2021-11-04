@@ -20,18 +20,50 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=UnitRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="unit", indexes={
- *     @ORM\Index(name="idx_unit_nama", columns={"id", "nama", "level"}),
- *     @ORM\Index(name="idx_unit_legacy", columns={"id", "legacy_kode", "pembina_id"}),
- *     @ORM\Index(name="idx_unit_relation", columns={"id", "jenis_kantor_id", "parent_id", "eselon_id"}),
- *     @ORM\Index(name="idx_unit_active", columns={"id", "nama", "legacy_kode",
- *          "tanggal_aktif", "tanggal_nonaktif"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * Unit Class
  */
+#[ORM\Entity(
+    repositoryClass: UnitRepository::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: 'unit'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'level'
+    ],
+    name: 'idx_unit_nama'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'legacy_kode',
+        'pembina_id'
+    ],
+    name: 'idx_unit_legacy'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'jenis_kantor_id',
+        'parent_id',
+        'eselon_id'
+    ],
+    name: 'idx_unit_relation'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'legacy_kode',
+        'tanggal_aktif',
+        'tanggal_nonaktif'
+    ],
+    name: 'idx_unit_active'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -70,129 +102,160 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'nama' => 'ipartial',
-    'legacyKode' => 'partial',
-])]
-#[ApiFilter(DateFilter::class, properties: ['tanggalAktif', 'tanggalNonaktif'])]
-#[ApiFilter(NumericFilter::class, properties: ['level'])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'legacyKode' => 'partial',
+        'parent.id' => 'exact',
+        'parent.nama' => 'iexact',
+        'parent.legacyKode' => 'exact',
+        'childs.id' => 'exact',
+        'childs.nama' => 'iexact',
+        'childs.legacyKode' => 'exact',
+        'pembina.id' => 'exact',
+        'pembina.nama' => 'iexact',
+        'pembina.legacyKode' => 'exact',
+        'membina.id' => 'exact',
+        'membina.nama' => 'iexact',
+        'membina.legacyKode' => 'exact',
+        'jenisKantor.id' => 'exact',
+        'jenisKantor.nama' => 'iexact',
+        'jenisKantor.tipe' => 'iexact',
+        'eselon.id' => 'exact',
+        'eselon.nama' => 'ipartial',
+        'eselon.kode' => 'ipartial',
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'tanggalAktif',
+        'tanggalNonaktif'
+    ]
+)]
+#[ApiFilter(
+    NumericFilter::class,
+    properties: [
+        'level'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class Unit
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private ?string $nama;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=JenisKantor::class, inversedBy="units")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: JenisKantor::class,
+        inversedBy: 'units'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
     private $jenisKantor;
 
-    /**
-     * @ORM\Column(type="integer")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\Column(
+        type: 'integer'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private ?int $level;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="childs")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\Valid()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Unit::class,
+        inversedBy: 'childs'
+    )]
+    #[Assert\Valid]
     private $parent;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="parent")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'parent',
+        targetEntity: Unit::class
+    )]
     private $childs;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Eselon::class, inversedBy="units")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Eselon::class,
+        inversedBy: 'units'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
     private $eselon;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable'
+    )]
+    #[Assert\NotNull]
     private ?DateTimeImmutable $tanggalAktif;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable',
+        nullable: true
+    )]
     private ?DateTimeImmutable $tanggalNonaktif;
 
-    /**
-     * @ORM\Column(type="string", length=10, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 10,
+        nullable: true
+    )]
     private ?string $legacyKode;
 
-    /**
-     * @ORM\OneToMany(targetEntity=JabatanPegawai::class, mappedBy="unit")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'unit',
+        targetEntity: JabatanPegawai::class
+    )]
     private $jabatanPegawais;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Jabatan::class, mappedBy="units")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Jabatan::class,
+        mappedBy: 'units'
+    )]
     private $jabatans;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, mappedBy="units")
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Role::class,
+        mappedBy: 'units'
+    )]
     private $roles;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="membina")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Unit::class,
+        inversedBy: 'membina'
+    )]
     private $pembina;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Unit::class, mappedBy="pembina")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\OneToMany(
+        mappedBy: 'pembina',
+        targetEntity: Unit::class
+    )]
     private $membina;
 
     public function __construct()
@@ -317,9 +380,7 @@ class Unit
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setTanggalAktifValue(): void
     {
         // Only create tanggal Aktif if no date provided
@@ -452,7 +513,7 @@ class Unit
     /**
      * @return Collection|self[]
      */
-    public function getMembina(): Collection
+    public function getMembina(): Collection|self
     {
         return $this->membina;
     }

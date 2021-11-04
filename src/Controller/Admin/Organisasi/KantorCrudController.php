@@ -26,16 +26,19 @@ class KantorCrudController extends AbstractCrudController
             TextField::new('nama', 'Nama')
                 ->setMaxLength(255),
             AssociationField::new('jenisKantor', 'Jenis Kantor')
-                ->setRequired(true),
+                ->setRequired(true)
+                ->autocomplete(),
             IntegerField::new('Level', 'Level')
                 ->setHelp('Masukkan level sesuai tingkatan kantor,
                     <br>misal: Kementerian = 0, DJP = 1, Kanwil = 2, dst
                 ')
                 ->hideOnIndex(),
-            AssociationField::new('parent', 'Kantor Induk'),
+            AssociationField::new('parent', 'Kantor Induk')
+                ->autocomplete(),
             AssociationField::new('childs', 'Kantor Dibawahnya')
                 ->onlyOnDetail(),
-            AssociationField::new('pembina', 'Kantor Induk Pembina'),
+            AssociationField::new('pembina', 'Kantor Induk Pembina')
+                ->autocomplete(),
             AssociationField::new('membina', 'Kantor yang Dibina')
                 ->onlyOnDetail(),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')

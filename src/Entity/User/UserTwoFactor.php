@@ -2,21 +2,37 @@
 
 namespace App\Entity\User;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\User\UserTwoFactorRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=UserTwoFactorRepository::class)
- * @ORM\Table(name="user_two_factor", indexes={
- *     @ORM\Index(name="idx_user_two_factor_data", columns={"id", "tfa_type"}),
- *     @ORM\Index(name="idx_user_two_factor_relation", columns={"id", "user_id"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
+ * UserTwoFactor Class
  */
+#[ORM\Entity(
+    repositoryClass: UserTwoFactorRepository::class
+)]
+#[ORM\Table(
+    name: 'user_two_factor'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'tfa_type'
+    ],
+    name: 'idx_user_two_factor_data'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'user_id'
+    ],
+    name: 'idx_user_two_factor_relation'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -51,37 +67,41 @@ use Symfony\Component\Validator\Constraints as Assert;
         'security_message' => 'Only a valid user can access this.',
     ],
 )]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'user.id' => 'exact',
+        'user.name' => 'partial'
+    ]
+)]
 class UserTwoFactor
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userTwoFactors")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: User::class, inversedBy: 'userTwoFactors'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
     private $user;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'json',
+        nullable: true
+    )]
     private ?array $backupCode = [];
 
-    /**
-     * @ORM\Column(type="integer")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'integer'
+    )]
     private ?int $tfaType;
 
     public function __construct()

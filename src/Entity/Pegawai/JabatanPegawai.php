@@ -19,17 +19,34 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=JabatanPegawaiRepository::class)
- * @ORM\HasLifecycleCallbacks()
- * @ORM\Table(name="jabatan_pegawai", indexes={
- *     @ORM\Index(name="idx_jabatan_pegawai", columns={"id", "tanggal_mulai", "tanggal_selesai"}),
- *     @ORM\Index(name="idx_jabatan_pegawai_relation", columns={"id", "pegawai_id", "jabatan_id", "tipe_id", "kantor_id", "unit_id"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @ApiFilter(SearchFilter::class, properties={"referensi": "ipartial"})
- * @ApiFilter(PropertyFilter::class)
+ * JabatanPegawai Class
  */
+#[ORM\Entity(
+    repositoryClass: JabatanPegawai::class
+)]
+#[ORM\HasLifecycleCallbacks]
+#[ORM\Table(
+    name: 'jabatan_pegawai'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'tanggal_mulai',
+        'tanggal_selesai'
+    ],
+    name: 'idx_jabatan_pegawai'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'pegawai_id',
+        'jabatan_id',
+        'tipe_id',
+        'kantor_id',
+        'unit_id'
+    ],
+    name: 'idx_jabatan_pegawai_relation'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -64,101 +81,152 @@ use Symfony\Component\Validator\Constraints as Assert;
         'security_message' => 'Only a valid user can access this.',
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'referensi' => 'ipartial',
-])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'referensi' => 'ipartial',
+        'pegawai.id' => 'exact',
+        'pegawai.nama' => 'ipartial',
+        'pegawai.nip9' => 'partial',
+        'pegawai.nip18' => 'partial',
+        'pegawai.user.username' => 'ipartial',
+        'jabatan.id' => 'exact',
+        'jabatan.nama' => 'ipartial',
+        'jabatan.jenis' => 'ipartial',
+        'jabatan.legacyKode' => 'partial',
+        'jabatan.legacyKodeJabKeu' => 'partial',
+        'jabatan.legacyKodeGradeKeu' => 'partial',
+        'eselon.id' => 'exact',
+        'eselon.nama' => 'ipartial',
+        'eselon.kode' => 'ipartial',
+        'tipe.id' => 'exact',
+        'tipe.nama' => 'ipartial',
+        'unit.id' => 'exact',
+        'unit.nama' => 'ipartial',
+        'unit.legacyKode' => 'partial'
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class JabatanPegawai
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Pegawai::class, inversedBy="jabatanPegawais")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Pegawai::class,
+        inversedBy: 'jabatanPegawais'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
     private $pegawai;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Jabatan::class, inversedBy="jabatanPegawais")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Jabatan::class,
+        inversedBy: 'jabatanPegawais'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private $jabatan;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=TipeJabatan::class, inversedBy="jabatanPegawais")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\ManyToOne(
+        targetEntity: TipeJabatan::class,
+        inversedBy: 'jabatanPegawais'
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private $tipe;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Kantor::class, inversedBy="jabatanPegawais")
-     * @ORM\JoinColumn(nullable=false)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Kantor::class,
+        inversedBy: 'jabatanPegawais'
+    )]
+    #[ORM\JoinColumn(
+        nullable: false
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private $kantor;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Unit::class, inversedBy="jabatanPegawais")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"pegawai:read"})
-     * @Assert\Valid()
-     */
+    #[ORM\ManyToOne(
+        targetEntity: Unit::class,
+        inversedBy: 'jabatanPegawais'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private $unit;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private ?string $referensi;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable'
+    )]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private ?DateTimeImmutable $tanggalMulai;
 
-    /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\Column(
+        type: 'datetime_immutable',
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private ?DateTimeImmutable $tanggalSelesai;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=JabatanAtribut::class, inversedBy="jabatanPegawais")
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Groups({"pegawai:read"})
-     */
+    #[ORM\ManyToOne(
+        targetEntity: JabatanAtribut::class,
+        inversedBy: 'jabatanPegawais'
+    )]
+    #[Groups(
+        groups: [
+            'pegawai:read'
+        ]
+    )]
     private $atribut;
 
     public function __construct()
@@ -258,9 +326,7 @@ class JabatanPegawai
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist()
-     */
+    #[ORM\PrePersist]
     public function setTanggalMulaiValue(): void
     {
         $this->tanggalMulai = new DateTimeImmutable();

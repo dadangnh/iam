@@ -16,15 +16,28 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=PermissionRepository::class)
- * @ORM\Table(name="permission", indexes={
- *     @ORM\Index(name="idx_permission_nama_status", columns={"id", "nama", "system_name"}),
- * })
- * Disable second level cache for further analysis
- * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
- * @UniqueEntity(fields={"nama"})
- * @UniqueEntity(fields={"systemName"})
+ * Permissions Class
  */
+#[ORM\Entity(
+    repositoryClass: PermissionRepository::class
+)]
+#[ORM\Table(
+    name: 'permission'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'system_name'
+    ],
+    name: 'idx_permission_nama_status'
+)]
+#[UniqueEntity(
+    fields: [
+        'nama',
+        'systemName'
+    ]
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -62,66 +75,75 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ],
 )]
-#[ApiFilter(SearchFilter::class, properties: [
-    'nama' => 'ipartial',
-    'systemName' => 'ipartial',
-    'deskripsi' => 'ipartial',
-])]
+#[ApiFilter(
+    SearchFilter::class,
+    properties: [
+        'id' => 'exact',
+        'nama' => 'ipartial',
+        'systemName' => 'ipartial',
+        'deskripsi' => 'ipartial',
+        'roles.id' => 'exact',
+        'roles.nama' => 'exact',
+    ]
+)]
 #[ApiFilter(PropertyFilter::class)]
 class Permission
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Id]
+    #[ORM\Column(
+        type: 'uuid',
+        unique: true
+    )]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
     private ?string $nama;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(
+        type: 'string',
+        length: 255
+    )]
+    #[Assert\NotBlank]
     private ?string $systemName;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * Disable second level cache for further analysis
-     * @ ORM\Cache(usage="NONSTRICT_READ_WRITE")
-     */
+    #[ORM\Column(
+        type: 'text',
+        nullable: true
+    )]
     private ?string $deskripsi;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Modul::class, inversedBy="permissions")
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Modul::class,
+        inversedBy: 'permissions'
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
     private $modul;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="permissions", cascade={"persist"})
-     * @ORM\JoinTable(
-     *     name="role_permission",
-     *     joinColumns={
-     *          @ORM\JoinColumn(name="role_id", referencedColumnName="id")
-     *     },
-     *     inverseJoinColumns={
-     *          @ORM\JoinColumn(name="permission_id", referencedColumnName="id")
-     *     }
-     * )
-     * @Assert\NotNull()
-     * @Assert\Valid()
-     */
+    #[ORM\ManyToMany(
+        targetEntity: Role::class,
+        inversedBy: 'permissions',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_permission',
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'permission_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\NotNull]
+    #[Assert\Valid]
     private $roles;
 
     public function __construct()
