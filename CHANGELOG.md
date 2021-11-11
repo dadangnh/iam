@@ -1,5 +1,11 @@
 # DJPConnect - IAM Changelog
 
+## Version 1.18.3
+  * Fix broken css on admin area (#65)
+  * Add more information on composer.json (#66)
+  * Change on Gitlab CI to auto publish package and container image (#67)
+  * Updated dependencies
+
 ## Version 1.18.2
   * Fix Bug The "groups" field cannot be autocompleted because it doesn't define the related CRUD controller FQCN with the "setCrudController()" method. (#63)
   * Fix Bug JabatanPegawai Endpoint (#64)
