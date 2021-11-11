@@ -3,6 +3,25 @@
     "description": "Identity and Access Management System with API Platform",
     "type": "project",
     "license": "GPL-3.0-or-later",
+    "keywords": ["iam","identity and access management","api","api platform","symfony","symfony iam","rbac"],
+    "homepage": "https://gitlab.com/dadangnh/djp-iam",
+    "authors": [
+        {
+            "name": "Dadang NH",
+            "email": "project@dadangnh.com",
+            "homepage": "https://www.dadangnh.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Hariyadi P",
+            "email": "sasta.hp@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "IAM Contributor",
+            "homepage": "https://gitlab.com/dadangnh/djp-iam/-/graphs/master"
+        }
+    ],
     "require": {
         "php": ">=8.0.1",
         "ext-ctype": "*",
