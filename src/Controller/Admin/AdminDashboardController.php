@@ -40,7 +40,7 @@ class AdminDashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('DJP<i>connect</i>');
+            ->setTitle('IAM Admin');
     }
 
     /**
