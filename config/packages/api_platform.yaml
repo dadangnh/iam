@@ -1,11 +1,11 @@
 api_platform:
-    title: DJPConnect-IAM API Docs
+    title: IAM API Docs
     version: 1.18.3
     description: |
-        Bug report and feature request are welcome, please report [here](https://gitlab.com/dadangnh/djp-iam/-/issues).
+        Bug report and feature request are welcome, please report [here](https://gitlab.com/dadangnh/iam/-/issues).
         Newest production version are always available at [https://iam.pajak.or.id/api](https://iam.pajak.or.id/api)
         or [https://iam.simulasikan.com/api](https://iam.simulasikan.com/api)
-        with auto devops enabled from [Gitlab CI Pipeline](https://gitlab.com/dadangnh/djp-iam/-/pipelines),
+        with auto devops enabled from [Gitlab CI Pipeline](https://gitlab.com/dadangnh/iam/-/pipelines),
         in case you need to develop app using the service from your home.
     mapping:
         paths:
