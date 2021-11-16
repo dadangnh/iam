@@ -1,5 +1,9 @@
 # IAM Changelog
 
+## Version 1.18.4
+  * Add more attribute on entity (#68)
+  * Updated components and dependencies
+
 ## Version 1.18.3
   * Fix broken css on admin area (#65)
   * Add more information on composer.json (#66)
