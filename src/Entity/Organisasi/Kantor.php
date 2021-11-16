@@ -316,6 +316,30 @@ class Kantor
     )]
     private $membina;
 
+    #[ORM\Column(
+        type: 'uuid',
+        nullable: true
+    )]
+    private $provinsi;
+
+    #[ORM\Column(
+        type: 'uuid',
+        nullable: true
+    )]
+    private $kabupatenKota;
+
+    #[ORM\Column(
+        type: 'uuid',
+        nullable: true
+    )]
+    private $kecamatan;
+
+    #[ORM\Column(
+        type: 'uuid',
+        nullable: true
+    )]
+    private $kelurahan;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -661,6 +685,54 @@ class Kantor
                 $membina->setPembina(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProvinsi()
+    {
+        return $this->provinsi;
+    }
+
+    public function setProvinsi($provinsi): self
+    {
+        $this->provinsi = $provinsi;
+
+        return $this;
+    }
+
+    public function getKabupatenKota()
+    {
+        return $this->kabupatenKota;
+    }
+
+    public function setKabupatenKota($kabupatenKota): self
+    {
+        $this->kabupatenKota = $kabupatenKota;
+
+        return $this;
+    }
+
+    public function getKecamatan()
+    {
+        return $this->kecamatan;
+    }
+
+    public function setKecamatan($kecamatan): self
+    {
+        $this->kecamatan = $kecamatan;
+
+        return $this;
+    }
+
+    public function getKelurahan()
+    {
+        return $this->kelurahan;
+    }
+
+    public function setKelurahan($kelurahan): self
+    {
+        $this->kelurahan = $kelurahan;
 
         return $this;
     }
