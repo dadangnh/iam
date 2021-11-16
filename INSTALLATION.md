@@ -1,4 +1,4 @@
-# DJP-IAM Installation Method
+# IAM Installation Method
 
 ####Since 1.15.0, our default compose file contains two web server (caddy or nginx). As the consequences, you need to choose which one to use on deployment command
 
@@ -17,7 +17,7 @@ This method only require you to have [Docker Engine](https://docker.com) install
 First, clone this repository:
 
 ```bash
-$ git clone git@gitlab.com:dadangnh/djp-iam.git some_dir
+$ git clone git@gitlab.com:dadangnh/iam.git some_dir
 $ cd some_dir
 ```
 
@@ -34,7 +34,7 @@ Create the docker environment with nginx:
 $ docker-compose up -d database redis php nginx
 ```
 
-Generate Private and public key for JWT Token:
+Generate Private and public key for JWT Token (or you can use your own key and place it to config/jwt folder):
 
 #### On Linux:
 
@@ -124,7 +124,7 @@ Deploy keys are also [supported by GitLab](https://docs.gitlab.com/ee/user/proje
 Example with Git:
 
 ```bash
-$ git clone git@gitlab.com:dadangnh/djp-iam.git
+$ git clone git@gitlab.com:dadangnh/iam.git
 ```
 
 Go into the directory containing your project (`<project-name>`), and start the app in production mode (caddy):
@@ -169,7 +169,7 @@ This method only require you to have the following tools:
 First, clone this repository:
 
 ```bash
-$ git clone git@gitlab.com:dadangnh/djp-iam.git some_dir
+$ git clone git@gitlab.com:dadangnh/iam.git some_dir
 $ cd some_dir
 ```
 
@@ -247,7 +247,7 @@ This method only require you to have the following tools:
 First, clone this repository:
 
 ```bash
-$ git clone git@gitlab.com:dadangnh/djp-iam.git some_dir
+$ git clone git@gitlab.com:dadangnh/iam.git some_dir
 $ cd some_dir
 ```
 
