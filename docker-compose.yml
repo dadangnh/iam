@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     restart: unless-stopped
     networks:
-      - djp
+      - iam
     volumes:
       - db_data:/var/lib/postgresql/data:rw
 
@@ -21,7 +21,7 @@ services:
       - "6379:6379"
     restart: unless-stopped
     networks:
-      - djp
+      - iam
 
   php:
     build:
@@ -46,7 +46,7 @@ services:
       - database
       - redis
     networks:
-      - djp
+      - iam
     environment:
       # Run "composer require symfony/orm-pack" to install and configure Doctrine ORM
       DATABASE_URL: postgresql://${POSTGRES_USER:-db_user}:${POSTGRES_PASSWORD:-db_pass}@database:5432/${POSTGRES_DB:-db_name}?serverVersion=${POSTGRES_VERSION:-14}
@@ -69,7 +69,7 @@ services:
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeMe!}
     restart: unless-stopped
     networks:
-      - djp
+      - iam
     volumes:
       - caddy_data:/data
       - caddy_config:/config
@@ -101,7 +101,7 @@ services:
     links:
       - php
     networks:
-      - djp
+      - iam
     volumes:
       - ./:/srv/app
 #      - nginx_data:/data
@@ -129,5 +129,5 @@ volumes:
 #  nginx_conig:
 
 networks:
-  djp:
+  iam:
     driver: bridge

@@ -1,4 +1,4 @@
-# DJPConnect - IAM Changelog
+# IAM Changelog
 
 ## Version 1.18.3
   * Fix broken css on admin area (#65)
@@ -144,4 +144,4 @@
   * Move the service inside all docker
 
 ## Version 1.0
-First release. Contains all working code for initial IAM workload
+  First release. Contains all working code for initial IAM workload
