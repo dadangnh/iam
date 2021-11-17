@@ -4,7 +4,7 @@ Please read this!
 Before opening a new issue, make sure to search for keywords in the issues
 filtered by the "regression" or "bug" label:
 
-- https://gitlab.com/dadangnh/djp-iam/-/issues?label_name%5B%5D=bug
+- https://gitlab.com/dadangnh/iam/-/issues?label_name%5B%5D=bug
 
 and verify the issue you're about to submit isn't a duplicate.
 --->

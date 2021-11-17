@@ -187,30 +187,34 @@ deploy_to_registries:
     - docker-compose up -d database redis php caddy
   script:
     - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
-    - docker tag djp-iam_php:latest dadang/djp-iam_php:$CI_COMMIT_TAG
-    - docker tag djp-iam_php:latest dadang/djp-iam_php:latest
-    - docker tag djp-iam_caddy:latest dadang/djp-iam_caddy:$CI_COMMIT_TAG
-    - docker tag djp-iam_caddy:latest dadang/djp-iam_caddy:latest
-    - docker tag redis:latest dadang/djp-iam_redis:$CI_COMMIT_TAG
-    - docker tag redis:latest dadang/djp-iam_redis:latest
-    - docker tag postgres:14-alpine dadang/djp-iam_database:$CI_COMMIT_TAG
-    - docker tag postgres:14-alpine dadang/djp-iam_database:latest
-    - docker push dadang/djp-iam_caddy:$CI_COMMIT_TAG
-    - docker push dadang/djp-iam_caddy:latest
-    - docker push dadang/djp-iam_php:$CI_COMMIT_TAG
-    - docker push dadang/djp-iam_php:latest
-    - docker push dadang/djp-iam_redis:$CI_COMMIT_TAG
-    - docker push dadang/djp-iam_redis:latest
-    - docker push dadang/djp-iam_database:$CI_COMMIT_TAG
-    - docker push dadang/djp-iam_database:latest
+    - docker tag iam_php:latest dadang/iam_backend:$CI_COMMIT_TAG
+    - docker tag iam_php:latest dadang/iam_backend:latest
+    - docker tag iam_php:latest dadang/iam_php:$CI_COMMIT_TAG
+    - docker tag iam_php:latest dadang/iam_php:latest
+    - docker tag iam_caddy:latest dadang/iam_caddy:$CI_COMMIT_TAG
+    - docker tag iam_caddy:latest dadang/iam_caddy:latest
+    - docker tag redis:latest dadang/iam_redis:$CI_COMMIT_TAG
+    - docker tag redis:latest dadang/iam_redis:latest
+    - docker tag postgres:14-alpine dadang/iam_database:$CI_COMMIT_TAG
+    - docker tag postgres:14-alpine dadang/iam_database:latest
+    - docker push dadang/iam_caddy:$CI_COMMIT_TAG
+    - docker push dadang/iam_caddy:latest
+    - docker push dadang/iam_backend:$CI_COMMIT_TAG
+    - docker push dadang/iam_backend:latest
+    - docker push dadang/iam_php:$CI_COMMIT_TAG
+    - docker push dadang/iam_php:latest
+    - docker push dadang/iam_redis:$CI_COMMIT_TAG
+    - docker push dadang/iam_redis:latest
+    - docker push dadang/iam_database:$CI_COMMIT_TAG
+    - docker push dadang/iam_database:latest
     - docker logout
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker tag djp-iam_php:latest $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_TAG
-    - docker tag djp-iam_php:latest $CI_REGISTRY_IMAGE/backend:latest
-    - docker tag djp-iam_php:latest $CI_REGISTRY_IMAGE/php:$CI_COMMIT_TAG
-    - docker tag djp-iam_php:latest $CI_REGISTRY_IMAGE/php:latest
-    - docker tag djp-iam_caddy:latest $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
-    - docker tag djp-iam_caddy:latest $CI_REGISTRY_IMAGE/caddy:latest
+    - docker tag iam_php:latest $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_TAG
+    - docker tag iam_php:latest $CI_REGISTRY_IMAGE/backend:latest
+    - docker tag iam_php:latest $CI_REGISTRY_IMAGE/php:$CI_COMMIT_TAG
+    - docker tag iam_php:latest $CI_REGISTRY_IMAGE/php:latest
+    - docker tag iam_caddy:latest $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
+    - docker tag iam_caddy:latest $CI_REGISTRY_IMAGE/caddy:latest
     - docker tag redis:latest $CI_REGISTRY_IMAGE/redis:$CI_COMMIT_TAG
     - docker tag redis:latest $CI_REGISTRY_IMAGE/redis:latest
     - docker tag postgres:14-alpine $CI_REGISTRY_IMAGE/database:$CI_COMMIT_TAG
