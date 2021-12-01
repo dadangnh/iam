@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e003d0f66d4922a50a17fa41b511b99e",
+    "content-hash": "812c641fe2725ab183335c11c2fc679a",
     "packages": [
         {
             "name": "api-platform/core",
@@ -2681,6 +2681,55 @@
                 "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.5.1"
             },
             "time": "2021-10-02T14:08:47+00:00"
+        },
+        {
+            "name": "phpstan/phpdoc-parser",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/phpdoc-parser.git",
+                "reference": "dbc093d7af60eff5cd575d2ed761b15ed40bd08e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/dbc093d7af60eff5cd575d2ed761b15ed40bd08e",
+                "reference": "dbc093d7af60eff5cd575d2ed761b15ed40bd08e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "php-parallel-lint/php-parallel-lint": "^1.2",
+                "phpstan/extension-installer": "^1.0",
+                "phpstan/phpstan": "^1.0",
+                "phpstan/phpstan-strict-rules": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "symfony/process": "^5.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPStan\\PhpDocParser\\": [
+                        "src/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHPDoc parser with support for nullable, intersection and generic types",
+            "support": {
+                "issues": "https://github.com/phpstan/phpdoc-parser/issues",
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.2.0"
+            },
+            "time": "2021-09-16T20:46:02+00:00"
         },
         {
             "name": "predis/predis",
@@ -6145,6 +6194,74 @@
                 }
             ],
             "time": "2021-11-23T10:19:22+00:00"
+        },
+        {
+            "name": "symfony/proxy-manager-bridge",
+            "version": "v5.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/proxy-manager-bridge.git",
+                "reference": "91e5ddd5f7381f4a5524f10c8789c6d5d07f04e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/proxy-manager-bridge/zipball/91e5ddd5f7381f4a5524f10c8789c6d5d07f04e7",
+                "reference": "91e5ddd5f7381f4a5524f10c8789c6d5d07f04e7",
+                "shasum": ""
+            },
+            "require": {
+                "composer/package-versions-deprecated": "^1.8",
+                "friendsofphp/proxy-manager-lts": "^1.0.2",
+                "php": ">=7.2.5",
+                "symfony/dependency-injection": "^5.0|^6.0",
+                "symfony/polyfill-php80": "^1.16"
+            },
+            "require-dev": {
+                "symfony/config": "^4.4|^5.0|^6.0"
+            },
+            "type": "symfony-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Bridge\\ProxyManager\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides integration for ProxyManager with various Symfony components",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/proxy-manager-bridge/tree/v5.4.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-11-17T12:18:18+00:00"
         },
         {
             "name": "symfony/routing",
