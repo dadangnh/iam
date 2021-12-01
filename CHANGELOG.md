@@ -1,5 +1,9 @@
 # IAM Changelog
 
+## Version 1.18.5
+  * Fix Dockerfile and Gitlab CI (#70)
+  * Updated components and dependencies
+
 ## Version 1.18.4
   * Add more attribute on entity (#68)
   * Updated components and dependencies
