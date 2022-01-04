@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '*/30 * * * *'
+
+jobs:
+  build_backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Backend Images
+      run: docker build --no-cache --target symfony_php --build-arg STABILITY=-stable -t backend .
+  build_caddy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Caddy Images
+      run: docker build --no-cache --target symfony_caddy -t caddy .
+  build_nginx:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Caddy Images
+      run: docker build --no-cache --target symfony_nginx -t nginx .
