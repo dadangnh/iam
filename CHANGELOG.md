@@ -1,5 +1,11 @@
 # IAM Changelog
 
+## Version 1.19.0
+  * Upgrade Symfony Components to Major Version v5.4 (#71)
+  * Updated components and dependencies
+  * Added Github Action Workflow (#73)
+  * Fix Gitlab CI to push all images to Docker Hub (#74)
+
 ## Version 1.18.5
   * Fix Dockerfile and Gitlab CI (#70)
   * Updated components and dependencies
