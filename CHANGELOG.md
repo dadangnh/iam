@@ -1,5 +1,9 @@
 # IAM Changelog
 
+## Version 1.18.6
+  * Updated symfony components and dependencies
+  * Updated recipes
+
 ## Version 1.18.5
   * Fix Dockerfile and Gitlab CI (#70)
   * Updated components and dependencies
