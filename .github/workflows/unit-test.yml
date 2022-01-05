@@ -1,0 +1,82 @@
+name: Unit Test
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '*/30 * * * *'
+
+jobs:
+  symfony-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5          
+        ports:
+          - 6379:6379
+    steps:
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+    - uses: actions/checkout@v2
+    - name: Copy .env.test.local
+      run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v2
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+    - name: Install OS Packages
+      run: |
+        sudo apt update -yqq
+        sudo apt install gnupg openssl acl -yqq
+        sudo apt install git nodejs unzip libcurl4-gnutls-dev libicu-dev libonig-dev libzip-dev libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Create Environment
+      run: |
+        mkdir -p data
+        touch data/database.sqlite
+    - name: Execute fixtures
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?serverVersion=14&charset=utf8
+        REDIS_URL: redis://localhost:6379
+        REDIS_HOST: localhost
+        REDIS_PORT: 6379
+      run: |
+        php bin/console doctrine:schema:create
+        php bin/console doctrine:fixtures:load --no-interaction
+    - name: Generate Private and Public Key
+      run: |
+        mkdir -p config/jwt
+        export jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut -f 2 -d ''='')}
+        echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 --pass stdin
+        echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout --passin stdin
+        setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+        setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+    - name: Execute tests (Unit and Feature tests) via PHPUnit
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?serverVersion=14&charset=utf8
+        REDIS_URL: redis://localhost:6379
+        REDIS_HOST: localhost
+        REDIS_PORT: 6379
+      run: php bin/phpunit
