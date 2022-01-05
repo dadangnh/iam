@@ -1,9 +1,16 @@
 # IAM Changelog
 
+## Version 1.19.1 (current stable)
+  * Updated core dependencies (JWT Bundle)
+
+## Version 1.18.6 (maintenance only)
+  * Updated symfony components (v5.3.13) and dependencies
+  * Updated recipes
+
 ## Version 1.19.0
   * Upgrade Symfony Components to Major Version v5.4 (#71)
   * Updated components and dependencies
-  * Added Github Action Workflow (#73)
+  * Added GitHub Action Workflow (#73)
   * Fix Gitlab CI to push all images to Docker Hub (#74)
 
 ## Version 1.18.5
