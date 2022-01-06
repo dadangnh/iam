@@ -21,16 +21,18 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		composer create-project "$SKELETON $SYMFONY_VERSION" tmp --stability="$STABILITY" --prefer-dist --no-progress --no-interaction --no-install
 
 		cd tmp
+		composer require "php:>=$PHP_VERSION"
 		composer config --json extra.symfony.docker 'true'
 		cp -Rp . ..
 		cd -
 
 		rm -Rf tmp/
-	elif [ "$APP_ENV" != 'prod' ]; then
-		rm -f .env.local.php
 	fi
 
-	composer install --prefer-dist --no-progress --no-interaction
+	if [ "$APP_ENV" != 'prod' ]; then
+		rm -f .env.local.php
+		composer install --prefer-dist --no-progress --no-interaction
+	fi
 
 	if grep -q ^DATABASE_URL= .env; then
 		if [ "$CREATION" = "1" ]; then

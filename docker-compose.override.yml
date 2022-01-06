@@ -18,8 +18,5 @@ services:
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./public:/srv/app/public:ro
 
-###> doctrine/doctrine-bundle ###
-  database:
-    ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
+###> symfony/mercure-bundle ###
+###< symfony/mercure-bundle ###
