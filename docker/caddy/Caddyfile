@@ -58,7 +58,7 @@ route {
     # In this case, they will be handled by the PHP app.
     # reverse_proxy @pwa http://{$PWA_UPSTREAM}
 
-    php_fastcgi php:9000
+    php_fastcgi {$BACKEND_FASTCGI}
     encode zstd gzip
     file_server
 }
