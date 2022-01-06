@@ -28,7 +28,7 @@ RUN apk add --no-cache \
 # see https://github.com/docker-library/php/issues/240#issuecomment-763112749
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 
-ARG APCU_VERSION=5.1.20
+ARG APCU_VERSION=5.1.21
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
@@ -128,10 +128,6 @@ RUN set -eux; \
 	composer symfony:dump-env prod; \
 	composer run-script --no-dev post-install-cmd; \
 	chmod +x bin/console; sync
-
-#add composer install
-RUN  /usr/bin/composer install
-
 VOLUME /srv/app/var
 
 ENTRYPOINT ["docker-entrypoint"]
@@ -163,30 +159,32 @@ COPY docker/caddy/Caddyfile /etc/caddy/Caddyfile
 
 
 # nginx stage
-FROM alpine:latest AS symfony_nginx
+FROM nginx:stable-alpine AS symfony_nginx
 
-RUN rm -rf /var/cache/apk/* && \
-    rm -rf /tmp/*
-
-RUN apk update
-
-RUN apk add --update nginx
-RUN rm -rf /var/cache/apk/* && rm -rf /tmp/*
-RUN mkdir -p /var/cache/nginx/iam
-# Disable the SSL cert injection
-#COPY certs/cert.pem /etc/certs/live/iam/fullchain.pem
-#COPY certs/key.pem /etc/certs/live/iam/privkey.pem
+# Each time Nginx is started it will perform variable substition in all template
+# files found in `/etc/nginx/templates/*.template`, and copy the results (without
+# the `.template` suffix) into `/etc/nginx/conf.d/`. Below, this will replace the
+# original `/etc/nginx/conf.d/default.conf`; see https://hub.docker.com/_/nginx
 COPY docker/nginx/nginx.conf /etc/nginx/
-COPY docker/nginx/upstream.conf /etc/nginx/default/
-RUN rm -rf /etc/nginx/http.d/default.conf
+COPY docker/nginx/default.conf.template /etc/nginx/templates/default.conf.template
+COPY docker/nginx/docker-defaults.sh /
+RUN mkdir -p /var/cache/nginx/iam
+
+# Just in case the file mode was not properly set in Git
+RUN chmod +x /docker-defaults.sh
+
+# This will delegate to the original Nginx `docker-entrypoint.sh`
+ENTRYPOINT ["/docker-defaults.sh"]
 
 WORKDIR /srv/app
 
 RUN adduser -D -g '' -G www-data www-data
 #RUN apk add shadow && usermod -u 1000 www-data && groupmod -g 1000 www-data
 #RUN usermod -u 1000 www-data
+COPY --from=symfony_php /srv/app .
 
-CMD ["nginx"]
+# The default parameters to ENTRYPOINT (unless overruled on the command line)
+CMD ["nginx", "-g", "daemon off;"]
 
 EXPOSE 80
 EXPOSE 443
