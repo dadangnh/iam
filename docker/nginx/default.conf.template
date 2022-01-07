@@ -1,6 +1,5 @@
 upstream upstreamiam {
-    # todo: set php upstream from env
-    server php:9000;
+    server $BACKEND_FASTCGI;
     keepalive 32;
 }
 
@@ -9,8 +8,7 @@ upstream upstreamiam {
 # On production, it should be only accept https and the http block only contains a redirection
 
 server {
-    # todo: change server name from env
-    # server_name iam.dev _;
+    server_name $SERVER_NAME _;
     root /srv/app/public;
     listen 80;
 

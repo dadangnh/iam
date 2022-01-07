@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 1.19.1 (current stable)
+## Version 1.19.2 (current stable)
+  * Fix Nginx Image (#75)
+  * Upgrade Backend to PHP 8.1 (#76)
+
+## Version 1.19.1
   * Updated core dependencies (JWT Bundle)
 
 ## Version 1.18.6 (maintenance only)
