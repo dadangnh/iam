@@ -1599,16 +1599,16 @@
         },
         {
             "name": "easycorp/easyadmin-bundle",
-            "version": "v3.5.18",
+            "version": "v3.5.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EasyCorp/EasyAdminBundle.git",
-                "reference": "aa15b32391b578cd6a2928e6fb7aeb2acb96af64"
+                "reference": "031f8616cd4066fbce100aa7b9ca5255ad35b879"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/aa15b32391b578cd6a2928e6fb7aeb2acb96af64",
-                "reference": "aa15b32391b578cd6a2928e6fb7aeb2acb96af64",
+                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/031f8616cd4066fbce100aa7b9ca5255ad35b879",
+                "reference": "031f8616cd4066fbce100aa7b9ca5255ad35b879",
                 "shasum": ""
             },
             "require": {
@@ -1679,7 +1679,7 @@
             ],
             "support": {
                 "issues": "https://github.com/EasyCorp/EasyAdminBundle/issues",
-                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v3.5.18"
+                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v3.5.19"
             },
             "funding": [
                 {
@@ -1687,7 +1687,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-01-09T16:17:31+00:00"
+            "time": "2022-01-15T10:05:04+00:00"
         },
         {
             "name": "fig/link-util",
