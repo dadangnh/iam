@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 1.19.2 (current stable)
+## Version 1.19.3 (current stable)
+  * Updated symfony components (v5.4.4) and dependencies
+  * Updated recipes
+
+## Version 1.19.2
   * Fix Nginx Image (#75)
   * Upgrade Backend to PHP 8.1 (#76)
 
