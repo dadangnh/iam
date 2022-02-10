@@ -29,6 +29,7 @@ variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
 
+
 services:
   - name: postgres:14-alpine
     alias: database
@@ -100,6 +101,8 @@ test:
     - name: redis:latest
       alias: redis
   before_script:
+    - mkdir -p $HOME/.docker/
+    - 'echo "{ \"proxies\": { \"default\": { \"httpProxy\": \"$HTTP_PROXY\", \"httpsProxy\": \"$HTTPS_PROXY\", \"noProxy\": \"$NO_PROXY\" } } }" > $HOME/.docker/config.json'
     - apt-get update -yqq
     - apt-get install gnupg openssl acl -yqq
     - mkdir -p config/jwt
