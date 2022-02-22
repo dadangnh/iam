@@ -3,6 +3,7 @@
 namespace App\Entity\Core;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
@@ -195,6 +196,7 @@ class Role
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $subsOfRole;
 
     #[ORM\OneToMany(
@@ -203,9 +205,11 @@ class Role
     )]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $containRoles;
 
     #[ORM\ManyToMany(
@@ -229,9 +233,11 @@ class Role
     #[Assert\Valid]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $users;
 
     #[ORM\ManyToMany(
@@ -255,9 +261,11 @@ class Role
     #[Assert\Valid]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $jabatans;
 
     #[ORM\ManyToMany(
@@ -281,9 +289,11 @@ class Role
     #[Assert\Valid]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $units;
 
     #[ORM\ManyToMany(
@@ -307,9 +317,11 @@ class Role
     #[Assert\Valid]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $kantors;
 
     #[ORM\ManyToMany(
@@ -333,9 +345,11 @@ class Role
     #[Assert\Valid]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $eselons;
 
     #[ORM\ManyToMany(
@@ -359,9 +373,11 @@ class Role
     #[Assert\Valid]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $jenisKantors;
 
     #[ORM\ManyToMany(
@@ -385,9 +401,11 @@ class Role
     #[Assert\Valid]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $groups;
 
     #[ORM\ManyToMany(
@@ -396,9 +414,11 @@ class Role
     )]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
+    #[ApiProperty(readableLink: false, writableLink: false)]
     private $permissions;
 
     #[ORM\Column(
@@ -409,6 +429,7 @@ class Role
     )]
     #[Groups(
         groups: [
+            'role:read',
             'role:write'
         ]
     )]
