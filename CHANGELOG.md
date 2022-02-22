@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 1.19.3 (current stable)
+## Version 1.19.4 (current stable)
+  * Expose more attributes on roles endpoint (#77)
+  * Updated symfony components and dependencies
+  * Updated recipes
+
+## Version 1.19.3
   * Updated symfony components (v5.4.4) and dependencies
   * Updated recipes
 
