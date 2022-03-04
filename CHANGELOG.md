@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 1.19.4 (current stable)
+## Version 1.20.0 (current stable)
+  * Add attribute on pegawai endpoint (#78)
+  * Updated symfony components and dependencies
+  * Updated recipes
+
+## Version 1.19.4
   * Expose more attributes on roles endpoint (#77)
   * Updated symfony components and dependencies
   * Updated recipes
