@@ -51,6 +51,10 @@ class PegawaiCrudController extends AbstractCrudController
                 ->setRequired(true)
                 ->setMaxLength(18)
                 ->hideOnIndex(),
+            TextField::new('pangkat','Pangkat')
+                ->setRequired(false)
+                ->setMaxLength(255)
+                ->hideOnIndex(),
         ];
     }
 }

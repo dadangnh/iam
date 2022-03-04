@@ -35,7 +35,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         'pensiun',
         'nik',
         'nip9',
-        'nip18'
+        'nip18',
+        'pangkat'
     ],
     name: 'idx_pegawai_data'
 )]
@@ -103,6 +104,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'nip9' => 'partial',
         'nip18' => 'partial',
         'user.username' => 'ipartial',
+        'pangkat' => 'ipartial'
     ]
 )]
 #[ApiFilter(
@@ -275,6 +277,19 @@ class Pegawai
     )]
     private $jabatanPegawais;
 
+    #[ORM\Column(
+        type: 'string',
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
+    private $pangkat;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -432,6 +447,18 @@ class Pegawai
                 $jabatanPegawai->setPegawai(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPangkat(): ?string
+    {
+        return $this->pangkat;
+    }
+
+    public function setPangkat(?string $pangkat): self
+    {
+        $this->pangkat = $pangkat;
 
         return $this;
     }
