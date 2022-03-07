@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 1.20.0 (current stable)
+## Version 1.20.1 (current stable)
+  * Remove deprecated method (#79)
+  * Updated symfony components and dependencies
+
+## Version 1.20.0
   * Add attribute on pegawai endpoint (#78)
   * Updated symfony components and dependencies
   * Updated recipes
