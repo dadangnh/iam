@@ -10,7 +10,7 @@ use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Helper\AplikasiHelper;
 use App\Helper\RoleHelper;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,12 +21,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class CommonController extends AbstractController
 {
     /**
-     * @var EntityManagerInterface
+     * @var ManagerRegistry
      */
-    private EntityManagerInterface $entityManager;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(EntityManagerInterface $entityManager) {
-        $this->entityManager = $entityManager;
+    public function __construct(ManagerRegistry $doctrine) {
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -45,7 +45,8 @@ class CommonController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/get_roles_by_jabatan_pegawai', methods: ['POST'])]
-    public function getRoleByJabatanPegawai(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    public function getRoleByJabatanPegawai(Request $request,
+                                            IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
 
@@ -73,7 +74,8 @@ class CommonController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/get_aplikasi_by_role_name', methods: ['POST'])]
-    public function getAplikasiByRoleName(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    public function getAplikasiByRoleName(Request $request,
+                                          IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
 
@@ -191,7 +193,8 @@ class CommonController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/get_all_aplikasi_by_role_name', methods: ['POST'])]
-    public function getAllAplikasiByRoleName(Request $request, IriConverterInterface $iriConverter): JsonResponse
+    public function getAllAplikasiByRoleName(Request $request,
+                                             IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
 
@@ -258,11 +261,12 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/roles/{roleName}/aplikasis', methods: ['GET'])]
-    public function showAplikasisFromRoleName(string $roleName, IriConverterInterface $iriConverter): JsonResponse
+    public function showAplikasisFromRoleName(string $roleName,
+                                              IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
 
-        $role = $this->getDoctrine()
+        $role = $this->doctrine
             ->getRepository(Role::class)
             ->findOneBy(['nama' => $roleName]);
 
@@ -290,11 +294,12 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/roles/{roleName}/all_aplikasis', methods: ['GET'])]
-    public function showAllAplikasisFromRoleName(string $roleName, IriConverterInterface $iriConverter): JsonResponse
+    public function showAllAplikasisFromRoleName(string $roleName,
+                                                 IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
 
-        $role = $this->getDoctrine()
+        $role = $this->doctrine
             ->getRepository(Role::class)
             ->findOneBy(['nama' => $roleName]);
 
@@ -325,7 +330,7 @@ class CommonController extends AbstractController
     {
         $this->ensureUserLoggedIn();
 
-        $role = $this->getDoctrine()
+        $role = $this->doctrine
             ->getRepository(Role::class)
             ->findOneBy(['nama' => $roleName]);
 
@@ -380,7 +385,8 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/jabatan_pegawais/{id}/roles', methods: ['GET'])]
-    public function showRolesByJabatanPegawais(string $id, IriConverterInterface $iriConverter): JsonResponse
+    public function showRolesByJabatanPegawais(string $id,
+                                               IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
 
@@ -388,18 +394,12 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @return JsonResponse|null
+     * Firewall to make sure every request have token
+     * @return void
      */
-    private function ensureUserLoggedIn(): ?JsonResponse
+    private function ensureUserLoggedIn(): void
     {
-        if (!$this->isGranted('ROLE_USER')) {
-            return $this->json([
-                'code' => 401,
-                'error' => 'Unauthorized API access.',
-            ], 401);
-        }
-
-        return null;
+        $this->denyAccessUnlessGranted('ROLE_USER');
     }
 
     /**
@@ -412,7 +412,7 @@ class CommonController extends AbstractController
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $roleName = $content['role_name'];
 
-        return $this->getDoctrine()
+        return $this->doctrine
             ->getRepository(Role::class)
             ->findOneBy(['nama' => $roleName]);
     }
@@ -422,10 +422,11 @@ class CommonController extends AbstractController
      * @param IriConverterInterface $iriConverter
      * @return JsonResponse
      */
-    private function findRoleFromIdJabatanPegawai(mixed $idJabatan, IriConverterInterface $iriConverter): JsonResponse
+    private function findRoleFromIdJabatanPegawai(mixed $idJabatan,
+                                                  IriConverterInterface $iriConverter): JsonResponse
     {
         /** @var JabatanPegawai $jabatanPegawai */
-        $jabatanPegawai = $this->entityManager
+        $jabatanPegawai = $this->doctrine
             ->getRepository(JabatanPegawai::class)
             ->findOneBy(['id' => $idJabatan]);
 
@@ -477,10 +478,10 @@ class CommonController extends AbstractController
     {
         $this->ensureUserLoggedIn();
 
-        $listOfPlainRoles = $this->getUser()->getRoles();
+        $listOfPlainRoles = $this->getUser()?->getRoles();
         $listRoles = [];
         foreach ($listOfPlainRoles as $plainRole) {
-            $role = $this->getDoctrine()
+            $role = $this->doctrine
                 ->getRepository(Role::class)
                 ->findOneBy(['nama' => $plainRole]);
             if (null !== $role) {
@@ -518,11 +519,11 @@ class CommonController extends AbstractController
     {
         $this->ensureUserLoggedIn();
 
-        $listOfPlainRoles = $this->getUser()->getRoles();
+        $listOfPlainRoles = $this->getUser()?->getRoles();
         $uniquePermissions = $listPermissionsOnRoles = $listRoles = [];
         $uniquePermissionsCount = 0;
         foreach ($listOfPlainRoles as $plainRole) {
-            $role = $this->getDoctrine()
+            $role = $this->doctrine
                 ->getRepository(Role::class)
                 ->findOneBy(['nama' => $plainRole]);
             if (null !== $role) {

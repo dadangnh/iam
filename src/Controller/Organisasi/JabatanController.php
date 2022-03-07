@@ -3,6 +3,7 @@
 namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\Jabatan;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,12 +16,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class JabatanController extends AbstractController
 {
     /**
+     * @param ManagerRegistry $doctrine
      * @return JsonResponse
      */
     #[Route('/api/jabatans/active/show_all', methods: ['GET'])]
-    public function getAllActiveJabatan(): JsonResponse
+    public function getAllActiveJabatan(ManagerRegistry $doctrine): JsonResponse
     {
-        $jabatans = $this->getDoctrine()
+        $jabatans = $doctrine
             ->getRepository(Jabatan::class)
             ->findAllActiveJabatan();
 
@@ -28,11 +30,12 @@ class JabatanController extends AbstractController
     }
 
     /**
+     * @param ManagerRegistry $doctrine
      * @param String $name
      * @return JsonResponse
      */
     #[Route('/api/jabatans/active/{name}', methods: ['GET'])]
-    public function getActiveJabatanByKeyword(String $name): JsonResponse
+    public function getActiveJabatanByKeyword(ManagerRegistry $doctrine, String $name): JsonResponse
     {
         if (3 > strlen($name)) {
             return $this->json([
@@ -41,7 +44,7 @@ class JabatanController extends AbstractController
             ], 406);
         }
 
-        $jabatans = $this->getDoctrine()
+        $jabatans = $doctrine
             ->getRepository(Jabatan::class)
             ->findActiveJabatanByNameKeyword($name);
 
