@@ -5,6 +5,7 @@ namespace App\Controller\Pegawai;
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\Pegawai\Pegawai;
 use App\Helper\PosisiHelper;
+use Doctrine\Persistence\ManagerRegistry;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -24,7 +25,7 @@ class PegawaiController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/pegawais/mass_fetch', methods: ['POST'])]
-    public function getPegawaiDataFromArrayOfUuid(Request $request): JsonResponse
+    public function getPegawaiDataFromArrayOfUuid(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $requestIds = $requestData['pegawaiIds'];
@@ -57,7 +58,7 @@ class PegawaiController extends AbstractController
         }
 
         // Get all the data
-        $pegawais = $this->getDoctrine()
+        $pegawais = $doctrine
             ->getRepository(Pegawai::class)
             ->getPegawaisFromArrayOfUuid($listEntityUuid);
 
@@ -75,6 +76,7 @@ class PegawaiController extends AbstractController
     }
 
     /**
+     * @param ManagerRegistry $doctrine
      * @param Request $request
      * @param PosisiHelper $posisiUtils
      * @param IriConverterInterface $iriConverter
@@ -82,7 +84,8 @@ class PegawaiController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/pegawais/atasan', methods: ['POST'])]
-    public function getAtasanPegawaiFromPegawaiId(Request $request, PosisiHelper $posisiUtils,
+    public function getAtasanPegawaiFromPegawaiId(ManagerRegistry $doctrine, Request $request,
+                                                  PosisiHelper $posisiUtils,
                                                   IriConverterInterface $iriConverter): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -105,7 +108,7 @@ class PegawaiController extends AbstractController
         }
 
         // Fetch the pegawai data
-        $pegawai = $this->getDoctrine()
+        $pegawai = $doctrine
             ->getRepository(Pegawai::class)
             ->findOneBy(['id' => $pegawaiId]);
 

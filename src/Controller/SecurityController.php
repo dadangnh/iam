@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\User\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,12 +17,17 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
+     * @var ManagerRegistry
+     */
+    private ManagerRegistry $doctrine;
+
+    /**
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
-    {
+    public function __construct(ManagerRegistry $doctrine, EntityManagerInterface $entityManager) {
+        $this->doctrine = $doctrine;
         $this->entityManager = $entityManager;
     }
 
@@ -109,7 +114,8 @@ class SecurityController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/change_user_password', name: 'app_change_password_old', methods: ['POST'])]
-    public function change_password_old(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function change_password_old(Request $request,
+                                        UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         return $this->change_password($request, $passwordHasher);
     }
@@ -121,22 +127,22 @@ class SecurityController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/users/change_password', name: 'app_change_password', methods: ['POST'])]
-    public function change_password(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function change_password(Request $request,
+                                    UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         // Make sure every active user can change their own password
-        if (!$this->isGranted('ROLE_USER')) {
-            return $this->json([
-                'code' => 401,
-                'error' => 'Unauthorized API access.',
-            ], 401);
-        }
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $username = $content['username'];
         $oldPassword = $content['old_password'];
         $newPassword = $content['new_password'];
+
         /** @var User $user */
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $username]);
+        $user = $this->doctrine
+            ->getRepository(User::class)
+            ->findOneBy(['username' => $username]);
+
         if (null === $user) {
             return $this->json([
                 'code' => 404,
@@ -179,7 +185,8 @@ class SecurityController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/change_password_by_sikka', name: 'app_change_password_by_sikka_old', methods: ['POST'])]
-    public function change_password_by_sikka_old(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function change_password_by_sikka_old(Request $request,
+                                                 UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         return $this->change_password_by_sikka($request, $passwordHasher);
     }
@@ -191,7 +198,8 @@ class SecurityController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/users/change_password_by_sikka', name: 'app_change_password_by_sikka', methods: ['POST'])]
-    public function change_password_by_sikka(Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function change_password_by_sikka(Request $request,
+                                             UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         // this endpoint should only used by UPK/ HRIS/ SUPER ADMIN to reset user password
         if (!$this->isGranted('ROLE_SUPER_ADMIN')
@@ -209,7 +217,9 @@ class SecurityController extends AbstractController
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $username = $content['username'];
         $newPassword = $content['new_password'];
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $username]);
+        $user = $this->doctrine
+            ->getRepository(User::class)
+            ->findOneBy(['username' => $username]);
 
         if (null === $user) {
             return $this->json([
@@ -257,8 +267,12 @@ class SecurityController extends AbstractController
     {
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $username = $content['username'];
+
         /** @var User $user */
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['username' => $username]);
+        $user = $this->doctrine
+            ->getRepository(User::class)
+            ->findOneBy(['username' => $username]);
+
         if (null === $user) {
             return $this->json([
                 'code' => 404,

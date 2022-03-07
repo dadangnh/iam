@@ -3,7 +3,7 @@
 namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\JenisKantor;
-use App\Entity\Organisasi\Kantor;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,12 +16,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class JenisKantorController extends AbstractController
 {
     /**
+     * @param ManagerRegistry $doctrine
      * @return JsonResponse
      */
     #[Route('/api/jenis_kantors/active/show_all', methods: ['GET'])]
-    public function getAllActiveJenisKantor(): JsonResponse
+    public function getAllActiveJenisKantor(ManagerRegistry $doctrine): JsonResponse
     {
-        $jenisKantors = $this->getDoctrine()
+        $jenisKantors = $doctrine
             ->getRepository(JenisKantor::class)
             ->findAllActiveJenisKantor();
 
@@ -29,11 +30,12 @@ class JenisKantorController extends AbstractController
     }
 
     /**
+     * @param ManagerRegistry $doctrine
      * @param String $name
      * @return JsonResponse
      */
     #[Route('/api/jenis_kantors/active/{name}', methods: ['GET'])]
-    public function getActiveJenisKantorByKeyword(String $name): JsonResponse
+    public function getActiveJenisKantorByKeyword(ManagerRegistry $doctrine, String $name): JsonResponse
     {
         if (3 > strlen($name)) {
             return $this->json([
@@ -42,7 +44,7 @@ class JenisKantorController extends AbstractController
             ], 406);
         }
 
-        $jenisKantors = $this->getDoctrine()
+        $jenisKantors = $doctrine
             ->getRepository(JenisKantor::class)
             ->findActiveJenisKantorByNameKeyword($name);
 
