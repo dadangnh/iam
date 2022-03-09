@@ -3,6 +3,7 @@
 namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\Unit;
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,12 +16,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class UnitController extends AbstractController
 {
     /**
+     * @param ManagerRegistry $doctrine
      * @return JsonResponse
      */
     #[Route('/api/units/active/show_all', methods: ['GET'])]
-    public function getAllActiveUnit(): JsonResponse
+    public function getAllActiveUnit(ManagerRegistry $doctrine): JsonResponse
     {
-        $units = $this->getDoctrine()
+        $units = $doctrine
             ->getRepository(Unit::class)
             ->findAllActiveUnit();
 
@@ -28,11 +30,12 @@ class UnitController extends AbstractController
     }
 
     /**
+     * @param ManagerRegistry $doctrine
      * @param String $name
      * @return JsonResponse
      */
     #[Route('/api/units/active/{name}', methods: ['GET'])]
-    public function getActiveUnitByKeyword(String $name): JsonResponse
+    public function getActiveUnitByKeyword(ManagerRegistry $doctrine, String $name): JsonResponse
     {
         if (3 > strlen($name)) {
             return $this->json([
@@ -41,7 +44,7 @@ class UnitController extends AbstractController
             ], 406);
         }
 
-        $units = $this->getDoctrine()
+        $units = $doctrine
             ->getRepository(Unit::class)
             ->findActiveUnitByNameKeyword($name);
 

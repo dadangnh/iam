@@ -7,6 +7,7 @@ use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JenisKantor;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\Unit;
+use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,6 +37,13 @@ class LegacyDataController extends AbstractController
         'kantor_ids' => Kantor::class,
         'unit_ids' => Unit::class
     ];
+
+    private ManagerRegistry $doctrine;
+
+    public function __construct(ManagerRegistry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
 
     /**
      * @throws JsonException
@@ -107,7 +115,7 @@ class LegacyDataController extends AbstractController
 
             // Process the query to repository
             if (empty($results[$key]['errors']) && empty($invalidUuid)) {
-                $resultData = $this->getDoctrine()
+                $resultData = $this->doctrine
                     ->getRepository(self::PERSISTENCE_OBJECT_NAME[$key])
                     ->findLegacyDataFromArrayOfIds($listEntityUuid);
 

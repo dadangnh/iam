@@ -4,6 +4,7 @@ namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\Kantor;
 use App\Helper\PosisiHelper;
+use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,12 +20,13 @@ use Symfony\Component\Uid\Uuid;
 class KantorController extends AbstractController
 {
     /**
+     * @param ManagerRegistry $doctrine
      * @return JsonResponse
      */
     #[Route('/api/kantors/active/show_all', methods: ['GET'])]
-    public function getAllActiveKantor(): JsonResponse
+    public function getAllActiveKantor(ManagerRegistry $doctrine): JsonResponse
     {
-        $kantors = $this->getDoctrine()
+        $kantors = $doctrine
             ->getRepository(Kantor::class)
             ->findAllActiveKantor();
 
@@ -32,11 +34,12 @@ class KantorController extends AbstractController
     }
 
     /**
+     * @param ManagerRegistry $doctrine
      * @param String $name
      * @return JsonResponse
      */
     #[Route('/api/kantors/active/{name}', methods: ['GET'])]
-    public function getActiveKantorByKeyword(String $name): JsonResponse
+    public function getActiveKantorByKeyword(ManagerRegistry $doctrine, String $name): JsonResponse
     {
         if (3 > strlen($name)) {
             return $this->json([
@@ -46,7 +49,7 @@ class KantorController extends AbstractController
             ], 406);
         }
 
-        $kantors = $this->getDoctrine()
+        $kantors = $doctrine
             ->getRepository(Kantor::class)
             ->findActiveKantorByNameKeyword($name);
 
@@ -54,13 +57,14 @@ class KantorController extends AbstractController
     }
 
     /**
+     * @param ManagerRegistry $doctrine
      * @param Request $request
      * @param PosisiHelper $helper
      * @return JsonResponse
      * @throws JsonException
      */
     #[Route('/api/kantors/kepala_kantor', methods: ['POST'])]
-    public function getKepalaKantor(Request $request, PosisiHelper $helper): JsonResponse
+    public function getKepalaKantor(ManagerRegistry $doctrine, Request $request, PosisiHelper $helper): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
@@ -82,7 +86,7 @@ class KantorController extends AbstractController
         }
 
         // Fetch the kantor data
-        $kantor = $this->getDoctrine()
+        $kantor = $doctrine
             ->getRepository(Kantor::class)
             ->findOneBy(['id' => $kantorId]);
 
