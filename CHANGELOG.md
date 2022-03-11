@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 1.20.1 (current stable)
+## Version 1.20.2 (current stable)
+  * Change infrastructure configuration (#80)
+  * Updated dependencies
+
+## Version 1.20.1
   * Remove deprecated method (#79)
   * Updated symfony components and dependencies
 
