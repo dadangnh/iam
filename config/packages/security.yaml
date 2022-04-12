@@ -13,6 +13,7 @@ security:
         service:
             id: shared_auth_library_jwt_user_provider
         # used to reload user from session & other features (e.g. switch_user)
+        # Primary user provider
         app_user_provider:
             entity:
                 class: App\Entity\User\User
@@ -22,6 +23,8 @@ security:
             pattern: ^/api/token/refresh
             stateless: true
             refresh_jwt:
+                check_path: /api/token/refresh
+                # for the refresh token, we must use the primary user provider, so it can look the correct user
                 provider: app_user_provider
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -33,14 +36,23 @@ security:
                 check_path: /api/authentication
                 username_path: username
                 password_path: password
+                # for the api login endpoint, we must use the primary user provider, so it can look the correct user
                 provider: app_user_provider
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         api:
             pattern: ^/api/
             stateless: true
+            # for the api endpoint, we use the shared user provider
             provider: service
+            entry_point: jwt
             jwt: ~
+            refresh_jwt:
+                check_path: /api/token/refresh
+                # for the refresh token, we must use the primary user provider, so it can look the correct user
+                provider: app_user_provider
+            logout:
+                path: api_token_invalidate
         main:
             lazy: true
             provider: app_user_provider
