@@ -143,7 +143,11 @@ class PegawaiController extends AbstractController
                     'jabatanName' => $jabatanPegawai->getJabatan()?->getNama(),
                     'kantorName' => $jabatanPegawai->getKantor()?->getNama(),
                     'unitName' => $jabatanPegawai->getUnit()?->getNama(),
-                    'atasan' => $posisiUtils->getAtasanFromJabatanPegawai($jabatanPegawai)
+                    'atasan' => $posisiUtils->getAtasanFromJabatanPegawai($jabatanPegawai),
+                    'atasanCuti' => $posisiUtils->getAtasanCutiFromJabatanPegawai($jabatanPegawai),
+                    'pyb' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai),
+                    'pybCutiDiatur' => $posisiUtils->getPybCutiDiaturFromJabatanPegawai($jabatanPegawai),
+                    'pybIzin' => $posisiUtils->getPybIzinDiaturFromJabatanPegawai($jabatanPegawai)
                 ];
 
             // For the non active, provide status.
@@ -153,7 +157,11 @@ class PegawaiController extends AbstractController
                     'jabatanName' => $jabatanPegawai->getJabatan()?->getNama(),
                     'kantorName' => $jabatanPegawai->getKantor()?->getNama(),
                     'unitName' => $jabatanPegawai->getUnit()?->getNama(),
-                    'atasan' => 'Current jabatan is inactive. Cannot fetch atasan data.'
+                    'atasan' => 'Current jabatan is inactive. Cannot fetch atasan data.',
+                    'atasanCuti' => 'Current jabatan is inactive. Cannot fetch atasan data.',
+                    'pyb' => 'Current jabatan is inactive. Cannot fetch pyb data.',
+                    'pybCutiDiatur' => 'Current jabatan is inactive. Cannot fetch pyb cuti diatur data.',
+                    'pybIzin' => 'Current jabatan is inactive. Cannot fetch pyb Izin data.'
                 ];
             }
         }
