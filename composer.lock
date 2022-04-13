@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "deb80893e4b43881aacf5228d009cabb",
+    "content-hash": "f08165e3a897c8bcd561b68742440c19",
     "packages": [
         {
             "name": "api-platform/core",
@@ -11208,7 +11208,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "gesdinet/jwt-refresh-token-bundle": 10,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
