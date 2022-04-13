@@ -127,6 +127,8 @@ test:
     - export PATH="$HOME/.symfony/bin:$PATH"
     - symfony composer install
     - npm install
+    - symfony console doctrine:database:drop --force
+    - symfony console doctrine:database:create
     - symfony console doctrine:schema:create
     - symfony console doctrine:fixtures:load --no-interaction
     - symfony server:ca:install
@@ -137,7 +139,6 @@ test:
   cache:
     key: cacheTest
     paths:
-      - vendor/
       - node_modules/
   artifacts:
     when: always
@@ -169,7 +170,6 @@ deploy_package:
   cache:
     key: cacheDeploy
     paths:
-      - vendor/
       - node_modules/
 
 deploy_to_registries:
@@ -249,7 +249,6 @@ deploy_to_registries:
   cache:
     key: cacheBuildDocker
     paths:
-      - vendor/
       - node_modules/
 
 deploy_staging:
