@@ -48,6 +48,31 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
     /**
      * @throws NonUniqueResultException
      */
+    public function findKabagUmumKanwilFromKantorEselon($kantorId, $eselonTingkat)
+    {
+        return $this->createQueryBuilder('jp')
+            ->leftJoin('jp.kantor', 'kantor')
+            ->leftJoin('jp.unit', 'unit')
+            ->leftJoin('jp.jabatan', 'jabatan')
+            ->leftJoin('jabatan.eselon', 'eselon')
+            ->andWhere('kantor.id = :kantorId')
+            ->andWhere('unit.nama = :unitNama')
+            ->andWhere('eselon.tingkat = :eselonTingkat')
+            ->andWhere('jp.tanggalMulai < :now')
+            ->andWhere('jp.tanggalSelesai is null or jp.tanggalSelesai > :now')
+            ->setParameter('kantorId', $kantorId)
+            ->setParameter('unitNama', 'Bagian Umum')
+            ->setParameter('eselonTingkat', $eselonTingkat)
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('jp.tanggalMulai', 'DESC')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
+    /**
+     * @throws NonUniqueResultException
+     */
     public function findJabatanPegawaiActiveFromKantorAndEselon($kantorId, $eselonTingkat)
     {
         return $this->createQueryBuilder('jp')
@@ -60,6 +85,27 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
             ->andWhere('jp.tanggalSelesai is null or jp.tanggalSelesai > :now')
             ->setParameter('kantorId', $kantorId)
             ->setParameter('eselonTingkat', $eselonTingkat)
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('jp.tanggalMulai', 'DESC')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findJabatanPegawaiByKantorAndTingkat(string $kantorId, int $tingkat)
+    {
+        return $this->createQueryBuilder('jp')
+            ->leftJoin('jp.kantor', 'kantor')
+            ->leftJoin('jp.jabatan', 'jabatan')
+            ->leftJoin('jabatan.eselon', 'eselon')
+            ->andWhere('kantor.id = :kantorId')
+            ->andWhere('eselon.tingkat = :eselonTingkat')
+            ->andWhere('jp.tanggalMulai < :now')
+            ->andWhere('jp.tanggalSelesai is null or jp.tanggalSelesai > :now')
+            ->setParameter('kantorId', $kantorId)
+            ->setParameter('eselonTingkat', $tingkat)
             ->setParameter('now', new DateTime('now'))
             ->addOrderBy('jp.tanggalMulai', 'DESC')
             ->getQuery()
