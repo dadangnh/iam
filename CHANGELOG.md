@@ -1,6 +1,13 @@
 # IAM Changelog
 
-## Version 1.20.2 (current stable)
+## Version 1.21.0 (current stable)
+  * Updated Infrastructure config from upstream (#80)
+  * Updated Symfony Components and Dependencies to v5.4.7 
+  * Updated JWT Bundle (#81)
+  * Added new logic on get atasan endpoint 
+  * Added new attribute on Pegawai Entity (#82)
+
+## Version 1.20.2
   * Change infrastructure configuration (#80)
   * Updated dependencies
 
@@ -29,7 +36,7 @@
 ## Version 1.19.1
   * Updated core dependencies (JWT Bundle)
 
-## Version 1.18.6 (maintenance only)
+## Version 1.18.6
   * Updated symfony components (v5.3.13) and dependencies
   * Updated recipes
 

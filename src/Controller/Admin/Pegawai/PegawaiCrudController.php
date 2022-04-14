@@ -55,6 +55,8 @@ class PegawaiCrudController extends AbstractCrudController
                 ->setRequired(false)
                 ->setMaxLength(255)
                 ->hideOnIndex(),
+            BooleanField::new('onLeave', 'On Leave (Sedang Cuti)?')
+                ->setHelp('Pegawai on Leave/ sedang cuti?'),
         ];
     }
 }
