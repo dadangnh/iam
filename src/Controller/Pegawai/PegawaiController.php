@@ -145,7 +145,7 @@ class PegawaiController extends AbstractController
                     'unitName' => $jabatanPegawai->getUnit()?->getNama(),
                     'atasan' => $posisiUtils->getAtasanFromJabatanPegawai($jabatanPegawai, null),
                     'atasanCuti' => $posisiUtils->getAtasanFromJabatanPegawai($jabatanPegawai, 'atasanCuti'),
-                    'pyb' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,''),
+                    'pyb' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,null),
                     'pybCutiDiatur' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,'pybCutiDiatur'),
                     'pybIzin' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,'pybIzin')
                 ];
