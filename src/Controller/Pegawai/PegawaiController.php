@@ -143,11 +143,11 @@ class PegawaiController extends AbstractController
                     'jabatanName' => $jabatanPegawai->getJabatan()?->getNama(),
                     'kantorName' => $jabatanPegawai->getKantor()?->getNama(),
                     'unitName' => $jabatanPegawai->getUnit()?->getNama(),
-                    'atasan' => $posisiUtils->getAtasanFromJabatanPegawai($jabatanPegawai),
-                    'atasanCuti' => $posisiUtils->getAtasanCutiFromJabatanPegawai($jabatanPegawai),
-                    'pyb' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai),
-                    'pybCutiDiatur' => $posisiUtils->getPybCutiDiaturFromJabatanPegawai($jabatanPegawai),
-                    'pybIzin' => $posisiUtils->getPybIzinDiaturFromJabatanPegawai($jabatanPegawai)
+                    'atasan' => $posisiUtils->getAtasanFromJabatanPegawai($jabatanPegawai, null),
+                    'atasanCuti' => $posisiUtils->getAtasanFromJabatanPegawai($jabatanPegawai, 'atasanCuti'),
+                    'pyb' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,''),
+                    'pybCutiDiatur' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,'pybCutiDiatur'),
+                    'pybIzin' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,'pybIzin')
                 ];
 
             // For the non active, provide status.
