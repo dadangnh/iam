@@ -91,6 +91,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                 'nip18' => $user->getPegawai()->getNip18(),
                 'pensiun' => $user->getPegawai()->getPensiun(),
                 'pangkat' => $user->getPegawai()->getPangkat(),
+                'onLeave' => $user->getPegawai()->getOnLeave(),
                 'jabatanPegawais' => $jabatanPegawais
             ] : null;
 
