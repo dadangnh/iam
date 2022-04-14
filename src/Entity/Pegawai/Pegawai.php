@@ -290,6 +290,18 @@ class Pegawai
     )]
     private $pangkat;
 
+    #[ORM\Column(
+        type: 'boolean'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
+    private $onLeave;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -459,6 +471,18 @@ class Pegawai
     public function setPangkat(?string $pangkat): self
     {
         $this->pangkat = $pangkat;
+
+        return $this;
+    }
+
+    public function getOnLeave(): ?bool
+    {
+        return $this->onLeave;
+    }
+
+    public function setOnLeave(bool $onLeave): self
+    {
+        $this->onLeave = $onLeave;
 
         return $this;
     }

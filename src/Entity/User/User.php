@@ -349,6 +349,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // 10 => jabatan + unit + kantor"
         if (null !== $this->getPegawai()) {
             $arrayOfRoles = [];
+
+            // If on leave, assign ROLE_ON_LEAVE
+            if ($this->getPegawai()->getOnLeave()) {
+                $arrayOfRoles[] = ['ROLE_ON_LEAVE'];
+            }
+
             // make sure that retired person doesn't get role
             if (!$this->getPegawai()->getPensiun()) {
                 /** @var JabatanPegawai $jabatanPegawai */
