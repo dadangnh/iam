@@ -60,6 +60,16 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
+            form_login:
+                # "login" is the name of the route created previously
+                login_path: login
+                check_path: login
+                username_parameter: _iam_username
+                password_parameter: _iam_password
+            remember_me:
+                secret: '%kernel.secret%' # required
+                lifetime: 86400 # 1 day in seconds
+                remember_me_parameter: _iam_remember_me
             json_login:
                 check_path: app_json_login
                 username_path: username

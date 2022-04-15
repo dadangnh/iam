@@ -32,15 +32,11 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/login", name="app_login")
+     * Login page controller
      */
-    #[Route('/login', name: 'app_login')]
+    #[Route('/login', name: 'login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
-
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
@@ -91,10 +87,31 @@ class SecurityController extends AbstractController
             'sign_in_label' => 'Log in',
 
             // the 'name' HTML attribute of the <input> used for the username field (default: '_username')
-            'username_parameter' => 'username',
+            'username_parameter' => '_iam_username',
 
             // the 'name' HTML attribute of the <input> used for the password field (default: '_password')
-            'password_parameter' => 'password',
+            'password_parameter' => '_iam_password',
+
+            // whether to enable or not the "forgot password?" link (default: false)
+            'forgot_password_enabled' => false,
+
+            // the path (i.e. a relative or absolute URL) to visit when clicking the "forgot password?" link (default: '#')
+            // 'forgot_password_path' => $this->generateUrl('...', ['...' => '...']),
+
+            // the label displayed for the "forgot password?" link (the |trans filter is applied to it)
+            'forgot_password_label' => 'Forgot your password?',
+
+            // whether to enable or not the "remember me" checkbox (default: false)
+            'remember_me_enabled' => true,
+
+            // remember me name form field (default: '_remember_me')
+            'remember_me_parameter' => '_iam_remember_me',
+
+            // whether to check by default the "remember me" checkbox (default: false)
+            'remember_me_checked' => false,
+
+            // the label displayed for the remember me checkbox (the |trans filter is applied to it)
+            'remember_me_label' => 'Remember me',
         ]);
     }
 
