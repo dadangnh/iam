@@ -72,6 +72,19 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
+        $schemas['InvalidateTokenResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'code' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'message' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
 
         $schemas['CheckUserIdentifierRequest'] = new ArrayObject([
             'type' => 'object',
@@ -300,7 +313,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                         ],
                     ],
                 ],
-                summary: 'Get User Object From Token.',
+                summary: 'Who Am I? This endpoint provide the user information from a token.',
                 requestBody: null,
             ),
         );
@@ -312,7 +325,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                 tags: ['Token'],
                 responses: [
                     '200' => [
-                        'description' => 'Status',
+                        'description' => 'Who Am I? This endpoint provide the user information from a token.',
                         'content' => [
                             'application/json' => [
                                 'schema' => [
@@ -322,8 +335,39 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                         ],
                     ],
                 ],
-                summary: 'Get User Identifier Data From Token.',
+                summary: 'Who Am I? This endpoint provide the user information from a token.',
                 requestBody: null,
+            ),
+        );
+
+        $invalidateTokenItem = new Model\PathItem(
+            ref: 'Logout/ Invalidate Refresh Token ',
+            post: new Model\Operation(
+                operationId: 'postInvalidateTokenItem',
+                tags: ['Token'],
+                responses: [
+                    '200' => [
+                        'description' => 'Logout endpoint by invalidating refresh token',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/InvalidateTokenResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Logout endpoint by invalidating refresh token.',
+                requestBody: new Model\RequestBody(
+                    description: 'Logout endpoint by invalidating refresh token.',
+                    content: new ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/RefreshTokenRequest',
+                            ],
+                        ],
+                    ]),
+                ),
             ),
         );
 
@@ -333,6 +377,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/whoami', $whoAmIOldItem);
         $openApi->getPaths()->addPath('/api/token/whoami', $whoAmIItem);
         $openApi->getPaths()->addPath('/api/users/check_identifier', $checkUserIdentifierItem);
+        $openApi->getPaths()->addPath('/api/token/invalidate', $invalidateTokenItem);
 
         return $openApi;
     }
