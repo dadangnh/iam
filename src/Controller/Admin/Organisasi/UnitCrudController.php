@@ -45,9 +45,9 @@ class UnitCrudController extends AbstractCrudController
                 ->onlyOnDetail(),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
                 ->setRequired(true)
-                ->renderAsNativeWidget(true),
+                ->renderAsNativeWidget(),
             DateTimeField::new('tanggalNonaktif', 'Tanggal Non aktif')
-                ->renderAsNativeWidget(true)
+                ->renderAsNativeWidget()
                 ->hideOnIndex(),
             TextField::new('legacyKode', 'Kode Unit Lama di SIKKA')
                 ->setMaxLength(10),

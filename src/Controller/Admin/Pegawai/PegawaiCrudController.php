@@ -32,7 +32,7 @@ class PegawaiCrudController extends AbstractCrudController
                 ->setMaxLength(255)
                 ->hideOnIndex(),
             DateField::new('tanggalLahir', 'Tanggal Lahir')
-                ->renderAsNativeWidget(true)
+                ->renderAsNativeWidget()
                 ->hideOnIndex(),
             BooleanField::new('pensiun', 'Pensiun')
                 ->setHelp('Pegawai Pensiun?')

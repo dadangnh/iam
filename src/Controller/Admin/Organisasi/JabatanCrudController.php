@@ -44,9 +44,9 @@ class JabatanCrudController extends AbstractCrudController
                 ->setHelp('Pilih group jabatannya (normalnya untuk fungsional)'),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
                 ->setRequired(true)
-                ->renderAsNativeWidget(true),
+                ->renderAsNativeWidget(),
             DateTimeField::new('tanggalNonaktif', 'Tanggal Nonaktif')
-                ->renderAsNativeWidget(true)
+                ->renderAsNativeWidget()
                 ->hideOnIndex(),
             TextField::new('sk', 'SK')
                 ->setMaxLength(255)
