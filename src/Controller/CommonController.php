@@ -407,7 +407,7 @@ class CommonController extends AbstractController
      * @return Role|null
      * @throws JsonException
      */
-    private function readRoleFromRoleNameRequest(Request $request): Role|null
+    private function readRoleFromRoleNameRequest(Request $request): ?Role
     {
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $roleName = $content['role_name'];

@@ -76,7 +76,7 @@ class JwtUserProvider implements UserProviderInterface
      * @param string $username
      * @return User
      */
-    public function loadUserByUsername(string $username)
+    public function loadUserByUsername(string $username): User
     {
         return $this->loadUserByIdentifier($username);
     }

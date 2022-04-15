@@ -513,7 +513,7 @@ class Unit
     /**
      * @return Collection|self[]
      */
-    public function getMembina(): Collection|self
+    public function getMembina(): Collection|array
     {
         return $this->membina;
     }
