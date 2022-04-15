@@ -433,6 +433,12 @@ class Pegawai
         $this->pensiun = false;
     }
 
+    #[ORM\PrePersist]
+    public function setOnLeaveValue(): void
+    {
+        $this->onLeave = false;
+    }
+
     /**
      * @return Collection|JabatanPegawai[]
      */
