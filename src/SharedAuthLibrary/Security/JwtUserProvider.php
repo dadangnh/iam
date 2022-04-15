@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\SharedAuthLibrary\Security;
 
-use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -25,10 +24,10 @@ class JwtUserProvider implements UserProviderInterface
     }
 
     /**
-     * @param string $username
+     * @param string $identifier
      * @return User
      */
-    #[Pure] public function loadUserByIdentifier($username): User
+    public function loadUserByIdentifier(string $identifier): User
     {
         $payload = $this->jwtPayloadContainer->getPayload();
 
@@ -58,26 +57,15 @@ class JwtUserProvider implements UserProviderInterface
             );
         }
 
-        return $this->loadUserByIdentifier($user->getUsername());
+        return $this->loadUserByIdentifier($user->getUserIdentifier());
     }
 
     /**
      * @param string $class
      * @return bool
      */
-    public function supportsClass($class): bool
+    public function supportsClass(string $class): bool
     {
         return User::class === $class;
-    }
-
-    /**
-     * TODO: remove this on Symfony version 6
-     * @deprecated will be removed on Symfony version 6
-     * @param string $username
-     * @return User
-     */
-    public function loadUserByUsername(string $username)
-    {
-        return $this->loadUserByIdentifier($username);
     }
 }

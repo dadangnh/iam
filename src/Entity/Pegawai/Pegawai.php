@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -133,7 +134,7 @@ class Pegawai
             'pegawai:write'
         ]
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\OneToOne(
         inversedBy: 'pegawai',
@@ -154,7 +155,7 @@ class Pegawai
             'pegawai:write'
         ]
     )]
-    private $user;
+    private ?User $user;
 
     #[ORM\Column(
         type: 'string',
@@ -275,7 +276,7 @@ class Pegawai
             'pegawai:write'
         ]
     )]
-    private $jabatanPegawais;
+    private Collection $jabatanPegawais;
 
     #[ORM\Column(
         type: 'string',
@@ -288,7 +289,7 @@ class Pegawai
             'pegawai:write'
         ]
     )]
-    private $pangkat;
+    private ?string $pangkat;
 
     #[ORM\Column(
         type: 'boolean'
@@ -300,7 +301,7 @@ class Pegawai
             'pegawai:write'
         ]
     )]
-    private $onLeave;
+    private ?bool $onLeave;
 
     public function __construct()
     {
@@ -430,6 +431,12 @@ class Pegawai
     public function setPensiunValue(): void
     {
         $this->pensiun = false;
+    }
+
+    #[ORM\PrePersist]
+    public function setOnLeaveValue(): void
+    {
+        $this->onLeave = false;
     }
 
     /**

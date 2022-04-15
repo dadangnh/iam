@@ -10,21 +10,20 @@ use Doctrine\Persistence\ObjectManager;
 
 class JabatanPegawaiFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
-//        Matikan dulu karena fail load
-//        $jabatan1 = new JabatanPegawai();
-//        $jabatan1->setPegawai(PegawaiFixtures::PEGAWAI_1);
-//        $jabatan1->setJabatan(OrganisasiFixtures::JABATAN_MENTERI);
-//        $jabatan1->setTipe(OrganisasiFixtures::TIPE_DEFINITIF);
-//        $jabatan1->setKantor(OrganisasiFixtures::KANTOR_KEMENTERIAN);
-//        $jabatan1->setUnit(OrganisasiFixtures::UNIT_KEMENTERIAN);
-//        $manager->persist($jabatan1);
-//
-//        $manager->flush();
+        $jabatan1 = new JabatanPegawai();
+        $jabatan1->setPegawai($this->getReference(PegawaiFixtures::PEGAWAI_1));
+        $jabatan1->setJabatan($this->getReference(OrganisasiFixtures::JABATAN_MENTERI));
+        $jabatan1->setTipe($this->getReference(OrganisasiFixtures::TIPE_DEFINITIF));
+        $jabatan1->setKantor($this->getReference(OrganisasiFixtures::KANTOR_KEMENTERIAN));
+        $jabatan1->setUnit($this->getReference(OrganisasiFixtures::UNIT_KEMENTERIAN));
+        $manager->persist($jabatan1);
+
+        $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             PegawaiFixtures::class,

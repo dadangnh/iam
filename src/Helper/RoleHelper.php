@@ -158,12 +158,12 @@ class RoleHelper
      */
     public static function getAplikasiByRole(Role $role): array
     {
-        $permissions = $role->getPermissions();
+        $permissions = $role?->getPermissions();
         $listAplikasi = [];
         if (null !== $permissions) {
             /** @var Permission $permission */
             foreach ($permissions as $permission) {
-                $moduls = $permission->getModul();
+                $moduls = $permission?->getModul();
                 if (null !== $moduls) {
                     foreach ($moduls as $modul) {
                         if ($modul->getStatus()) {
@@ -200,12 +200,12 @@ class RoleHelper
      */
     public static function getAllAplikasiByRole(Role $role): array
     {
-        $permissions = $role->getPermissions();
+        $permissions = $role?->getPermissions();
         $listAplikasi = [];
         if (null !== $permissions) {
             /** @var Permission $permission */
             foreach ($permissions as $permission) {
-                $moduls = $permission->getModul();
+                $moduls = $permission?->getModul();
                 if (null !== $moduls) {
                     foreach ($moduls as $modul) {
                         $aplikasi = $modul->getAplikasi();

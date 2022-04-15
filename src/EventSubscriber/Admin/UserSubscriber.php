@@ -7,8 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityPersistedEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeEntityUpdatedEvent;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class UserSubscriber
@@ -16,6 +15,14 @@ use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
  */
 class UserSubscriber implements EventSubscriberInterface
 {
+    private UserPasswordHasherInterface $hasher;
+
+    public function __construct(UserPasswordHasherInterface $hasher)
+    {
+
+        $this->hasher = $hasher;
+    }
+
     /**
      * @return array
      */
@@ -61,8 +68,12 @@ class UserSubscriber implements EventSubscriberInterface
      */
     protected function prePersistUserEntity(User $user): void
     {
-        $encodedPassword = $this->encodePassword($user);
-        $user->setPassword($encodedPassword);
+        if (!$user->getPlainPassword()) {
+            return;
+        }
+
+        $newPasswordHashed = $this->hasher->hashPassword($user, $user->getPlainPassword());
+        $user->setPassword($newPasswordHashed);
     }
 
     /**
@@ -73,27 +84,8 @@ class UserSubscriber implements EventSubscriberInterface
         if (!$user->getPlainPassword()) {
             return;
         }
-        $encodedPassword = $this->encodePassword($user);
-        $user->setPassword($encodedPassword);
-    }
 
-    /**
-     * @param User $user
-     * @return string
-     */
-    private function encodePassword(User $user): string
-    {
-        $defaultEncoder = new MessageDigestPasswordEncoder('sha512', true, 5000);
-        $encoders = [
-            User::class => $defaultEncoder,
-        ];
-
-        $encoderFactory = new EncoderFactory($encoders);
-        return $encoderFactory
-            ->getEncoder($user)
-            ->encodePassword(
-                $user->getPlainPassword(),
-                $user->getSalt()
-            );
+        $newPasswordHashed = $this->hasher->hashPassword($user, $user->getPlainPassword());
+        $user->setPassword($newPasswordHashed);
     }
 }

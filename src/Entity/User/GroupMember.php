@@ -9,6 +9,7 @@ use App\Repository\User\GroupMemberRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -84,7 +85,7 @@ class GroupMember
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\ManyToOne(
         targetEntity: Group::class,
@@ -94,7 +95,7 @@ class GroupMember
         nullable: false
     )]
     #[Assert\NotNull]
-    private $groupId;
+    private ?Group $groupId;
 
     #[ORM\ManyToOne(
         targetEntity: User::class,
@@ -104,7 +105,7 @@ class GroupMember
         nullable: false
     )]
     #[Assert\NotNull]
-    private $user;
+    private ?User $user;
 
     #[ORM\Column(
         type: 'datetime_immutable'

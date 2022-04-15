@@ -12,7 +12,7 @@ use ArrayObject;
 class OrganisasiCustomDecorator implements OpenApiFactoryInterface
 {
     public function __construct(
-        private OpenApiFactoryInterface $decorated
+        private readonly OpenApiFactoryInterface $decorated
     ) {}
 
     public function __invoke(array $context = []): OpenApi

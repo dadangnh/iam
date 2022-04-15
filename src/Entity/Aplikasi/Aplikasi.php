@@ -16,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -131,7 +132,7 @@ class Aplikasi
             'modul:read'
         ]
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -174,7 +175,7 @@ class Aplikasi
         targetEntity: Modul::class,
         orphanRemoval: true
     )]
-    private $moduls;
+    private Collection $moduls;
 
     #[ORM\Column(
         type: 'string',

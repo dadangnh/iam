@@ -19,13 +19,6 @@ security:
                 class: App\Entity\User\User
                 property: username
     firewalls:
-        api_token_refresh:
-            pattern: ^/api/token/refresh
-            stateless: true
-            refresh_jwt:
-                check_path: /api/token/refresh
-                # for the refresh token, we must use the primary user provider, so it can look the correct user
-                provider: app_user_provider
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -33,7 +26,8 @@ security:
             pattern: ^/api/authentication$
             stateless: true
             json_login:
-                check_path: /api/authentication
+                # use route name
+                check_path: api_authentication
                 username_path: username
                 password_path: password
                 # for the api login endpoint, we must use the primary user provider, so it can look the correct user
@@ -48,7 +42,8 @@ security:
             entry_point: jwt
             jwt: ~
             refresh_jwt:
-                check_path: /api/token/refresh
+                # use route name
+                check_path: api_refresh_token
                 # for the refresh token, we must use the primary user provider, so it can look the correct user
                 provider: app_user_provider
             logout:
@@ -56,15 +51,29 @@ security:
         main:
             lazy: true
             provider: app_user_provider
-            custom_authenticator: App\Security\AdminAuthenticator
             logout:
+                # use route name
                 path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
+            form_login:
+                # "login" is the name of the route created previously
+                # use route name
+                login_path: login
+                # use route name
+                check_path: login
+                username_parameter: _iam_username
+                password_parameter: _iam_password
+            remember_me:
+                secret: '%kernel.secret%' # required
+                lifetime: 86400 # 1 day in seconds
+                remember_me_parameter: _iam_remember_me
             json_login:
+                # use route name
                 check_path: app_json_login
                 username_path: username
                 password_path: password
+            access_denied_url: app_index
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

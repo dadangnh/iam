@@ -8,6 +8,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\User\UserTwoFactorRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -82,7 +83,7 @@ class UserTwoFactor
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\ManyToOne(
         targetEntity: User::class, inversedBy: 'userTwoFactors'
@@ -91,7 +92,7 @@ class UserTwoFactor
         nullable: false
     )]
     #[Assert\NotNull]
-    private $user;
+    private ?User $user;
 
     #[ORM\Column(
         type: 'json',
