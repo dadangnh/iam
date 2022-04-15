@@ -6,7 +6,7 @@ use App\Entity\Organisasi\Kantor;
 use App\Helper\PosisiHelper;
 use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,8 +15,8 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * Restrict access to this controller only for user
- * @Security("is_granted('ROLE_USER')")
  */
+#[IsGranted('ROLE_USER')]
 class KantorController extends AbstractController
 {
     /**

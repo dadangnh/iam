@@ -5,10 +5,11 @@ namespace App\Controller\Pegawai;
 use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\Pegawai\Pegawai;
 use App\Helper\PosisiHelper;
+use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,8 +18,8 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * Restrict access to this controller only for user
- * @Security("is_granted('ROLE_USER')")
  */
+#[IsGranted('ROLE_USER')]
 class PegawaiController extends AbstractController
 {
     /**
@@ -131,7 +132,7 @@ class PegawaiController extends AbstractController
 
         // Iterate the jabatan pegawai and fetch the atasan
         foreach ($pegawai->getJabatanPegawais() as $jabatanPegawai) {
-            $today = new \DateTimeImmutable('now');
+            $today = new DateTimeImmutable('now');
 
             // Only process the active jabatan
             if ($today >= $jabatanPegawai->getTanggalMulai()

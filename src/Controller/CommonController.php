@@ -12,6 +12,7 @@ use App\Helper\AplikasiHelper;
 use App\Helper\RoleHelper;
 use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -45,6 +46,7 @@ class CommonController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/get_roles_by_jabatan_pegawai', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function getRoleByJabatanPegawai(Request $request,
                                             IriConverterInterface $iriConverter): JsonResponse
     {
@@ -62,6 +64,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/get_aplikasi_by_token', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function getAplikasiByToken(IriConverterInterface $iriConverter): JsonResponse
     {
         return $this->findAplikasiFromToken($iriConverter);
@@ -74,6 +77,7 @@ class CommonController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/get_aplikasi_by_role_name', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function getAplikasiByRoleName(Request $request,
                                           IriConverterInterface $iriConverter): JsonResponse
     {
@@ -105,6 +109,7 @@ class CommonController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/roles/mapping', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function getMappingByRole(Request $request): JsonResponse
     {
         $this->ensureUserLoggedIn();
@@ -180,6 +185,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/get_all_aplikasi_by_token', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function getAllAplikasiByToken(IriConverterInterface $iriConverter): JsonResponse
     {
         return $this->findAllAplikasiFromToken($iriConverter);
@@ -193,6 +199,7 @@ class CommonController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/get_all_aplikasi_by_role_name', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function getAllAplikasiByRoleName(Request $request,
                                              IriConverterInterface $iriConverter): JsonResponse
     {
@@ -223,6 +230,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/get_permissions_by_token', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function getPermissionsByToken(IriConverterInterface $iriConverter): JsonResponse
     {
         return $this->findPermissionsFromToken($iriConverter);
@@ -234,6 +242,7 @@ class CommonController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/get_permissions_by_role_name', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function getPermissionsByRoleName(Request $request): JsonResponse
     {
         $this->ensureUserLoggedIn();
@@ -261,6 +270,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/roles/{roleName}/aplikasis', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function showAplikasisFromRoleName(string $roleName,
                                               IriConverterInterface $iriConverter): JsonResponse
     {
@@ -294,6 +304,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/roles/{roleName}/all_aplikasis', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function showAllAplikasisFromRoleName(string $roleName,
                                                  IriConverterInterface $iriConverter): JsonResponse
     {
@@ -326,6 +337,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/roles/{roleName}/permissions', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function showPermissionsByRoleName(string $roleName): JsonResponse
     {
         $this->ensureUserLoggedIn();
@@ -354,6 +366,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/token/aplikasis', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function showAplikasiFromToken(IriConverterInterface $iriConverter): JsonResponse
     {
         return $this->findAplikasiFromToken($iriConverter);
@@ -364,6 +377,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/token/all_aplikasis', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function showAllAplikasiFromToken(IriConverterInterface $iriConverter): JsonResponse
     {
         return $this->findAllAplikasiFromToken($iriConverter);
@@ -374,6 +388,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/token/permissions', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function showPermissionsByToken(IriConverterInterface $iriConverter): JsonResponse
     {
         return $this->findPermissionsFromToken($iriConverter);
@@ -385,6 +400,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/jabatan_pegawais/{id}/roles', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function showRolesByJabatanPegawais(string $id,
                                                IriConverterInterface $iriConverter): JsonResponse
     {
