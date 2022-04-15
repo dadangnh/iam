@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -97,7 +98,7 @@ class Eselon
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -134,19 +135,19 @@ class Eselon
         mappedBy: 'eselon',
         targetEntity: Unit::class
     )]
-    private $units;
+    private Collection $units;
 
     #[ORM\OneToMany(
         mappedBy: 'eselon',
         targetEntity: Jabatan::class
     )]
-    private $jabatans;
+    private Collection $jabatans;
 
     #[ORM\ManyToMany(
         targetEntity: Role::class,
         mappedBy: 'eselons'
     )]
-    private $roles;
+    private Collection $roles;
 
     public function __construct()
     {

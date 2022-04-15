@@ -22,6 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -132,7 +133,7 @@ class Role
             'role:write'
         ]
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -197,7 +198,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $subsOfRole;
+    private ?Role $subsOfRole;
 
     #[ORM\OneToMany(
         mappedBy: 'subsOfRole',
@@ -210,7 +211,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $containRoles;
+    private Collection $containRoles;
 
     #[ORM\ManyToMany(
         targetEntity: User::class,
@@ -238,7 +239,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $users;
+    private Collection $users;
 
     #[ORM\ManyToMany(
         targetEntity: Jabatan::class,
@@ -266,7 +267,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $jabatans;
+    private Collection $jabatans;
 
     #[ORM\ManyToMany(
         targetEntity: Unit::class,
@@ -294,7 +295,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $units;
+    private Collection $units;
 
     #[ORM\ManyToMany(
         targetEntity: Kantor::class,
@@ -322,7 +323,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $kantors;
+    private Collection $kantors;
 
     #[ORM\ManyToMany(
         targetEntity: Eselon::class,
@@ -350,7 +351,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $eselons;
+    private Collection $eselons;
 
     #[ORM\ManyToMany(
         targetEntity: JenisKantor::class,
@@ -378,7 +379,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $jenisKantors;
+    private Collection $jenisKantors;
 
     #[ORM\ManyToMany(
         targetEntity: Group::class,
@@ -406,7 +407,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $groups;
+    private Collection $groups;
 
     #[ORM\ManyToMany(
         targetEntity: Permission::class,
@@ -419,7 +420,7 @@ class Role
         ]
     )]
     #[ApiProperty(readableLink: false, writableLink: false)]
-    private $permissions;
+    private Collection $permissions;
 
     #[ORM\Column(
         type: 'integer',
@@ -433,7 +434,7 @@ class Role
             'role:write'
         ]
     )]
-    private $jenis;
+    private ?int $jenis;
 
     public function __construct()
     {

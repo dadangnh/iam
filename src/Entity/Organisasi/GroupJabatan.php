@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(
@@ -84,7 +85,7 @@ class GroupJabatan
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -109,7 +110,7 @@ class GroupJabatan
         mappedBy: 'groupJabatan',
         targetEntity: Jabatan::class
     )]
-    private $jabatans;
+    private Collection $jabatans;
 
     public function __construct()
     {

@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -157,7 +158,7 @@ class Jabatan
             'jabatan:write'
         ]
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -249,7 +250,7 @@ class Jabatan
             'jabatan:write'
         ]
     )]
-    private $eselon;
+    private ?Eselon $eselon;
 
     #[ORM\Column(
         type: 'string',
@@ -301,7 +302,7 @@ class Jabatan
             'jabatan:write'
         ]
     )]
-    private $jabatanPegawais;
+    private Collection $jabatanPegawais;
 
     #[ORM\ManyToMany(
         targetEntity: Unit::class,
@@ -314,7 +315,7 @@ class Jabatan
             'jabatan:write'
         ]
     )]
-    private $units;
+    private Collection $units;
 
     #[ORM\ManyToMany(
         targetEntity: Role::class,
@@ -326,7 +327,7 @@ class Jabatan
             'jabatan:write'
         ]
     )]
-    private $roles;
+    private Collection $roles;
 
     #[ORM\ManyToOne(
         targetEntity: GroupJabatan::class,
@@ -338,7 +339,7 @@ class Jabatan
             'jabatan:write'
         ]
     )]
-    private $groupJabatan;
+    private ?GroupJabatan $groupJabatan;
 
     public function __construct()
     {
