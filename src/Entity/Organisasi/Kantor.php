@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -167,7 +168,7 @@ class Kantor
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -191,7 +192,7 @@ class Kantor
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
-    private $jenisKantor;
+    private ?JenisKantor $jenisKantor;
 
     #[ORM\Column(
         type: 'integer',
@@ -204,13 +205,13 @@ class Kantor
         inversedBy: 'childs'
     )]
     #[Assert\Valid]
-    private $parent;
+    private ?Kantor $parent;
 
     #[ORM\OneToMany(
         mappedBy: 'parent',
         targetEntity: Kantor::class
     )]
-    private $childs;
+    private Collection $childs;
 
     #[ORM\Column(
         type: 'datetime_immutable'
@@ -296,49 +297,49 @@ class Kantor
         targetEntity: JabatanPegawai::class,
         orphanRemoval: true
     )]
-    private $jabatanPegawais;
+    private Collection $jabatanPegawais;
 
     #[ORM\ManyToMany(
         targetEntity: Role::class,
         mappedBy: 'kantors'
     )]
-    private $roles;
+    private Collection $roles;
 
     #[ORM\ManyToOne(
         targetEntity: Kantor::class,
         inversedBy: 'membina'
     )]
-    private $pembina;
+    private ?Kantor $pembina;
 
     #[ORM\OneToMany(
         mappedBy: 'pembina',
         targetEntity: Kantor::class
     )]
-    private $membina;
+    private Collection $membina;
 
     #[ORM\Column(
         type: 'uuid',
         nullable: true
     )]
-    private $provinsi;
+    private ?UuidV4 $provinsi;
 
     #[ORM\Column(
         type: 'uuid',
         nullable: true
     )]
-    private $kabupatenKota;
+    private ?UuidV4 $kabupatenKota;
 
     #[ORM\Column(
         type: 'uuid',
         nullable: true
     )]
-    private $kecamatan;
+    private ?UuidV4 $kecamatan;
 
     #[ORM\Column(
         type: 'uuid',
         nullable: true
     )]
-    private $kelurahan;
+    private ?UuidV4 $kelurahan;
 
     public function __construct()
     {
@@ -689,50 +690,70 @@ class Kantor
         return $this;
     }
 
-    public function getProvinsi()
+    public function getProvinsi(): ?UuidV4
     {
         return $this->provinsi;
     }
 
     public function setProvinsi($provinsi): self
     {
-        $this->provinsi = $provinsi;
+        if (Uuid::isValid($provinsi) && UuidV4::isValid($provinsi)) {
+            if (is_string($provinsi)) {
+                $provinsi = UuidV4::fromString($provinsi);
+            }
+            $this->provinsi = $provinsi;
+        }
 
         return $this;
     }
 
-    public function getKabupatenKota()
+    public function getKabupatenKota(): ?UuidV4
     {
         return $this->kabupatenKota;
     }
 
     public function setKabupatenKota($kabupatenKota): self
     {
-        $this->kabupatenKota = $kabupatenKota;
+        if (Uuid::isValid($kabupatenKota) && UuidV4::isValid($kabupatenKota)) {
+            if (is_string($kabupatenKota)) {
+                $kabupatenKota = UuidV4::fromString($kabupatenKota);
+            }
+            $this->kabupatenKota = $kabupatenKota;
+        }
 
         return $this;
     }
 
-    public function getKecamatan()
+    public function getKecamatan(): ?UuidV4
     {
         return $this->kecamatan;
     }
 
     public function setKecamatan($kecamatan): self
     {
-        $this->kecamatan = $kecamatan;
+        if (Uuid::isValid($kecamatan) && UuidV4::isValid($kecamatan)) {
+            if (is_string($kecamatan)) {
+                $kecamatan = UuidV4::fromString($kecamatan);
+            }
+            $this->kecamatan = $kecamatan;
+        }
 
         return $this;
     }
 
-    public function getKelurahan()
+    public function getKelurahan(): ?UuidV4
     {
         return $this->kelurahan;
     }
 
     public function setKelurahan($kelurahan): self
     {
-        $this->kelurahan = $kelurahan;
+        if (Uuid::isValid($kelurahan) && UuidV4::isValid($kelurahan)) {
+            if (is_string($kelurahan)) {
+                $kelurahan = UuidV4::fromString($kelurahan);
+            }
+            $this->kelurahan = $kelurahan;
+        }
 
         return $this;
     }

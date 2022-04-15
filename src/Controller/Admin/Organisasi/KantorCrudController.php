@@ -42,9 +42,9 @@ class KantorCrudController extends AbstractCrudController
             AssociationField::new('membina', 'Kantor yang Dibina')
                 ->onlyOnDetail(),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
-                ->renderAsNativeWidget(true),
+                ->renderAsNativeWidget(),
             DateTimeField::new('tanggalNonaktif', 'Tanggal Non Aktif')
-                ->renderAsNativeWidget(true),
+                ->renderAsNativeWidget(),
             TextField::new('sk', 'Nomor SK Pengaktifan')
                 ->hideOnIndex()
                 ->setMaxLength(255),

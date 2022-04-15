@@ -13,7 +13,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
     public const ROLE_ADMIN = 'admin-role';
     public const ROLE_UPK_PUSAT = 'upk-pusat-role';
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $superAdminRole = new Role();
         $superAdminRole->setNama('ROLE_SUPER_ADMIN');
@@ -96,7 +96,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         $this->addReference(self::ROLE_UPK_PUSAT, $upkPusatRole);
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             NewUserFixtures::class

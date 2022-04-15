@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -117,7 +118,7 @@ class Group
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -147,7 +148,7 @@ class Group
         nullable: false
     )]
     #[Assert\NotNull]
-    private $owner;
+    private ?User $owner;
 
     #[ORM\Column(
         type: 'datetime_immutable'
@@ -165,13 +166,13 @@ class Group
         targetEntity: GroupMember::class,
         orphanRemoval: true
     )]
-    private $groupMembers;
+    private Collection $groupMembers;
 
     #[ORM\ManyToMany(
         targetEntity: Role::class,
         mappedBy: 'groups'
     )]
-    private $roles;
+    private Collection $roles;
 
     public function __construct()
     {

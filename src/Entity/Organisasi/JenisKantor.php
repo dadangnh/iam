@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -119,7 +120,7 @@ class JenisKantor
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -169,19 +170,19 @@ class JenisKantor
         mappedBy: 'jenisKantor',
         targetEntity: Kantor::class
     )]
-    private $kantors;
+    private Collection $kantors;
 
     #[ORM\OneToMany(
         mappedBy: 'jenisKantor',
         targetEntity: Unit::class
     )]
-    private $units;
+    private Collection $units;
 
     #[ORM\ManyToMany(
         targetEntity: Role::class,
         mappedBy: 'jenisKantors'
     )]
-    private $roles;
+    private Collection $roles;
 
     public function __construct()
     {

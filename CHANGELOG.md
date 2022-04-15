@@ -1,6 +1,12 @@
 # IAM Changelog
 
-## Version 1.21.0 (current stable)
+## Version 2.0.0 (current stable)
+  * Upgrade Major Symfony Components to v6 (v6.0.7) (#72)
+  * Updated Symfony Recipes
+  * Stricter code
+  * Fix GitHub Action Test (#83)
+
+## Version 1.21.0
   * Updated Infrastructure config from upstream (#80)
   * Updated Symfony Components and Dependencies to v5.4.7 
   * Updated JWT Bundle (#81)
