@@ -13,7 +13,7 @@ class NewUserFixtures extends Fixture
     public const USER_ADMIN = 'admin';
     public const USER_UPK_PUSAT = 'upk';
 
-     private UserPasswordHasherInterface $passwordHasher;
+    private UserPasswordHasherInterface $passwordHasher;
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
