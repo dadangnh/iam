@@ -40,7 +40,7 @@ class ModulCrudController extends AbstractCrudController
             BooleanField::new('status', 'Status Produksi'),
             DateTimeField::new('createDate', 'Tanggal Dibuat')
                 ->hideOnForm()
-                ->renderAsNativeWidget(true)
+                ->renderAsNativeWidget()
         ];
     }
 }
