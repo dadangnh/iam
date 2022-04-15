@@ -39,11 +39,11 @@ class JabatanPegawaiCrudController extends AbstractCrudController
                 ->setRequired(true),
             TextField::new('referensi', 'Referensi'),
             DateTimeField::new('tanggalMulai', 'Tanggal Mulai')
-                ->renderAsNativeWidget(true)
+                ->renderAsNativeWidget()
                 ->setRequired(true)
                 ->hideOnIndex(),
             DateTimeField::new('tanggalSelesai', 'Tanggal Selesai')
-                ->renderAsNativeWidget(true)
+                ->renderAsNativeWidget()
                 ->hideOnIndex()
         ];
     }

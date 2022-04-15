@@ -4,15 +4,15 @@ namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\Unit;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Restrict access to this controller only for user
- * @Security("is_granted('ROLE_USER')")
  */
+#[IsGranted('ROLE_USER')]
 class UnitController extends AbstractController
 {
     /**

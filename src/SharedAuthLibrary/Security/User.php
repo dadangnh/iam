@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\SharedAuthLibrary\Security;
 
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface
 {
     /**
      * @var string
@@ -35,24 +34,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?array $pegawai;
 
     /**
-     * @var string
-     */
-    private string $password;
-
-    /**
-     * @var string
-     */
-    private string $salt;
-
-    /**
      * User constructor.
      * @param string $id
      * @param string $username
      * @param array $roles
      * @param int $expiredTime
      * @param array|null $pegawai
-     * @param string $password
-     * @param string $salt
      */
     public function __construct(
         string $id,
@@ -60,16 +47,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         array $roles,
         int $expiredTime,
         ?array $pegawai,
-        string $password = '',
-        string $salt = '',
     ) {
         $this->id = $id;
         $this->roles = $roles;
         $this->username = $username;
         $this->expiredTime = $expiredTime;
         $this->pegawai = $pegawai;
-        $this->password = $password;
-        $this->salt = $salt;
     }
 
     /**
@@ -122,24 +105,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->pegawai;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSalt(): string
-    {
-        return $this->salt;
-    }
-
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // TODO: Implement eraseCredentials() method.
     }

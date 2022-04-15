@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -149,7 +150,7 @@ class Unit
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -172,7 +173,7 @@ class Unit
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
-    private $jenisKantor;
+    private ?JenisKantor $jenisKantor;
 
     #[ORM\Column(
         type: 'integer'
@@ -190,13 +191,13 @@ class Unit
         inversedBy: 'childs'
     )]
     #[Assert\Valid]
-    private $parent;
+    private ?Unit $parent;
 
     #[ORM\OneToMany(
         mappedBy: 'parent',
         targetEntity: Unit::class
     )]
-    private $childs;
+    private Collection $childs;
 
     #[ORM\ManyToOne(
         targetEntity: Eselon::class,
@@ -207,7 +208,7 @@ class Unit
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
-    private $eselon;
+    private ?Eselon $eselon;
 
     #[ORM\Column(
         type: 'datetime_immutable'
@@ -232,31 +233,31 @@ class Unit
         mappedBy: 'unit',
         targetEntity: JabatanPegawai::class
     )]
-    private $jabatanPegawais;
+    private Collection $jabatanPegawais;
 
     #[ORM\ManyToMany(
         targetEntity: Jabatan::class,
         mappedBy: 'units'
     )]
-    private $jabatans;
+    private Collection $jabatans;
 
     #[ORM\ManyToMany(
         targetEntity: Role::class,
         mappedBy: 'units'
     )]
-    private $roles;
+    private Collection $roles;
 
     #[ORM\ManyToOne(
         targetEntity: Unit::class,
         inversedBy: 'membina'
     )]
-    private $pembina;
+    private ?Unit $pembina;
 
     #[ORM\OneToMany(
         mappedBy: 'pembina',
         targetEntity: Unit::class
     )]
-    private $membina;
+    private Collection $membina;
 
     public function __construct()
     {
@@ -513,7 +514,7 @@ class Unit
     /**
      * @return Collection|self[]
      */
-    public function getMembina(): Collection|self
+    public function getMembina(): Collection|array
     {
         return $this->membina;
     }

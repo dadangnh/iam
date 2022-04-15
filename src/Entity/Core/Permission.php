@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -94,7 +95,7 @@ class Permission
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -122,7 +123,7 @@ class Permission
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
-    private $modul;
+    private Collection $modul;
 
     #[ORM\ManyToMany(
         targetEntity: Role::class,
@@ -144,7 +145,7 @@ class Permission
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
-    private $roles;
+    private Collection $roles;
 
     public function __construct()
     {

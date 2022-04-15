@@ -17,13 +17,13 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JetBrains\PhpStorm\Pure;
 use Monolog\DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -136,7 +136,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'user:write'
         ]
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
@@ -162,7 +162,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         targetEntity: Role::class,
         mappedBy: 'users'
     )]
-    private $role;
+    private Collection $role;
 
     /**
      * Default Symfony Guard Role
@@ -249,7 +249,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'user:write'
         ]
     )]
-    private $userTwoFactors;
+    private Collection $userTwoFactors;
 
     #[ORM\OneToOne(
         mappedBy: 'user',
@@ -262,7 +262,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'user:write'
         ]
     )]
-    private $pegawai;
+    private ?Pegawai $pegawai;
 
     #[ORM\OneToMany(
         mappedBy: 'owner',
@@ -274,7 +274,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'user:write'
         ]
     )]
-    private $ownedGroups;
+    private Collection $ownedGroups;
 
     #[ORM\OneToMany(
         mappedBy: 'user',
@@ -287,7 +287,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'user:write'
         ]
     )]
-    private $groupMembers;
+    private Collection $groupMembers;
 
     public function __construct()
     {
@@ -373,7 +373,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    #[Pure] public function getRole(): array
+    public function getRole(): array
     {
         $roles = $this->role->toArray();
 
@@ -384,7 +384,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * Method to get the direct relation of role and user
      * @return array
      */
-    #[Pure] public function getDirectRoles(): array
+    public function getDirectRoles(): array
     {
         // check whether user is still active or not
         if ($this->isActive()) {
@@ -427,15 +427,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt()
-    {
-        // not needed when using the "bcrypt" algorithm in security.yaml
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;

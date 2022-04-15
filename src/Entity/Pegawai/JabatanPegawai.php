@@ -16,6 +16,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -115,7 +116,7 @@ class JabatanPegawai
         type: 'uuid',
         unique: true
     )]
-    private $id;
+    private UuidV4 $id;
 
     #[ORM\ManyToOne(
         targetEntity: Pegawai::class,
@@ -126,7 +127,7 @@ class JabatanPegawai
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
-    private $pegawai;
+    private ?Pegawai $pegawai;
 
     #[ORM\ManyToOne(
         targetEntity: Jabatan::class,
@@ -142,7 +143,7 @@ class JabatanPegawai
             'pegawai:read'
         ]
     )]
-    private $jabatan;
+    private ?Jabatan $jabatan;
 
     #[ORM\ManyToOne(
         targetEntity: TipeJabatan::class,
@@ -155,7 +156,7 @@ class JabatanPegawai
             'pegawai:read'
         ]
     )]
-    private $tipe;
+    private ?TipeJabatan $tipe;
 
     #[ORM\ManyToOne(
         targetEntity: Kantor::class,
@@ -171,7 +172,7 @@ class JabatanPegawai
             'pegawai:read'
         ]
     )]
-    private $kantor;
+    private ?Kantor $kantor;
 
     #[ORM\ManyToOne(
         targetEntity: Unit::class,
@@ -183,7 +184,7 @@ class JabatanPegawai
             'pegawai:read'
         ]
     )]
-    private $unit;
+    private ?Unit $unit;
 
     #[ORM\Column(
         type: 'string',
@@ -227,7 +228,7 @@ class JabatanPegawai
             'pegawai:read'
         ]
     )]
-    private $atribut;
+    private ?JabatanAtribut $atribut;
 
     public function __construct()
     {
