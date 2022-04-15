@@ -20,7 +20,7 @@ class OrganisasiFixtures extends Fixture
     public const KANTOR_KEMENTERIAN = 'kantor-kementerian';
     public const UNIT_KEMENTERIAN = 'unit-kementerian';
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $eselonMenteri = new Eselon();
         $eselonMenteri->setNama('Menteri');

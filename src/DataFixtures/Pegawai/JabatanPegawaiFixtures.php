@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class JabatanPegawaiFixtures extends Fixture implements DependentFixtureInterface
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 //        Matikan dulu karena fail load
 //        $jabatan1 = new JabatanPegawai();
@@ -24,7 +24,7 @@ class JabatanPegawaiFixtures extends Fixture implements DependentFixtureInterfac
 //        $manager->flush();
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             PegawaiFixtures::class,

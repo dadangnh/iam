@@ -13,7 +13,7 @@ class ModulFixtures extends Fixture implements DependentFixtureInterface
     public const MODUL_DUA = 'modul-2';
     public const MODUL_TIGA = 'modul-3';
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $modul1 = new Modul();
         $modul1->setNama('Modul 1');
@@ -46,7 +46,7 @@ class ModulFixtures extends Fixture implements DependentFixtureInterface
         $this->addReference(self::MODUL_TIGA, $modul3);
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             AplikasiFixtures::class

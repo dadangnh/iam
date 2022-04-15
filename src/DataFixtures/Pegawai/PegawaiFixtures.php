@@ -13,7 +13,7 @@ class PegawaiFixtures extends Fixture implements DependentFixtureInterface
 {
     public const PEGAWAI_1 = 'pegawai-1';
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 //        Matikan dulu karena fail load
 //        $pegawai1 = new Pegawai();
@@ -31,7 +31,7 @@ class PegawaiFixtures extends Fixture implements DependentFixtureInterface
 //        $this->addReference(self::PEGAWAI_1, $pegawai1);
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             NewUserFixtures::class

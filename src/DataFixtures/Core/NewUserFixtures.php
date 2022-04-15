@@ -13,14 +13,14 @@ class NewUserFixtures extends Fixture
     public const USER_ADMIN = 'admin';
     public const USER_UPK_PUSAT = 'upk';
 
-     private $passwordHasher;
+     private UserPasswordHasherInterface $passwordHasher;
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
      $this->passwordHasher = $passwordHasher;
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         // Create ADMIN ROLE
         $superAdmin = new User();

@@ -11,7 +11,7 @@ class AplikasiFixtures extends Fixture
     public const APLIKASI_SATU = 'app1';
     public const APLIKASI_DUA = 'app2';
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $aplikasi1 = new Aplikasi();
         $aplikasi1->setNama('Aplikasi 1');
