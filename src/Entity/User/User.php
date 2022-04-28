@@ -359,15 +359,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if (!$this->getPegawai()->getPensiun()) {
                 /** @var JabatanPegawai $jabatanPegawai */
                 foreach ($this->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
-                    $arrayOfRoles[] = RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai);
+                    $arrayOfRoles[] = array_values(RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai));
                 }
             } else {
                 return ['ROLE_RETIRED'];
             }
-            $plainRoles = array_merge($plainRoles, ...$arrayOfRoles);
+            $plainRoles = array_values(array_merge($plainRoles, ...$arrayOfRoles));
         }
 
-        return array_unique($plainRoles);
+        return array_values(array_unique($plainRoles));
     }
 
     /**
