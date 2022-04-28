@@ -109,7 +109,8 @@ class RoleHelper
         foreach ($roles as $role) {
             $plainRoles[] = $role->getNama();
         }
-        return $plainRoles;
+
+        return array_values(array_unique($plainRoles));
     }
 
     /**
