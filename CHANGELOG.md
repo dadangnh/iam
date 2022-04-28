@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 2.0.0 (current stable)
+## Version 2.0.1 (current stable)
+  * Fix ROLES attributes is not consistent (#85)
+  * Updated Symfony Components and Dependencies
+
+## Version 2.0.0
   * Upgrade Major Symfony Components to v6 (v6.0.7) (#72)
   * Updated Symfony Recipes
   * Stricter code
