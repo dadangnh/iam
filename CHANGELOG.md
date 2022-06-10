@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 2.0.2 (current stable)
+## Version 2.1.0 (current stable)
+  * Upgrade Major Symfony Components to v6 (v6.1) (#86)
+  * Updated Symfony Recipes
+  * Updated Dependencies
+
+## Version 2.0.2
   * Updated Symfony Components and Dependencies
 
 ## Version 2.0.1
