@@ -42,7 +42,7 @@ security:
             jwt: ~
             refresh_jwt:
                 # use route name
-                check_path: api_refresh_token
+                check_path: gesdinet_jwt_refresh_token
                 # for the refresh token, we must use the primary user provider, so it can look the correct user
                 provider: app_user_provider
             logout:
