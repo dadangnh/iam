@@ -102,6 +102,14 @@ use Symfony\Component\Validator\Constraints as Assert;
             'nama' => 'ASC'
         ]
     ],
+    denormalizationContext: [
+        'groups' => ['unit:write'],
+        'swagger_definition_name' => 'write'
+    ],
+    normalizationContext: [
+        'groups' => ['unit:read'],
+        'swagger_definition_name' => 'read'
+    ],
 )]
 #[ApiFilter(
     SearchFilter::class,
@@ -150,6 +158,12 @@ class Unit
         type: 'uuid',
         unique: true
     )]
+    #[Groups(
+        groups: [
+            'unit:read',
+            'unit:write'
+        ]
+    )]
     private UuidV4 $id;
 
     #[ORM\Column(
@@ -159,7 +173,9 @@ class Unit
     #[Assert\NotBlank]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai:read',
+            'unit:read',
+            'unit:write'
         ]
     )]
     private ?string $nama;
@@ -173,6 +189,12 @@ class Unit
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'unit:read',
+            'unit:write'
+        ]
+    )]
     private ?JenisKantor $jenisKantor;
 
     #[ORM\Column(
@@ -181,7 +203,9 @@ class Unit
     #[Assert\NotNull]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai:read',
+            'unit:read',
+            'unit:write'
         ]
     )]
     private ?int $level;
@@ -208,17 +232,35 @@ class Unit
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'unit:read',
+            'unit:write'
+        ]
+    )]
     private ?Eselon $eselon;
 
     #[ORM\Column(
         type: 'datetime_immutable'
     )]
     #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'unit:read',
+            'unit:write'
+        ]
+    )]
     private ?DateTimeImmutable $tanggalAktif;
 
     #[ORM\Column(
         type: 'datetime_immutable',
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'unit:read',
+            'unit:write'
+        ]
     )]
     private ?DateTimeImmutable $tanggalNonaktif;
 
@@ -226,6 +268,12 @@ class Unit
         type: 'string',
         length: 10,
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'unit:read',
+            'unit:write'
+        ]
     )]
     private ?string $legacyKode;
 

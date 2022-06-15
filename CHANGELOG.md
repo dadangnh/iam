@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 2.1.0 (current stable)
+## Version 2.1.1 (current stable)
+  * Added Jabatan <=> Unit relation on admin (#87)
+  * Remove JabatanPegawais from Entity Attribute (#88)
+  * Updated Symfony Components and Dependencies
+
+## Version 2.1.0
   * Upgrade Major Symfony Components to v6 (v6.1) (#86)
   * Updated Symfony Recipes
   * Updated Dependencies

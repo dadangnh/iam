@@ -52,7 +52,12 @@ class UnitCrudController extends AbstractCrudController
             TextField::new('legacyKode', 'Kode Unit Lama di SIKKA')
                 ->setMaxLength(10),
             AssociationField::new('roles', 'Roles')
-                ->onlyOnDetail()
+                ->onlyOnDetail(),
+            AssociationField::new('jabatans', 'Jabatans')
+                ->autocomplete()
+                ->setRequired(true)
+                ->setHelp('Masukkan nama Jabatan yang dapat ditempatkan pada unit ini.')
+                ->setFormTypeOptions(['by_reference' => false,])
         ];
     }
 }

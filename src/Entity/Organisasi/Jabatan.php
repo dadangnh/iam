@@ -107,7 +107,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: [
         'groups' => ['jabatan:read'],
         'swagger_definition_name' => 'read'
-    ]
+    ],
 )]
 #[ApiFilter(
     SearchFilter::class,
@@ -298,7 +298,6 @@ class Jabatan
     )]
     #[Groups(
         groups: [
-            'jabatan:read',
             'jabatan:write'
         ]
     )]
@@ -311,7 +310,6 @@ class Jabatan
     #[Assert\Valid]
     #[Groups(
         groups: [
-            'jabatan:read',
             'jabatan:write'
         ]
     )]
@@ -323,7 +321,6 @@ class Jabatan
     )]
     #[Groups(
         groups: [
-            'jabatan:read',
             'jabatan:write'
         ]
     )]
