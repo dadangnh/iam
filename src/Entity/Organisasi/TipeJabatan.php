@@ -68,6 +68,14 @@ use Symfony\Component\Validator\Constraints as Assert;
             'nama' => 'ASC'
         ]
     ],
+    denormalizationContext: [
+        'groups' => ['tipe-jabatan:write'],
+        'swagger_definition_name' => 'write'
+    ],
+    normalizationContext: [
+        'groups' => ['tipe-jabatan:read'],
+        'swagger_definition_name' => 'read'
+    ]
 )]
 #[ApiFilter(
     SearchFilter::class,
@@ -84,6 +92,12 @@ class TipeJabatan
         type: 'uuid',
         unique: true
     )]
+    #[Groups(
+        groups: [
+            'tipe-jabatan:read',
+            'tipe-jabatan:write'
+        ]
+    )]
     private UuidV4 $id;
 
     #[ORM\Column(
@@ -93,7 +107,9 @@ class TipeJabatan
     #[Assert\NotBlank]
     #[Groups(
         groups: [
-            'user:read'
+            'user:read',
+            'tipe-jabatan:read',
+            'tipe-jabatan:write'
         ]
     )]
     private ?string $nama;

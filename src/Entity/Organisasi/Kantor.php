@@ -113,6 +113,14 @@ use Symfony\Component\Validator\Constraints as Assert;
             'nama' => 'ASC'
         ]
     ],
+    denormalizationContext: [
+        'groups' => ['kantor:write'],
+        'swagger_definition_name' => 'write'
+    ],
+    normalizationContext: [
+        'groups' => ['kantor:read'],
+        'swagger_definition_name' => 'read'
+    ],
 )]
 #[ApiFilter(
     SearchFilter::class,
@@ -168,6 +176,12 @@ class Kantor
         type: 'uuid',
         unique: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private UuidV4 $id;
 
     #[ORM\Column(
@@ -178,7 +192,9 @@ class Kantor
     #[Groups(
         groups: [
             'pegawai:read',
-            'user:read'
+            'user:read',
+            'kantor:read',
+            'kantor:write'
         ]
     )]
     private ?string $nama;
@@ -192,11 +208,23 @@ class Kantor
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private ?JenisKantor $jenisKantor;
 
     #[ORM\Column(
         type: 'integer',
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
     )]
     private ?int $level;
 
@@ -205,6 +233,11 @@ class Kantor
         inversedBy: 'childs'
     )]
     #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'kantor:write'
+        ]
+    )]
     private ?Kantor $parent;
 
     #[ORM\OneToMany(
@@ -217,11 +250,23 @@ class Kantor
         type: 'datetime_immutable'
     )]
     #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private ?DateTimeImmutable $tanggalAktif;
 
     #[ORM\Column(
         type: 'datetime_immutable',
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
     )]
     private ?DateTimeImmutable $tanggalNonaktif;
 
@@ -230,11 +275,23 @@ class Kantor
         length: 255,
         nullable: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private ?string $sk;
 
     #[ORM\Column(
         type: 'text',
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
     )]
     private ?string $alamat;
 
@@ -243,12 +300,24 @@ class Kantor
         length: 255,
         nullable: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private ?string $telp;
 
     #[ORM\Column(
         type: 'string',
         length: 255,
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
     )]
     private ?string $fax;
 
@@ -257,17 +326,35 @@ class Kantor
         length: 4,
         nullable: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private ?string $zonaWaktu;
 
     #[ORM\Column(
         type: 'float',
         nullable: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private ?float $latitude;
 
     #[ORM\Column(
         type: 'float',
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
     )]
     private ?float $longitude;
 
@@ -276,12 +363,24 @@ class Kantor
         length: 10,
         nullable: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private ?string $legacyKode;
 
     #[ORM\Column(
         type: 'string',
         length: 3,
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
     )]
     private ?string $legacyKodeKpp;
 
@@ -290,6 +389,12 @@ class Kantor
         length: 3,
         nullable: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private ?string $legacyKodeKanwil;
 
     #[ORM\OneToMany(
@@ -297,11 +402,21 @@ class Kantor
         targetEntity: JabatanPegawai::class,
         orphanRemoval: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:write'
+        ]
+    )]
     private Collection $jabatanPegawais;
 
     #[ORM\ManyToMany(
         targetEntity: Role::class,
         mappedBy: 'kantors'
+    )]
+    #[Groups(
+        groups: [
+            'kantor:write'
+        ]
     )]
     private Collection $roles;
 
@@ -309,11 +424,21 @@ class Kantor
         targetEntity: Kantor::class,
         inversedBy: 'membina'
     )]
+    #[Groups(
+        groups: [
+            'kantor:write'
+        ]
+    )]
     private ?Kantor $pembina;
 
     #[ORM\OneToMany(
         mappedBy: 'pembina',
         targetEntity: Kantor::class
+    )]
+    #[Groups(
+        groups: [
+            'kantor:write'
+        ]
     )]
     private Collection $membina;
 
@@ -321,11 +446,22 @@ class Kantor
         type: 'uuid',
         nullable: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:write'
+        ]
+    )]
     private ?UuidV4 $provinsi;
 
     #[ORM\Column(
         type: 'uuid',
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
     )]
     private ?UuidV4 $kabupatenKota;
 
@@ -333,11 +469,23 @@ class Kantor
         type: 'uuid',
         nullable: true
     )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
     private ?UuidV4 $kecamatan;
 
     #[ORM\Column(
         type: 'uuid',
         nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
     )]
     private ?UuidV4 $kelurahan;
 

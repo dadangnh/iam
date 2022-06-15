@@ -11,6 +11,7 @@ use App\Repository\Organisasi\JabatanAtributRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -67,6 +68,14 @@ use Symfony\Component\Validator\Constraints as Assert;
             'nama' => 'ASC'
         ]
     ],
+    denormalizationContext: [
+        'groups' => ['jabatan-atribut:write'],
+        'swagger_definition_name' => 'write'
+    ],
+    normalizationContext: [
+        'groups' => ['jabatan-atribut:read'],
+        'swagger_definition_name' => 'read'
+    ],
 )]
 #[ApiFilter(
     SearchFilter::class,
@@ -83,11 +92,23 @@ class JabatanAtribut
         type: 'uuid',
         unique: true
     )]
+    #[Groups(
+        groups: [
+            'jabatan-atribut:read',
+            'jabatan-atribut:write'
+        ]
+    )]
     private UuidV4 $id;
 
     #[ORM\Column(
         type: 'string',
         length: 255
+    )]
+    #[Groups(
+        groups: [
+            'jabatan-atribut:read',
+            'jabatan-atribut:write'
+        ]
     )]
     #[Assert\NotBlank]
     private ?string $nama;
