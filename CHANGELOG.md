@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 2.1.1 (current stable)
+## Version 2.1.2 (current stable)
+  * Added new endpoint for Entity's parent-child relation (#89)
+  * Updated Symfony Components and Dependencies
+
+## Version 2.1.1
   * Added Jabatan <=> Unit relation on admin (#87)
   * Remove JabatanPegawais from Entity Attribute (#88)
   * Updated Symfony Components and Dependencies
