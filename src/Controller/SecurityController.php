@@ -265,17 +265,8 @@ class SecurityController extends AbstractController
     /**
      * @return JsonResponse
      */
-    #[Route('/api/whoami', name: 'app_whoami_old', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function whoamiOld(): JsonResponse
-    {
-        return $this->json($this->getUser());
-    }
-
-    /**
-     * @return JsonResponse
-     */
     #[Route('/api/token/whoami', name: 'app_whoami', methods: ['POST'])]
+    #[Route('/api/whoami', name: 'app_whoami_old', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function whoami(): JsonResponse
     {
