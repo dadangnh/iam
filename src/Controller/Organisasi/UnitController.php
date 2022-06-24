@@ -3,6 +3,7 @@
 namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\Unit;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,6 +53,142 @@ class UnitController extends AbstractController
     }
 
     /**
+     * @param ManagerRegistry $doctrine
+     * @param String $id
+     * @return JsonResponse
+     */
+    #[Route('/api/units/{id}/parent', methods: ['GET'])]
+    #[Route('/api/units/find_parent/by_id/{id}', methods: ['GET'])]
+    public function getParentUnitFromUnitId(ManagerRegistry $doctrine, String $id): JsonResponse
+    {
+        $unit = $doctrine
+            ->getRepository(Unit::class)
+            ->findOneBy(['id' => $id]);
+
+        if (null === $unit) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Unit found with the associated id.'
+            ], 404);
+        }
+
+        return $this->processParentUnitData($unit);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $name
+     * @return JsonResponse
+     * @throws NonUniqueResultException
+     */
+    #[Route('/api/units/find_parent/by_exact_name/{name}', methods: ['GET'])]
+    public function getParentUnitFromUnitName(ManagerRegistry $doctrine, String $name): JsonResponse
+    {
+        $unit = $doctrine
+            ->getRepository(Unit::class)
+            ->findActiveUnitByExactName($name);
+
+        if (null === $unit) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Unit found with the associated name.'
+            ], 404);
+        }
+
+        return $this->processParentUnitData($unit);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $legacyKode
+     * @return JsonResponse
+     */
+    #[Route('/api/units/find_parent/by_legacy_kode/{legacyKode}', methods: ['GET'])]
+    public function getParentUnitFromUnitLegacyKode(ManagerRegistry $doctrine, String $legacyKode): JsonResponse
+    {
+        $unit = $doctrine
+            ->getRepository(Unit::class)
+            ->findOneBy(['legacyKode' => $legacyKode]);
+
+        if (null === $unit) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Unit found with the associated legacy kode.'
+            ], 404);
+        }
+
+        return $this->processParentUnitData($unit);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $id
+     * @return JsonResponse
+     */
+    #[Route('/api/units/{id}/childs', methods: ['GET'])]
+    #[Route('/api/units/find_childs/by_id/{id}', methods: ['GET'])]
+    public function getChildUnitsFromUnitId(ManagerRegistry $doctrine, String $id): JsonResponse
+    {
+        $unit = $doctrine
+            ->getRepository(Unit::class)
+            ->findOneBy(['id' => $id]);
+
+        if (null === $unit) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Unit found with the associated id.'
+            ], 404);
+        }
+
+        return $this->processChildUnitsData($unit);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $name
+     * @return JsonResponse
+     * @throws NonUniqueResultException
+     */
+    #[Route('/api/units/find_childs/by_exact_name/{name}', methods: ['GET'])]
+    public function getChildUnitsFromUnitName(ManagerRegistry $doctrine, String $name): JsonResponse
+    {
+        $unit = $doctrine
+            ->getRepository(Unit::class)
+            ->findActiveUnitByExactName($name);
+
+        if (null === $unit) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Kantor found with the associated name.'
+            ], 404);
+        }
+
+        return $this->processChildUnitsData($unit);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $legacyKode
+     * @return JsonResponse
+     */
+    #[Route('/api/units/find_childs/by_legacy_kode/{legacyKode}', methods: ['GET'])]
+    public function getChildUnitsFromUnitLegacyKode(ManagerRegistry $doctrine, String $legacyKode): JsonResponse
+    {
+        $unit = $doctrine
+            ->getRepository(Unit::class)
+            ->findOneBy(['legacyKode' => $legacyKode]);
+
+        if (null === $unit) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Unit found with the associated legacy kode.'
+            ], 404);
+        }
+
+        return $this->processChildUnitsData($unit);
+    }
+
+    /**
      * @param array|null $units
      * @return JsonResponse
      */
@@ -67,6 +204,56 @@ class UnitController extends AbstractController
         return $this->json([
             'unit_count' => count($units),
             'units' => $units,
+        ]);
+    }
+
+    /**
+     * @param Unit $unit
+     * @return JsonResponse
+     */
+    private function processParentUnitData(Unit $unit): JsonResponse
+    {
+        $parentUnit = $unit->getParent();
+
+        if (null === $parentUnit) {
+            return $this->json([
+                'code' => 200,
+                'unitId' => $unit->getId(),
+                'unitName' => $unit->getNama(),
+                'parentUnit' => null,
+            ]);
+        }
+
+        return $this->json([
+            'code' => 200,
+            'unitId' => $unit->getId(),
+            'unitName' => $unit->getNama(),
+            'parentUnit' => $parentUnit,
+        ]);
+    }
+
+    /**
+     * @param Unit $unit
+     * @return JsonResponse
+     */
+    private function processChildUnitsData(Unit $unit): JsonResponse
+    {
+        $childUnits = $unit->getChilds();
+
+        if (0 === count($childUnits)) {
+            return $this->json([
+                'code' => 200,
+                'unitId' => $unit->getId(),
+                'unitName' => $unit->getNama(),
+                'childUnits' => null,
+            ]);
+        }
+
+        return $this->json([
+            'code' => 200,
+            'unitId' => $unit->getId(),
+            'unitName' => $unit->getNama(),
+            'childUnits' => $childUnits,
         ]);
     }
 }

@@ -566,6 +566,212 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $schemas['GetParentUnitResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'code' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'unitId' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'unitName' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'parentUnit' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
+        $parentUnitByUnitIdItem = new Model\PathItem(
+            ref: 'Unit',
+            get: new Model\Operation(
+                operationId: 'getParentUnitByUnitId',
+                tags: ['Unit'],
+                responses: [
+                    '200' => [
+                        'description' => 'Parent Unit Data From Unit Id',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetParentUnitResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get parent unit information from unit id',
+                parameters: [new Model\Parameter(
+                    'id',
+                    'path',
+                    'Please provide the unit id (uuid).',
+                    true
+                )]
+            ),
+        );
+
+        $parentUnitByUnitExactNameItem = new Model\PathItem(
+            ref: 'Unit',
+            get: new Model\Operation(
+                operationId: 'getParentUnitByUnitExactName',
+                tags: ['Unit'],
+                responses: [
+                    '200' => [
+                        'description' => 'Parent Unit Data From Unit Exact Name',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetParentUnitResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get parent unit information from unit name (only for active unit)',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the unit name.',
+                    true
+                )]
+            ),
+        );
+
+        $parentUnitByUnitLegacyKodeItem = new Model\PathItem(
+            ref: 'Unit',
+            get: new Model\Operation(
+                operationId: 'getParentUnitByUnitLegacyKode',
+                tags: ['Unit'],
+                responses: [
+                    '200' => [
+                        'description' => 'Parent Unit Data From Unit Legacy Kode',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetParentUnitResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get parent unit information from unit legacy kode',
+                parameters: [new Model\Parameter(
+                    'legacyKode',
+                    'path',
+                    'Please provide the unit legacy kode.',
+                    true
+                )]
+            ),
+        );
+
+        $schemas['GetChildUnitsResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'code' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'unitId' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'unitName' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'childUnits' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
+        $childUnitsByUnitIdItem = new Model\PathItem(
+            ref: 'Unit',
+            get: new Model\Operation(
+                operationId: 'getChildUnitsByUnitId',
+                tags: ['Unit'],
+                responses: [
+                    '200' => [
+                        'description' => 'Child Units Data From Unit Id',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetChildUnitsResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get child units information from unit id',
+                parameters: [new Model\Parameter(
+                    'id',
+                    'path',
+                    'Please provide the unit id (uuid).',
+                    true
+                )]
+            ),
+        );
+
+        $childUnitsByUnitExactNameItem = new Model\PathItem(
+            ref: 'Unit',
+            get: new Model\Operation(
+                operationId: 'getChildUnitsByUnitExactName',
+                tags: ['Unit'],
+                responses: [
+                    '200' => [
+                        'description' => 'Child Units Data From Unit Exact Name',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetChildUnitsResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get child units information from unit name (only for active unit)',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the unit name.',
+                    true
+                )]
+            ),
+        );
+
+        $childUnitsByUnitLegacyKodeItem = new Model\PathItem(
+            ref: 'Unit',
+            get: new Model\Operation(
+                operationId: 'getChildUnitsByUnitLegacyKode',
+                tags: ['Unit'],
+                responses: [
+                    '200' => [
+                        'description' => 'Child Units Data From Unit Legacy Kode',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetChildUnitsResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get child units information from unit legacy kode',
+                parameters: [new Model\Parameter(
+                    'legacyKode',
+                    'path',
+                    'Please provide the unit legacy kode.',
+                    true
+                )]
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/kantors/active/show_all', $allActiveKantorItem);
         $openApi->getPaths()->addPath('/api/kantors/active/{name}', $activeKantorByKantorNameItem);
         $openApi->getPaths()->addPath('/api/kantors/kepala_kantor', $fetchKepalaKantorFromKantorIdItem);
@@ -583,6 +789,14 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/kantors/find_childs/by_id/{id}', $childKantorsByKantorIdItem);
         $openApi->getPaths()->addPath('/api/kantors/find_childs/by_exact_name/{name}', $childKantorsByKantorExactNameItem);
         $openApi->getPaths()->addPath('/api/kantors/find_childs/by_legacy_kode/{legacyKode}', $childKantorsByKantorLegacyKodeItem);
+        $openApi->getPaths()->addPath('/api/units/{id}/parent', $parentUnitByUnitIdItem);
+        $openApi->getPaths()->addPath('/api/units/find_parent/by_id/{id}', $parentUnitByUnitIdItem);
+        $openApi->getPaths()->addPath('/api/units/find_parent/by_exact_name/{name}', $parentUnitByUnitExactNameItem);
+        $openApi->getPaths()->addPath('/api/units/find_parent/by_legacy_kode/{legacyKode}', $parentUnitByUnitLegacyKodeItem);
+        $openApi->getPaths()->addPath('/api/units/{id}/childs', $childUnitsByUnitIdItem);
+        $openApi->getPaths()->addPath('/api/units/find_childs/by_id/{id}', $childUnitsByUnitIdItem);
+        $openApi->getPaths()->addPath('/api/units/find_childs/by_exact_name/{name}', $childUnitsByUnitExactNameItem);
+        $openApi->getPaths()->addPath('/api/units/find_childs/by_legacy_kode/{legacyKode}', $childUnitsByUnitLegacyKodeItem);
 
         return $openApi;
     }
