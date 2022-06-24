@@ -360,6 +360,212 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $schemas['GetParentKantorResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'code' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'kantorId' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'kantorName' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'parentKantor' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
+        $parentKantorByKantorIdItem = new Model\PathItem(
+            ref: 'Kantor',
+            get: new Model\Operation(
+                operationId: 'getParentKantorByKantorId',
+                tags: ['Kantor'],
+                responses: [
+                    '200' => [
+                        'description' => 'Parent Kantor Data From Kantor Id',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetParentKantorResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get parent kantor information from kantor id',
+                parameters: [new Model\Parameter(
+                    'id',
+                    'path',
+                    'Please provide the kantor id (uuid).',
+                    true
+                )]
+            ),
+        );
+
+        $parentKantorByKantorExactNameItem = new Model\PathItem(
+            ref: 'Kantor',
+            get: new Model\Operation(
+                operationId: 'getParentKantorByKantorExactName',
+                tags: ['Kantor'],
+                responses: [
+                    '200' => [
+                        'description' => 'Parent Kantor Data From Kantor Exact Name',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetParentKantorResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get parent kantor information from kantor name (only for active kantor)',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the kantor name.',
+                    true
+                )]
+            ),
+        );
+
+        $parentKantorByKantorLegacyKodeItem = new Model\PathItem(
+            ref: 'Kantor',
+            get: new Model\Operation(
+                operationId: 'getParentKantorByKantorLegacyKode',
+                tags: ['Kantor'],
+                responses: [
+                    '200' => [
+                        'description' => 'Parent Kantor Data From Kantor Legacy Kode',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetParentKantorResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get parent kantor information from kantor legacy kode',
+                parameters: [new Model\Parameter(
+                    'legacyKode',
+                    'path',
+                    'Please provide the kantor legacy kode.',
+                    true
+                )]
+            ),
+        );
+
+        $schemas['GetChildKantorsResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'code' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'kantorId' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'kantorName' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+                'childKantors' => [
+                    'type' => 'object',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
+        $childKantorsByKantorIdItem = new Model\PathItem(
+            ref: 'Kantor',
+            get: new Model\Operation(
+                operationId: 'getChildKantorsByKantorId',
+                tags: ['Kantor'],
+                responses: [
+                    '200' => [
+                        'description' => 'Child Kantors Data From Kantor Id',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetChildKantorsResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get child kantors information from kantor id',
+                parameters: [new Model\Parameter(
+                    'id',
+                    'path',
+                    'Please provide the kantor id (uuid).',
+                    true
+                )]
+            ),
+        );
+
+        $childKantorsByKantorExactNameItem = new Model\PathItem(
+            ref: 'Kantor',
+            get: new Model\Operation(
+                operationId: 'getChildKantorsByKantorExactName',
+                tags: ['Kantor'],
+                responses: [
+                    '200' => [
+                        'description' => 'Child Kantors Data From Kantor Exact Name',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetChildKantorsResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get child kantors information from kantor name (only for active kantor)',
+                parameters: [new Model\Parameter(
+                    'name',
+                    'path',
+                    'Please provide the kantor name.',
+                    true
+                )]
+            ),
+        );
+
+        $childKantorsByKantorLegacyKodeItem = new Model\PathItem(
+            ref: 'Kantor',
+            get: new Model\Operation(
+                operationId: 'getChildKantorsByKantorLegacyKode',
+                tags: ['Kantor'],
+                responses: [
+                    '200' => [
+                        'description' => 'Child Kantors Data From Kantor Legacy Kode',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetChildKantorsResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get child kantors information from kantor legacy kode',
+                parameters: [new Model\Parameter(
+                    'legacyKode',
+                    'path',
+                    'Please provide the kantor legacy kode.',
+                    true
+                )]
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/kantors/active/show_all', $allActiveKantorItem);
         $openApi->getPaths()->addPath('/api/kantors/active/{name}', $activeKantorByKantorNameItem);
         $openApi->getPaths()->addPath('/api/kantors/kepala_kantor', $fetchKepalaKantorFromKantorIdItem);
@@ -369,6 +575,14 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/jenis_kantors/active/{name}', $activeJenisKantorByJenisKantorNameItem);
         $openApi->getPaths()->addPath('/api/jabatans/active/show_all', $allActiveJabatanItem);
         $openApi->getPaths()->addPath('/api/jabatans/active/{name}', $activeJabatanByJabatanNameItem);
+        $openApi->getPaths()->addPath('/api/kantors/{id}/parent', $parentKantorByKantorIdItem);
+        $openApi->getPaths()->addPath('/api/kantors/find_parent/by_id/{id}', $parentKantorByKantorIdItem);
+        $openApi->getPaths()->addPath('/api/kantors/find_parent/by_exact_name/{name}', $parentKantorByKantorExactNameItem);
+        $openApi->getPaths()->addPath('/api/kantors/find_parent/by_legacy_kode/{legacyKode}', $parentKantorByKantorLegacyKodeItem);
+        $openApi->getPaths()->addPath('/api/kantors/{id}/childs', $childKantorsByKantorIdItem);
+        $openApi->getPaths()->addPath('/api/kantors/find_childs/by_id/{id}', $childKantorsByKantorIdItem);
+        $openApi->getPaths()->addPath('/api/kantors/find_childs/by_exact_name/{name}', $childKantorsByKantorExactNameItem);
+        $openApi->getPaths()->addPath('/api/kantors/find_childs/by_legacy_kode/{legacyKode}', $childKantorsByKantorLegacyKodeItem);
 
         return $openApi;
     }
