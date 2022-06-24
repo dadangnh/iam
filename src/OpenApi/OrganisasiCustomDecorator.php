@@ -367,15 +367,19 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     'type' => 'integer',
                     'readOnly' => true,
                 ],
-                'kantorId' => [
+                'id' => [
                     'type' => 'string',
                     'readOnly' => true,
                 ],
-                'kantorName' => [
+                'nama' => [
                     'type' => 'string',
                     'readOnly' => true,
                 ],
-                'parentKantor' => [
+                'level' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'parent' => [
                     'type' => 'object',
                     'readOnly' => true,
                 ],
@@ -470,15 +474,19 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     'type' => 'integer',
                     'readOnly' => true,
                 ],
-                'kantorId' => [
+                'id' => [
                     'type' => 'string',
                     'readOnly' => true,
                 ],
-                'kantorName' => [
+                'nama' => [
                     'type' => 'string',
                     'readOnly' => true,
                 ],
-                'childKantors' => [
+                'level' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'childs' => [
                     'type' => 'object',
                     'readOnly' => true,
                 ],
@@ -573,15 +581,19 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     'type' => 'integer',
                     'readOnly' => true,
                 ],
-                'unitId' => [
+                'id' => [
                     'type' => 'string',
                     'readOnly' => true,
                 ],
-                'unitName' => [
+                'nama' => [
                     'type' => 'string',
                     'readOnly' => true,
                 ],
-                'parentUnit' => [
+                'level' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'parent' => [
                     'type' => 'object',
                     'readOnly' => true,
                 ],
@@ -676,15 +688,19 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     'type' => 'integer',
                     'readOnly' => true,
                 ],
-                'unitId' => [
+                'id' => [
                     'type' => 'string',
                     'readOnly' => true,
                 ],
-                'unitName' => [
+                'nama' => [
                     'type' => 'string',
                     'readOnly' => true,
                 ],
-                'childUnits' => [
+                'level' => [
+                    'type' => 'integer',
+                    'readOnly' => true,
+                ],
+                'childs' => [
                     'type' => 'object',
                     'readOnly' => true,
                 ],

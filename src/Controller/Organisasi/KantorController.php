@@ -272,17 +272,19 @@ class KantorController extends AbstractController
         if (null === $parentKantor) {
             return $this->json([
                 'code' => 200,
-                'kantorId' => $kantor->getId(),
-                'kantorName' => $kantor->getNama(),
-                'parentKantor' => null,
+                'id' => $kantor->getId(),
+                'nama' => $kantor->getNama(),
+                'level' => $kantor->getLevel(),
+                'parent' => null,
             ]);
         }
 
         return $this->json([
             'code' => 200,
-            'kantorId' => $kantor->getId(),
-            'kantorName' => $kantor->getNama(),
-            'parentKantor' => $parentKantor,
+            'id' => $kantor->getId(),
+            'nama' => $kantor->getNama(),
+            'level' => $kantor->getLevel(),
+            'parent' => $parentKantor,
         ]);
     }
 
@@ -297,17 +299,19 @@ class KantorController extends AbstractController
         if (0 === count($childKantors)) {
             return $this->json([
                 'code' => 200,
-                'kantorId' => $kantor->getId(),
-                'kantorName' => $kantor->getNama(),
-                'childKantors' => null,
+                'id' => $kantor->getId(),
+                'nama' => $kantor->getNama(),
+                'level' => $kantor->getLevel(),
+                'childs' => null,
             ]);
         }
 
         return $this->json([
             'code' => 200,
-            'kantorId' => $kantor->getId(),
-            'kantorName' => $kantor->getNama(),
-            'childKantors' => $childKantors,
+            'id' => $kantor->getId(),
+            'nama' => $kantor->getNama(),
+            'level' => $kantor->getLevel(),
+            'childs' => $childKantors,
         ]);
     }
 }

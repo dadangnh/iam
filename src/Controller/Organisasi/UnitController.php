@@ -218,17 +218,19 @@ class UnitController extends AbstractController
         if (null === $parentUnit) {
             return $this->json([
                 'code' => 200,
-                'unitId' => $unit->getId(),
-                'unitName' => $unit->getNama(),
-                'parentUnit' => null,
+                'id' => $unit->getId(),
+                'nama' => $unit->getNama(),
+                'level' => $unit->getLevel(),
+                'parent' => null,
             ]);
         }
 
         return $this->json([
             'code' => 200,
-            'unitId' => $unit->getId(),
-            'unitName' => $unit->getNama(),
-            'parentUnit' => $parentUnit,
+            'id' => $unit->getId(),
+            'nama' => $unit->getNama(),
+            'level' => $unit->getLevel(),
+            'parent' => $parentUnit,
         ]);
     }
 
@@ -243,17 +245,19 @@ class UnitController extends AbstractController
         if (0 === count($childUnits)) {
             return $this->json([
                 'code' => 200,
-                'unitId' => $unit->getId(),
-                'unitName' => $unit->getNama(),
-                'childUnits' => null,
+                'id' => $unit->getId(),
+                'nama' => $unit->getNama(),
+                'level' => $unit->getLevel(),
+                'childs' => null,
             ]);
         }
 
         return $this->json([
             'code' => 200,
-            'unitId' => $unit->getId(),
-            'unitName' => $unit->getNama(),
-            'childUnits' => $childUnits,
+            'id' => $unit->getId(),
+            'nama' => $unit->getNama(),
+            'level' => $unit->getLevel(),
+            'childs' => $childUnits,
         ]);
     }
 }
