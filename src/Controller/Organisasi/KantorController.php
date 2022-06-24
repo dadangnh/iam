@@ -4,6 +4,7 @@ namespace App\Controller\Organisasi;
 
 use App\Entity\Organisasi\Kantor;
 use App\Helper\PosisiHelper;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -98,12 +99,147 @@ class KantorController extends AbstractController
             ], 404);
         }
 
-
         return $this->json([
             'kantorId' => $kantorId,
             'kantorName' => $kantor->getNama(),
             'kepala_kantor' => $helper->getKepalaKantorFromKantor($kantor)
         ]);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $id
+     * @return JsonResponse
+     */
+    #[Route('/api/kantors/{id}/parent', methods: ['GET'])]
+    #[Route('/api/kantors/find_parent/by_id/{id}', methods: ['GET'])]
+    public function getParentKantorFromKantorId(ManagerRegistry $doctrine, String $id): JsonResponse
+    {
+        $kantor = $doctrine
+            ->getRepository(Kantor::class)
+            ->findOneBy(['id' => $id]);
+
+        if (null === $kantor) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Kantor found with the associated id.'
+            ], 404);
+        }
+
+        return $this->processParentKantorData($kantor);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $name
+     * @return JsonResponse
+     * @throws NonUniqueResultException
+     */
+    #[Route('/api/kantors/find_parent/by_exact_name/{name}', methods: ['GET'])]
+    public function getParentKantorFromKantorName(ManagerRegistry $doctrine, String $name): JsonResponse
+    {
+        $kantor = $doctrine
+            ->getRepository(Kantor::class)
+            ->findActiveKantorByExactName($name);
+
+        if (null === $kantor) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Kantor found with the associated name.'
+            ], 404);
+        }
+
+        return $this->processParentKantorData($kantor);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $legacyKode
+     * @return JsonResponse
+     */
+    #[Route('/api/kantors/find_parent/by_legacy_kode/{legacyKode}', methods: ['GET'])]
+    public function getParentKantorFromKantorLegacyKode(ManagerRegistry $doctrine, String $legacyKode): JsonResponse
+    {
+        $kantor = $doctrine
+            ->getRepository(Kantor::class)
+            ->findOneBy(['legacyKode' => $legacyKode]);
+
+        if (null === $kantor) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Kantor found with the associated legacy kode.'
+            ], 404);
+        }
+
+        return $this->processParentKantorData($kantor);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $id
+     * @return JsonResponse
+     */
+    #[Route('/api/kantors/{id}/childs', methods: ['GET'])]
+    #[Route('/api/kantors/find_childs/by_id/{id}', methods: ['GET'])]
+    public function getChildKantorsFromKantorId(ManagerRegistry $doctrine, String $id): JsonResponse
+    {
+        $kantor = $doctrine
+            ->getRepository(Kantor::class)
+            ->findOneBy(['id' => $id]);
+
+        if (null === $kantor) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Kantor found with the associated id.'
+            ], 404);
+        }
+
+        return $this->processChildKantorsData($kantor);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $name
+     * @return JsonResponse
+     * @throws NonUniqueResultException
+     */
+    #[Route('/api/kantors/find_childs/by_exact_name/{name}', methods: ['GET'])]
+    public function getChildKantorsFromKantorName(ManagerRegistry $doctrine, String $name): JsonResponse
+    {
+        $kantor = $doctrine
+            ->getRepository(Kantor::class)
+            ->findActiveKantorByExactName($name);
+
+        if (null === $kantor) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Kantor found with the associated name.'
+            ], 404);
+        }
+
+        return $this->processChildKantorsData($kantor);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param String $legacyKode
+     * @return JsonResponse
+     */
+    #[Route('/api/kantors/find_childs/by_legacy_kode/{legacyKode}', methods: ['GET'])]
+    public function getChildKantorsFromKantorLegacyKode(ManagerRegistry $doctrine, String $legacyKode): JsonResponse
+    {
+        $kantor = $doctrine
+            ->getRepository(Kantor::class)
+            ->findOneBy(['legacyKode' => $legacyKode]);
+
+        if (null === $kantor) {
+            return $this->json([
+                'code' => 404,
+                'errors' => 'There is no Kantor found with the associated legacy kode.'
+            ], 404);
+        }
+
+        return $this->processChildKantorsData($kantor);
     }
 
     /**
@@ -122,6 +258,60 @@ class KantorController extends AbstractController
         return $this->json([
             'kantor_count' => count($kantors),
             'kantors' => $kantors,
+        ]);
+    }
+
+    /**
+     * @param Kantor $kantor
+     * @return JsonResponse
+     */
+    private function processParentKantorData(Kantor $kantor): JsonResponse
+    {
+        $parentKantor = $kantor->getParent();
+
+        if (null === $parentKantor) {
+            return $this->json([
+                'code' => 200,
+                'id' => $kantor->getId(),
+                'nama' => $kantor->getNama(),
+                'level' => $kantor->getLevel(),
+                'parent' => null,
+            ]);
+        }
+
+        return $this->json([
+            'code' => 200,
+            'id' => $kantor->getId(),
+            'nama' => $kantor->getNama(),
+            'level' => $kantor->getLevel(),
+            'parent' => $parentKantor,
+        ]);
+    }
+
+    /**
+     * @param Kantor $kantor
+     * @return JsonResponse
+     */
+    private function processChildKantorsData(Kantor $kantor): JsonResponse
+    {
+        $childKantors = $kantor->getChilds();
+
+        if (0 === count($childKantors)) {
+            return $this->json([
+                'code' => 200,
+                'id' => $kantor->getId(),
+                'nama' => $kantor->getNama(),
+                'level' => $kantor->getLevel(),
+                'childs' => null,
+            ]);
+        }
+
+        return $this->json([
+            'code' => 200,
+            'id' => $kantor->getId(),
+            'nama' => $kantor->getNama(),
+            'level' => $kantor->getLevel(),
+            'childs' => $childKantors,
         ]);
     }
 }

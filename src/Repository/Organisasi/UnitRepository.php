@@ -5,6 +5,7 @@ namespace App\Repository\Organisasi;
 use App\Entity\Organisasi\Unit;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -86,5 +87,20 @@ class UnitRepository extends ServiceEntityRepository
             ->addOrderBy('u.level', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findActiveUnitByExactName($name)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.nama = :name')
+            ->andWhere('u.tanggalAktif < :now')
+            ->andWhere('u.tanggalNonaktif is null or u.tanggalNonaktif > :now')
+            ->setParameter('name', $name)
+            ->setParameter('now', new DateTime('now'))
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

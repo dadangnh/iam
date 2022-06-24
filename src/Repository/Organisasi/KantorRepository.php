@@ -5,6 +5,7 @@ namespace App\Repository\Organisasi;
 use App\Entity\Organisasi\Kantor;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -92,5 +93,20 @@ class KantorRepository extends ServiceEntityRepository
             ->addOrderBy('k.level', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findActiveKantorByExactName($name): mixed
+    {
+        return $this->createQueryBuilder('k')
+            ->andWhere('k.nama = :name')
+            ->andWhere('k.tanggalAktif < :now')
+            ->andWhere('k.tanggalNonaktif is null or k.tanggalNonaktif > :now')
+            ->setParameter('name', $name)
+            ->setParameter('now', new DateTime('now'))
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
