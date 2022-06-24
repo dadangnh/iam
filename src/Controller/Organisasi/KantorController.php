@@ -174,7 +174,6 @@ class KantorController extends AbstractController
         return $this->processParentKantorData($kantor);
     }
 
-
     /**
      * @param ManagerRegistry $doctrine
      * @param String $id
