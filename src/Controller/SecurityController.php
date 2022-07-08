@@ -132,24 +132,11 @@ class SecurityController extends AbstractController
      * @return JsonResponse
      * @throws JsonException
      */
+    #[Route('/api/users/change_password', name: 'app_change_password', methods: ['POST'])]
     #[Route('/api/change_user_password', name: 'app_change_password_old', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function change_password_old(Request $request,
-                                        UserPasswordHasherInterface $passwordHasher): JsonResponse
-    {
-        return $this->change_password($request, $passwordHasher);
-    }
-
-    /**
-     * @param Request $request
-     * @param UserPasswordHasherInterface $passwordHasher
-     * @return JsonResponse
-     * @throws JsonException
-     */
-    #[Route('/api/users/change_password', name: 'app_change_password', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function change_password(Request $request,
-                                    UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function changePassword(Request                     $request,
+                                   UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         // Make sure every active user can change their own password
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -205,24 +192,11 @@ class SecurityController extends AbstractController
      * @return JsonResponse
      * @throws JsonException
      */
+    #[Route('/api/users/change_password_by_sikka', name: 'app_change_password_by_sikka', methods: ['POST'])]
     #[Route('/api/change_password_by_sikka', name: 'app_change_password_by_sikka_old', methods: ['POST'])]
     #[Security("is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_HRIS') or is_granted('ROLE_UPK_PUSAT') or is_granted('ROLE_UPK_WILAYAH') or is_granted('ROLE_UPK_LOKAL')")]
-    public function change_password_by_sikka_old(Request $request,
-                                                 UserPasswordHasherInterface $passwordHasher): JsonResponse
-    {
-        return $this->change_password_by_sikka($request, $passwordHasher);
-    }
-
-    /**
-     * @param Request $request
-     * @param UserPasswordHasherInterface $passwordHasher
-     * @return JsonResponse
-     * @throws JsonException
-     */
-    #[Route('/api/users/change_password_by_sikka', name: 'app_change_password_by_sikka', methods: ['POST'])]
-    #[Security("is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_HRIS') or is_granted('ROLE_UPK_PUSAT') or is_granted('ROLE_UPK_WILAYAH') or is_granted('ROLE_UPK_LOKAL')")]
-    public function change_password_by_sikka(Request $request,
-                                             UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function forceChangePassword(Request                     $request,
+                                        UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         // this endpoint should only used by UPK/ HRIS/ SUPER ADMIN to reset user password
         if (!$this->isGranted('ROLE_SUPER_ADMIN')
