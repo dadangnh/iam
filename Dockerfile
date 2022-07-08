@@ -24,6 +24,7 @@ RUN apk add --no-cache \
 	;
 
 ARG APCU_VERSION=5.1.21
+# skipcq: DOK-DL4006
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
@@ -80,6 +81,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint
 
 VOLUME /var/run/php
 
+# skipcq: DOK-DL3022
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
@@ -140,9 +142,13 @@ FROM caddy:${CADDY_VERSION} AS symfony_caddy
 
 WORKDIR /srv/app
 
+# skipcq: DOK-DL3022
 COPY --from=dunglas/mercure:v0.11 /srv/public /srv/mercure-assets/
+# skipcq: DOK-DL3022
 COPY --from=symfony_caddy_builder /usr/bin/caddy /usr/bin/caddy
+# skipcq: DOK-DL3022
 COPY --from=symfony_php /srv/app/public public/
+# skipcq: DOK-DL3022
 COPY docker/caddy/Caddyfile /etc/caddy/Caddyfile
 
 # Disable the SSL cert injection
