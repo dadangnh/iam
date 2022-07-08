@@ -6,8 +6,15 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
 use JsonException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
+/**
+ * Test class with simple access to resources.
+ */
 class JsonLoginTest extends ApiTestCase
 {
+    /**
+     * Mock the response of the aplikasis endpoint.
+     * @return void
+     */
     public function testGetAplikasi(): void
     {
         // Expect to get 401 status code because no Token supplied
@@ -18,6 +25,10 @@ class JsonLoginTest extends ApiTestCase
         self::assertResponseStatusCodeSame(401);
     }
 
+    /**
+     * Mock the response of the login endpoint.
+     * @return void
+     */
     public function testAuthentication(): void
     {
         $defaultCredential = 'admin';

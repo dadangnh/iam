@@ -48,6 +48,7 @@ class AdminDashboardController extends AbstractDashboardController
      */
     public function configureMenuItems(): iterable
     {
+        # skipcq: PHP-E1003
         yield MenuItem::linktoDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::section('Aplikasi');
         yield MenuItem::linkToCrud('Aplikasi', 'fa fa-desktop', Aplikasi::class);
