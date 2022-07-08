@@ -40,6 +40,7 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
             ->setParameter('unitId', $unitId)
             ->setParameter('eselonTingkat', $eselonTingkat)
             ->setParameter('now', new DateTime('now'))
+            ->setMaxResults(1)
             ->addOrderBy('jp.tanggalMulai', 'DESC')
             ->getQuery()
             ->getOneOrNullResult();
@@ -64,6 +65,7 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
             ->setParameter('unitNama', 'Bagian Umum')
             ->setParameter('eselonTingkat', $eselonTingkat)
             ->setParameter('now', new DateTime('now'))
+            ->setMaxResults(1)
             ->addOrderBy('jp.tanggalMulai', 'DESC')
             ->getQuery()
             ->getOneOrNullResult();
@@ -86,6 +88,7 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
             ->setParameter('kantorId', $kantorId)
             ->setParameter('eselonTingkat', $eselonTingkat)
             ->setParameter('now', new DateTime('now'))
+            ->setMaxResults(1)
             ->addOrderBy('jp.tanggalMulai', 'DESC')
             ->getQuery()
             ->getOneOrNullResult();
@@ -107,6 +110,7 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
             ->setParameter('kantorId', $kantorId)
             ->setParameter('eselonTingkat', $tingkat)
             ->setParameter('now', new DateTime('now'))
+            ->setMaxResults(1)
             ->addOrderBy('jp.tanggalMulai', 'DESC')
             ->getQuery()
             ->getOneOrNullResult();
