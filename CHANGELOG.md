@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 2.1.2 (current stable)
+## Version 2.1.3 (current stable)
+  * Fix query result on JabatanPegawai Repository (#90)
+  * Standardize controller method (#91)
+  * Updated Symfony Components
+
+## Version 2.1.2
   * Added new endpoint for Entity's parent-child relation (#89)
   * Updated Symfony Components and Dependencies
 
