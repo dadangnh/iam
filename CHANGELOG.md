@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 2.1.3 (current stable)
+## Version 2.1.4 (current stable)
+  * Added service account type for IAM users (#92)
+  * Updated Symfony Components and Dependencies
+
+## Version 2.1.3
   * Fix query result on JabatanPegawai Repository (#90)
   * Standardize controller method (#91)
   * Updated Symfony Components
