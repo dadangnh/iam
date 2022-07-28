@@ -52,6 +52,14 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     name: 'idx_user_active'
 )]
+#[ORM\Index(
+    columns: [
+        'id',
+        'username',
+        'service_account'
+    ],
+    name: 'idx_user_service_account'
+)]
 #[UniqueEntity(
     fields: [
         'username'
@@ -119,7 +127,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     BooleanFilter::class,
     properties: [
         'active',
-        'locked'
+        'locked',
+        'serviceAccount'
     ]
 )]
 #[ApiFilter(PropertyFilter::class)]
@@ -289,6 +298,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private Collection $groupMembers;
 
+    #[ORM\Column(
+        type: 'boolean'
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write'
+        ]
+    )]
+    private ?bool $serviceAccount = false;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -353,6 +374,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // If on leave, assign ROLE_ON_LEAVE
             if ($this->getPegawai()->getOnLeave()) {
                 $arrayOfRoles[] = ['ROLE_ON_LEAVE'];
+            }
+
+            // If service account, assign ROLE_SERVICE_ACCOUNT
+            if ($this->isServiceAccount()) {
+                $arrayOfRoles[] = ['ROLE_SERVICE_ACCOUNT'];
             }
 
             // make sure that retired person doesn't get role
@@ -622,6 +648,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $groupMember->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isServiceAccount(): ?bool
+    {
+        return $this->serviceAccount;
+    }
+
+    public function setServiceAccount(bool $serviceAccount): self
+    {
+        $this->serviceAccount = $serviceAccount;
 
         return $this;
     }
