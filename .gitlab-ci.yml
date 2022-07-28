@@ -266,7 +266,7 @@ deploy_staging:
     - echo "$KNOWN_HOST" > ~/.ssh/known_hosts
   script:
     - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data branch=master "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
-    - ssh $SERVER ". ~/.asdf/asdf.sh; sh deploy.sh; exit;"
+    - ssh -q $SERVER ". ~/.asdf/asdf.sh; sh deploy.sh; exit;"
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       allow_failure: true
