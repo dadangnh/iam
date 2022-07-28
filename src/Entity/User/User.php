@@ -376,11 +376,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $arrayOfRoles[] = ['ROLE_ON_LEAVE'];
             }
 
-            // If service account, assign ROLE_SERVICE_ACCOUNT
-            if ($this->isServiceAccount()) {
-                $arrayOfRoles[] = ['ROLE_SERVICE_ACCOUNT'];
-            }
-
             // make sure that retired person doesn't get role
             if (!$this->getPegawai()->getPensiun()) {
                 /** @var JabatanPegawai $jabatanPegawai */
@@ -426,6 +421,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 if (1 === $role->getJenis()) {
                     $plainRoles[] = $role->getNama();
                 }
+            }
+
+            // If service account, assign ROLE_SERVICE_ACCOUNT
+            if ($this->isServiceAccount()) {
+                $plainRoles[] = 'ROLE_SERVICE_ACCOUNT';
             }
 
             // return in unique array
