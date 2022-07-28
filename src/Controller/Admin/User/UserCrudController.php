@@ -28,6 +28,7 @@ class UserCrudController extends AbstractCrudController
             AssociationField::new('role')
                 ->onlyOnDetail(),
             BooleanField::new('active', 'Akun aktif?'),
+            BooleanField::new('serviceAccount', 'Is Service Account?'),
             BooleanField::new('locked', 'Akun terkunci?'),
             BooleanField::new('twoFactorEnabled', '2FA')
         ];
