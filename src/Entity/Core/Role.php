@@ -425,7 +425,7 @@ class Role
     #[ORM\Column(
         type: 'integer',
         options: [
-            'comment' => 'Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon, 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor, 10 => jabatan + unit + kantor'
+            'comment' => 'Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon, 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor, 10 => jabatan + unit + kantor, 11 => jabatan + unit + jenis kantor'
         ]
     )]
     #[Groups(
