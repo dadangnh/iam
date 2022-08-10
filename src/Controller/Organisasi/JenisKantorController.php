@@ -41,7 +41,7 @@ class JenisKantorController extends AbstractController
             return $this->json([
                 'code' => 406,
                 'error' => 'Please use 3 char or more for keyword'
-            ], 406);
+            ], 204);
         }
 
         $jenisKantors = $doctrine
@@ -61,7 +61,7 @@ class JenisKantorController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No jenis kantor associated with this name'
-            ], 404);
+            ], 204);
         }
 
         return $this->json([

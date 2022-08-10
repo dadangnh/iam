@@ -155,7 +155,7 @@ class SecurityController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No user found'
-            ], 404);
+            ], 204);
         }
 
         // Do a cross check so only the user can change their password
@@ -164,7 +164,7 @@ class SecurityController extends AbstractController
             return $this->json([
                 'code' => 401,
                 'error' => 'Invalid token access.'
-            ], 401);
+            ], 203);
         }
 
         $checkPassword = $passwordHasher->isPasswordValid($user, $oldPassword);
@@ -183,7 +183,7 @@ class SecurityController extends AbstractController
         return $this->json([
             'code' => 401,
             'error' => 'password invalid.'
-        ], 401);
+        ], 203);
     }
 
     /**
@@ -208,7 +208,7 @@ class SecurityController extends AbstractController
             return $this->json([
                 'code' => 401,
                 'error' => 'Unauthorized API access.',
-            ], 401);
+            ], 203);
         }
 
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -222,7 +222,7 @@ class SecurityController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No user found'
-            ], 404);
+            ], 204);
         }
 
         // TODO: check password strength and implement password blacklist
@@ -268,7 +268,7 @@ class SecurityController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No user found'
-            ], 404);
+            ], 204);
         }
 
         if ($user instanceof User) {
@@ -284,6 +284,6 @@ class SecurityController extends AbstractController
         return $this->json([
             'code' => 404,
             'error' => 'No user found'
-        ], 404);
+        ], 204);
     }
 }
