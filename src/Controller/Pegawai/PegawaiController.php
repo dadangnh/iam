@@ -36,7 +36,7 @@ class PegawaiController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'errors' => 'Please provide the uuid in an array format.'
-            ], 404);
+            ], 204);
         }
 
         // Make sure only accept Uuid
@@ -55,7 +55,7 @@ class PegawaiController extends AbstractController
                 'code' => 404,
                 'errors' => 'Please provide the uuid in an array format.',
                 'invalidUuids' => $invalidUuid
-            ], 404);
+            ], 204);
         }
 
         // Get all the data
@@ -96,7 +96,7 @@ class PegawaiController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'errors' => 'Please provide the uuid of Pegawai Entity inside pegawaiId parameter.'
-            ], 404);
+            ], 204);
         }
 
         // Make sure the provided data is valid
@@ -105,7 +105,7 @@ class PegawaiController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'errors' => 'Please provide the valid uuid of Pegawai Entity.'
-            ], 404);
+            ], 204);
         }
 
         // Fetch the pegawai data
@@ -118,7 +118,7 @@ class PegawaiController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'errors' => 'There is no Pegawai found with the associated id.'
-            ], 404);
+            ], 204);
         }
 
         // Set the default template
