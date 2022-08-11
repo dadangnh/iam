@@ -89,7 +89,7 @@ class CommonController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No roles associated with this name'
-            ], 404);
+            ], 204);
         }
 
         $listAplikasi = [];
@@ -123,7 +123,7 @@ class CommonController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No roles associated with this name'
-            ], 404);
+            ], 204);
         }
 
         // Make sure that only valid parameter allowed
@@ -211,7 +211,7 @@ class CommonController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No roles associated with this name'
-            ], 404);
+            ], 204);
         }
 
         $listAplikasi = [];
@@ -253,7 +253,7 @@ class CommonController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No roles associated with this name'
-            ], 404);
+            ], 204);
         }
 
         $permissions = $role->getPermissions();
@@ -284,7 +284,7 @@ class CommonController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No roles associated with this name'
-            ], 404);
+            ], 204);
         }
 
         $listAplikasi = [];
@@ -318,7 +318,7 @@ class CommonController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No roles associated with this name'
-            ], 404);
+            ], 204);
         }
 
         $listAplikasi = [];
@@ -350,7 +350,7 @@ class CommonController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No roles associated with this name'
-            ], 404);
+            ], 204);
         }
 
         $permissions = $role->getPermissions();
@@ -450,7 +450,7 @@ class CommonController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No jabatan record found'
-            ], 404);
+            ], 204);
         }
 
         $roles = RoleHelper::getRolesFromJabatanPegawai($jabatanPegawai);
@@ -459,7 +459,7 @@ class CommonController extends AbstractController
             return $this->json([
                 'code' => 404,
                 'error' => 'No roles associated with this Jabatan Pegawai'
-            ], 404);
+            ], 204);
         }
 
         return $this->json([

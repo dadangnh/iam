@@ -1,6 +1,12 @@
 # IAM Changelog
 
-## Version 2.1.4 (current stable)
+## Version 2.1.5 (current stable)
+  * Fix role mapping (#93)
+  * Change http status response code on custom endpoint (#94)
+  * Updated Symfony Components and dependencies (#95)
+  * Updated Symfony recipes
+
+## Version 2.1.4
   * Added service account type for IAM users (#92)
   * Updated Symfony Components and Dependencies
 
