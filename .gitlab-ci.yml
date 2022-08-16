@@ -126,7 +126,7 @@ test:
     - docker-php-ext-enable xdebug
     - curl -sS https://getcomposer.org/installer | php
     - curl -sS https://get.symfony.com/cli/installer | bash
-    - export PATH="$HOME/.symfony/bin:$PATH"
+    - export PATH="$HOME/.symfony5/bin:$PATH"
     - symfony composer install
     - npm install
     - php bin/console doctrine:database:drop --force
