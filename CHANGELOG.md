@@ -1,6 +1,12 @@
 # IAM Changelog
 
-## Version 2.1.5 (current stable)
+## Version 2.1.6 (current stable)
+  * Optimize test job pipeline (#96)
+  * Fix invalid role assignment (#97)
+  * Fix failed test job (#98)
+  * Updated dependencies
+
+## Version 2.1.5
   * Fix role mapping (#93)
   * Change http status response code on custom endpoint (#94)
   * Updated Symfony Components and dependencies (#95)
