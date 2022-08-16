@@ -71,43 +71,44 @@ class RoleHelper
                     }
                 }
             }
+        }
 
         // get role from unit
-        } elseif (null !== $unit) {
+        if (null !== $unit) {
             foreach ($unit->getRoles() as $role) {
                 if (3 === $role->getJenis()) {
                     $roles[] = $role;
                 }
             }
-
-            // get jenis kantor
-            $jenisKantor = $unit->getJenisKantor();
-            if (null !== $jenisKantor) {
-                foreach ($jenisKantor->getRoles() as $role) {
-                    if (6 === $role->getJenis()) {
-                        $roles[] = $role;
-                    }
-                }
-            }
+        }
 
         // get role from kantor
-        } elseif (null !== $kantor) {
+        if (null !== $kantor) {
             foreach ($kantor->getRoles() as $role) {
                 if (4 === $role->getJenis()) {
                     $roles[] = $role;
                 }
             }
+        }
 
-            // get jenis kantor
-            $jenisKantor = $kantor->getJenisKantor();
-            if (null !== $jenisKantor) {
-                foreach ($jenisKantor->getRoles() as $role) {
-                    if (6 === $role->getJenis()) {
-                        $roles[] = $role;
-                    }
+        // get role from eselon
+        if (null !== $jabatan->getEselon()) {
+            foreach ($jabatan->getEselon()->getRoles() as $role) {
+                if (5 === $role->getJenis()) {
+                    $roles[] = $role;
                 }
             }
         }
+
+        // get role from jenis kantor
+        if (null !== $jenisKantor) {
+            foreach ($jenisKantor->getRoles() as $role) {
+                if (6 === $role->getJenis()) {
+                    $roles[] = $role;
+                }
+            }
+        }
+
         return $roles;
     }
 

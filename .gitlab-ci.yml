@@ -26,6 +26,7 @@ variables:
   POSTGRES_USER: db_user
   POSTGRES_PASSWORD: db_pass
   POSTGRES_DB: db_name
+  POSTGRES_HOST_AUTH_METHOD: trust
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
 
@@ -92,6 +93,7 @@ test:
     POSTGRES_USER: db_user
     POSTGRES_PASSWORD: db_pass
     POSTGRES_DB: db_name
+    POSTGRES_HOST_AUTH_METHOD: trust
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
   services:
@@ -124,13 +126,13 @@ test:
     - docker-php-ext-enable xdebug
     - curl -sS https://getcomposer.org/installer | php
     - curl -sS https://get.symfony.com/cli/installer | bash
-    - export PATH="$HOME/.symfony/bin:$PATH"
+    - export PATH="$HOME/.symfony5/bin:$PATH"
     - symfony composer install
     - npm install
-    - symfony console doctrine:database:drop --force
-    - symfony console doctrine:database:create
-    - symfony console doctrine:migrations:migrate --no-interaction
-    - symfony console doctrine:fixtures:load --no-interaction
+    - php bin/console doctrine:database:drop --force
+    - php bin/console doctrine:database:create
+    - php bin/console doctrine:migrations:migrate --no-interaction
+    - php bin/console doctrine:fixtures:load --no-interaction
     - symfony server:ca:install
     - symfony serve -d
     - echo "xdebug.mode=develop,coverage,debug" >> /usr/local/etc/php/php.ini
