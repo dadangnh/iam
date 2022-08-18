@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 2.1.6 (current stable)
+## Version 2.1.7 (current stable)
+  * Fix failed publish to registries job (#99)
+  * Add new endpoint for invalidating expired tokens (#100)
+  * Updated dependencies
+
+## Version 2.1.6
   * Optimize test job pipeline (#96)
   * Fix invalid role assignment (#97)
   * Fix failed test job (#98)
