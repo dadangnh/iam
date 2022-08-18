@@ -189,6 +189,7 @@ deploy_to_registries:
     - docker-compose up -d database redis php caddy
   script:
     - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
+    - docker image ls
     - docker tag iam_php:latest dadang/iam_backend:$CI_COMMIT_TAG
     - docker tag iam_php:latest dadang/iam_backend:latest
     - docker tag iam_php:latest dadang/iam_php:$CI_COMMIT_TAG
