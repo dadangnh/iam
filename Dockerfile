@@ -127,7 +127,7 @@ RUN set -eux; \
 	chmod +x bin/console; sync
 VOLUME /srv/app/var
 
-RUN apk add busybox-initscripts
+RUN apk add --no-cache busybox-initscripts
 
 RUN echo "*/30 * * * * /srv/app/bin/console gesdinet:jwt:clear > /dev/stdout" >> /etc/crontab
 
