@@ -77,7 +77,6 @@ class ReferensiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-
         $legacyDataReferenceItem = new Model\PathItem(
             ref: 'Referensi',
             post: new Model\Operation(
