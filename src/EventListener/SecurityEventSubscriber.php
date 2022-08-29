@@ -50,30 +50,36 @@ class SecurityEventSubscriber implements EventSubscriberInterface
         if (null !== $user->getPegawai() && null !== $user->getPegawai()->getJabatanPegawais()) {
             /** @var JabatanPegawai $jabatanPegawai */
             foreach ($user->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
-                /** @var Jabatan $jabatan */
-                $jabatan = $jabatanPegawai->getJabatan();
-                /** @var Kantor $kantor */
-                $kantor = $jabatanPegawai->getKantor();
-                /** @var Unit $unit */
-                $unit = $jabatanPegawai->getUnit();
-                /** @var TipeJabatan $tipe */
-                $tipe = $jabatanPegawai->getTipe();
+                // Only add jabatan pegawai that is active and not expired
+                if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
+                    && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
+                        || null === $jabatanPegawai->getTanggalSelesai())
+                ) {
+                    /** @var Jabatan $jabatan */
+                    $jabatan = $jabatanPegawai->getJabatan();
+                    /** @var Kantor $kantor */
+                    $kantor = $jabatanPegawai->getKantor();
+                    /** @var Unit $unit */
+                    $unit = $jabatanPegawai->getUnit();
+                    /** @var TipeJabatan $tipe */
+                    $tipe = $jabatanPegawai->getTipe();
 
-                // Get the name from related entity
-                $namaJabatan = $jabatan?->getNama();
-                $namaKantor = $kantor?->getNama();
-                $namaUnit = $unit?->getNama();
-                $namaTipe = $tipe?->getNama();
+                    // Get the name from related entity
+                    $namaJabatan = $jabatan?->getNama();
+                    $namaKantor = $kantor?->getNama();
+                    $namaUnit = $unit?->getNama();
+                    $namaTipe = $tipe?->getNama();
 
-                // Assign to jabatanPegawais array
-                $jabatanPegawais[] = [
-                    'jabatanPegawai_iri' => $this->iriConverter->getIriFromItem($jabatanPegawai),
-                    'jabatan_name' => $namaJabatan,
-                    'kantor_name' => $namaKantor,
-                    'unit_name' => $namaUnit,
-                    'tipeJabatan_name' => $namaTipe,
-                    'roles' => RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
-                ];
+                    // Assign to jabatanPegawais array
+                    $jabatanPegawais[] = [
+                        'jabatanPegawai_iri' => $this->iriConverter->getIriFromItem($jabatanPegawai),
+                        'jabatan_name' => $namaJabatan,
+                        'kantor_name' => $namaKantor,
+                        'unit_name' => $namaUnit,
+                        'tipeJabatan_name' => $namaTipe,
+                        'roles' => RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
+                    ];
+                }
             }
         }
 
