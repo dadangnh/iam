@@ -278,6 +278,14 @@ class Pegawai
     )]
     private Collection $jabatanPegawais;
 
+    #[Groups(
+        groups: [
+            'user:read',
+            'pegawai:read'
+        ]
+    )]
+    private array $activePositionIds;
+
     #[ORM\Column(
         type: 'string',
         length: 255,
@@ -492,5 +500,23 @@ class Pegawai
         $this->onLeave = $onLeave;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getActivePositionIds(): array
+    {
+        $activePositions = [];
+        foreach ($this->getJabatanPegawais() as $jabatanPegawai) {
+            if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
+                && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
+                    || null === $jabatanPegawai->getTanggalSelesai())
+            ) {
+                $activePositions[] = $jabatanPegawai->getId();
+            }
+        }
+
+        return $activePositions;
     }
 }
