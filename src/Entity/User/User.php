@@ -367,7 +367,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // Get role by jabatan pegawai
         // Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
         // 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
-        // 10 => jabatan + unit + kantor"
+        // 10 => jabatan + unit + kantor, 11 => jabatan + unit + jenis kantor"
         if (null !== $this->getPegawai()) {
             $arrayOfRoles = [];
 
@@ -380,11 +380,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if (!$this->getPegawai()->getPensiun()) {
                 /** @var JabatanPegawai $jabatanPegawai */
                 foreach ($this->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
-                    $arrayOfRoles[] = array_values(RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai));
+                    // Only process active jabatans
+                    if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
+                        && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
+                            || null === $jabatanPegawai->getTanggalSelesai())
+                    ) {
+                        $arrayOfRoles[] = array_values(
+                            RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai)
+                        );
+                    }
                 }
             } else {
                 return ['ROLE_RETIRED'];
             }
+
             $plainRoles = array_values(array_merge($plainRoles, ...$arrayOfRoles));
         }
 
