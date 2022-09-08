@@ -1,5 +1,12 @@
 # IAM Changelog
 
+## Version 2.2.0 (current stable)
+  * Display only active attributes (#101)
+  * Fix deprecated on JWT Bundle (#102)
+  * Update docker and infrastructure configuration (#103)
+  * Updated Symfony Components and dependencies
+  * Updated Symfony recipes
+
 ## Version 2.1.7 (current stable)
   * Fix failed publish to registries job (#99)
   * Add new endpoint for invalidating expired tokens (#100)
