@@ -7,8 +7,20 @@
 ARG PHP_VERSION=8.1
 ARG CADDY_VERSION=2
 
-# "php" stage
-FROM php:${PHP_VERSION}-fpm-alpine AS symfony_php
+# Prod image
+FROM php:${PHP_VERSION}-fpm-alpine AS app_php
+
+# Allow to use development versions of Symfony
+ARG STABILITY="stable"
+ENV STABILITY ${STABILITY}
+
+# Allow to select Symfony version
+ARG SYMFONY_VERSION=""
+ENV SYMFONY_VERSION ${SYMFONY_VERSION}
+
+ENV APP_ENV=prod
+
+WORKDIR /srv/app
 
 # persistent / runtime deps
 RUN apk add --no-cache \
@@ -23,16 +35,13 @@ RUN apk add --no-cache \
 		busybox-extras \
 	;
 
-ARG APCU_VERSION=5.1.21
-# skipcq: DOK-DL4006
 RUN set -eux; \
 	apk add --no-cache --virtual .build-deps \
 		$PHPIZE_DEPS \
+		icu-data-full \
 		icu-dev \
 		libzip-dev \
 		zlib-dev \
-		postgresql-libs \
-		postgresql-dev \
 		pcre-dev \
 	; \
 	\
@@ -40,20 +49,16 @@ RUN set -eux; \
 	docker-php-ext-install -j$(nproc) \
 		intl \
 		zip \
-		pgsql \
-		pdo pdo_pgsql \
 	; \
 	pecl install \
-		apcu-${APCU_VERSION} \
+		apcu \
 		redis \
-		xdebug \
 	; \
 	pecl clear-cache; \
 	docker-php-ext-enable \
 		apcu \
 		opcache \
 		redis.so \
-		xdebug \
 	; \
 	\
 	runDeps="$( \
@@ -62,50 +67,44 @@ RUN set -eux; \
 			| sort -u \
 			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
 	)"; \
-	apk add --no-cache --virtual .phpexts-rundeps $runDeps; \
+	apk add --no-cache --virtual .app-phpexts-rundeps $runDeps; \
 	\
 	apk del .build-deps
+
+###> recipes ###
+###< recipes ###
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+COPY docker/php/conf.d/app.ini $PHP_INI_DIR/conf.d/
+COPY docker/php/conf.d/app.prod.ini $PHP_INI_DIR/conf.d/
+
+COPY docker/php/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN mkdir -p /var/run/php
 
 COPY docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 RUN chmod +x /usr/local/bin/docker-healthcheck
 
 HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["docker-healthcheck"]
 
-RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
-COPY docker/php/conf.d/symfony.prod.ini $PHP_INI_DIR/conf.d/symfony.ini
-
-COPY docker/php/php-fpm.d/zz-docker.conf /usr/local/etc/php-fpm.d/zz-docker.conf
-
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
-VOLUME /var/run/php
-
-# skipcq: DOK-DL3022
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["php-fpm"]
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
-
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
-WORKDIR /srv/app
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Allow to choose skeleton
-ARG SKELETON="symfony/skeleton"
-ENV SKELETON ${SKELETON}
-
-# Allow to use development versions of Symfony
-ARG STABILITY="stable"
-ENV STABILITY ${STABILITY}
-
-# Allow to select skeleton version
-ARG SYMFONY_VERSION=""
-ENV SYMFONY_VERSION ${SYMFONY_VERSION}
-
-# Download the Symfony skeleton and leverage Docker cache layers
-#RUN composer create-project "${SKELETON} ${SYMFONY_VERSION}" . --stability=$STABILITY --prefer-dist --no-dev --no-progress --no-interaction; \
-#	composer clear-cache
+# prevent the reinstallation of vendors at every changes in the source code
+COPY composer.* symfony.* ./
+RUN set -eux; \
+    if [ -f composer.json ]; then \
+		composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress; \
+		composer clear-cache; \
+    fi
 
 ###> recipes ###
 ###> doctrine/doctrine-bundle ###
@@ -116,27 +115,46 @@ RUN apk add --no-cache --virtual .pgsql-deps postgresql-dev; \
 ###< doctrine/doctrine-bundle ###
 ###< recipes ###
 
+# copy sources
 COPY . .
+RUN rm -Rf docker/
 
 RUN set -eux; \
 	mkdir -p var/cache var/log; \
-	composer install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction; \
-	composer dump-autoload --classmap-authoritative --no-dev; \
-	composer symfony:dump-env prod; \
-	composer run-script --no-dev post-install-cmd; \
-	chmod +x bin/console; sync
-VOLUME /srv/app/var
+    if [ -f composer.json ]; then \
+		composer dump-autoload --classmap-authoritative --no-dev; \
+		composer dump-env prod; \
+		composer run-script --no-dev post-install-cmd; \
+		chmod +x bin/console; sync; \
+    fi
 
-RUN apk add --no-cache busybox-initscripts
-
+# Cronjob
 RUN echo "*/30 * * * * /srv/app/bin/console gesdinet:jwt:clear > /dev/stdout" >> /etc/crontab
 
 RUN crontab /etc/crontab
 
-ENTRYPOINT ["docker-entrypoint"]
-CMD ["php-fpm"]
+# Dev image
+FROM app_php AS app_php_dev
 
-FROM caddy:${CADDY_VERSION}-builder-alpine AS symfony_caddy_builder
+ENV APP_ENV=dev XDEBUG_MODE=off
+VOLUME /srv/app/var/
+
+RUN rm $PHP_INI_DIR/conf.d/app.prod.ini; \
+	mv "$PHP_INI_DIR/php.ini" "$PHP_INI_DIR/php.ini-production"; \
+	mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
+COPY docker/php/conf.d/app.dev.ini $PHP_INI_DIR/conf.d/
+
+RUN set -eux; \
+	apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
+	pecl install xdebug; \
+	docker-php-ext-enable xdebug; \
+	apk del .build-deps
+
+RUN rm -f .env.local.php
+
+# Build Caddy with the Mercure and Vulcain modules
+FROM caddy:${CADDY_VERSION}-builder-alpine AS app_caddy_builder
 
 RUN xcaddy build \
 	--with github.com/dunglas/mercure \
@@ -144,29 +162,17 @@ RUN xcaddy build \
 	--with github.com/dunglas/vulcain \
 	--with github.com/dunglas/vulcain/caddy
 
-FROM caddy:${CADDY_VERSION} AS symfony_caddy
+# Caddy image
+FROM caddy:${CADDY_VERSION} AS app_caddy
 
 WORKDIR /srv/app
 
-# skipcq: DOK-DL3022
-COPY --from=dunglas/mercure:v0.11 /srv/public /srv/mercure-assets/
-# skipcq: DOK-DL3022
-COPY --from=symfony_caddy_builder /usr/bin/caddy /usr/bin/caddy
-# skipcq: DOK-DL3022
-COPY --from=symfony_php /srv/app/public public/
-# skipcq: DOK-DL3022
+COPY --from=app_caddy_builder /usr/bin/caddy /usr/bin/caddy
+COPY --from=app_php /srv/app/public public/
 COPY docker/caddy/Caddyfile /etc/caddy/Caddyfile
 
-# Disable the SSL cert injection
-#RUN mkdir /etc/caddy/key; \
-#    mkdir /etc/caddy/cert
-#COPY certs/cert.pem /etc/caddy/cert/cert.pem
-#COPY certs/key.pem /etc/caddy/key/key.pem
-
-
-
 # nginx stage
-FROM nginx:stable-alpine AS symfony_nginx
+FROM nginx:stable-alpine AS app_nginx
 
 # Each time Nginx is started it will perform variable substition in all template
 # files found in `/etc/nginx/templates/*.template`, and copy the results (without
@@ -188,7 +194,7 @@ WORKDIR /srv/app
 RUN adduser -D -g '' -G www-data www-data
 #RUN apk add shadow && usermod -u 1000 www-data && groupmod -g 1000 www-data
 #RUN usermod -u 1000 www-data
-COPY --from=symfony_php /srv/app .
+COPY --from=app_php /srv/app .
 
 # The default parameters to ENTRYPOINT (unless overruled on the command line)
 CMD ["nginx", "-g", "daemon off;"]
