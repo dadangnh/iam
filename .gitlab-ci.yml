@@ -136,6 +136,7 @@ test:
     - symfony server:ca:install
     - symfony serve -d
     - echo "xdebug.mode=develop,coverage,debug" >> /usr/local/etc/php/php.ini
+    - echo "memory_limit = 512M;" >> /usr/local/etc/php/php.ini
   script:
     - php bin/phpunit --coverage-text --colors=never --log-junit test-report.xml
   cache:
