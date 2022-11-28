@@ -13,11 +13,11 @@ use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\Pegawai;
 use App\Repository\User\UserRepository;
 use App\Helper\RoleHelper;
+use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Monolog\DateTimeImmutable;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -427,7 +427,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             /** @var Role $role */
             foreach ($roles as $role) {
                 // make sure only direct Role <=> User relation are considered here (only type 1)
-                if (1 === $role->getJenis()) {
+                if ((1 === $role->getJenis())
+                    && $role->getStartDate() <= new DateTimeImmutable('now')
+                    && ($role->getEndDate() >= new DateTimeImmutable('now')
+                        || null === $role->getEndDate())
+                ) {
                     $plainRoles[] = $role->getNama();
                 }
             }
@@ -530,7 +534,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PreUpdate]
     public function setLastChangeValue(): void
     {
-        $this->lastChange = new DateTimeImmutable(true);
+        $this->lastChange = new DateTimeImmutable('now');
     }
 
     /**

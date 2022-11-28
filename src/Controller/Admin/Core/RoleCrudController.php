@@ -6,6 +6,7 @@ use App\Entity\Core\Role;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
@@ -34,6 +35,10 @@ class RoleCrudController extends AbstractCrudController
             IntegerField::new('level', 'Level ROLE')->setHelp('Silakan isikan nomor level ROLE'),
             AssociationField::new('subsOfRole', 'Parent Role')
                 ->autocomplete(),
+            DateTimeField::new('startDate', 'Tanggal Mulai')
+                ->renderAsNativeWidget(),
+            DateTimeField::new('endDate', 'Tanggal Berakhir')
+                ->renderAsNativeWidget(),
             ChoiceField::new('jenis', 'Jenis Relasi Role')
                 ->setChoices([
                     'User' => 1,

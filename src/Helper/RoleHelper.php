@@ -9,6 +9,7 @@ use App\Entity\Aplikasi\Aplikasi;
 use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
+use DateTimeImmutable;
 use JetBrains\PhpStorm\ArrayShape;
 
 class RoleHelper
@@ -123,7 +124,12 @@ class RoleHelper
 
         /** @var Role $role */
         foreach ($roles as $role) {
-            $plainRoles[] = $role->getNama();
+            if ($role->getStartDate() <= new DateTimeImmutable('now')
+                && ($role->getEndDate() >= new DateTimeImmutable('now')
+                    || null === $role->getEndDate())
+            ) {
+                $plainRoles[] = $role->getNama();
+            }
         }
 
         return array_values(array_unique($plainRoles));
