@@ -9,6 +9,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\Organisasi\GroupJabatanRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -88,7 +89,7 @@ class GroupJabatan
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -100,7 +101,7 @@ class GroupJabatan
     private ?string $nama;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 4,
         nullable: true
     )]

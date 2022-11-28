@@ -14,6 +14,7 @@ use App\Repository\Organisasi\JabatanRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -161,7 +162,7 @@ class Jabatan
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -176,7 +177,7 @@ class Jabatan
     private ?string $nama;
 
     #[ORM\Column(
-        type: 'integer'
+        type: Types::INTEGER
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -189,7 +190,7 @@ class Jabatan
     private ?int $level;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotNull]
@@ -203,7 +204,7 @@ class Jabatan
     private ?string $jenis;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -215,7 +216,7 @@ class Jabatan
     private ?DateTimeImmutable $tanggalAktif;
 
     #[ORM\Column(
-        type: 'datetime_immutable',
+        type: Types::DATETIME_IMMUTABLE,
         nullable: true
     )]
     #[Groups(
@@ -227,7 +228,7 @@ class Jabatan
     private ?DateTimeImmutable $tanggalNonaktif;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -253,7 +254,7 @@ class Jabatan
     private ?Eselon $eselon;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 4,
         nullable: true
     )]
@@ -266,7 +267,7 @@ class Jabatan
     private ?string $legacyKode;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 4,
         nullable: true
     )]
@@ -279,7 +280,7 @@ class Jabatan
     private ?string $legacyKodeJabKeu;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 4,
         nullable: true
     )]

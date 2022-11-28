@@ -157,7 +157,7 @@ class Role
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -171,7 +171,7 @@ class Role
     private ?string $nama;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -184,7 +184,7 @@ class Role
     private ?string $systemName;
 
     #[ORM\Column(
-        type: 'text',
+        type: Types::TEXT,
         nullable: true
     )]
     #[Groups(
@@ -196,7 +196,7 @@ class Role
     private ?string $deskripsi;
 
     #[ORM\Column(
-        type: 'integer',
+        type: Types::INTEGER,
         nullable: true
     )]
     #[Groups(
@@ -444,7 +444,7 @@ class Role
     private Collection $permissions;
 
     #[ORM\Column(
-        type: 'integer',
+        type: Types::INTEGER,
         options: [
             'comment' => 'Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon, 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor, 10 => jabatan + unit + kantor, 11 => jabatan + unit + jenis kantor'
         ]

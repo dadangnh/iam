@@ -13,6 +13,7 @@ use App\Repository\Aplikasi\ModulRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -156,7 +157,7 @@ class Modul
     private ?Aplikasi $aplikasi;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -169,7 +170,7 @@ class Modul
     private ?string $nama;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -182,7 +183,7 @@ class Modul
     private ?string $systemName;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -194,12 +195,12 @@ class Modul
     private ?bool $status;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     private ?DateTimeImmutable $createDate;
 
     #[ORM\Column(
-        type: 'text',
+        type: Types::TEXT,
         nullable: true
     )]
     #[Groups(

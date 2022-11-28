@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 2.2.1 (current stable)
+## Version 2.2.2 (current stable)
+  * Use Doctrine Types on Entities (#108)
+  * Expose Kantor Filter on JabatanPegawais Endpoint (#109)
+  * Expose DateFilter on JabatanPegawais Endpoint (#110)
+
+## Version 2.2.1
   * Fix failed build on Caddy (#105)
   * Add location name on office entity (#106)
   * Fix failed test job

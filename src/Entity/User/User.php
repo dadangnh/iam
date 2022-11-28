@@ -17,6 +17,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -148,7 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 180,
         unique: true
     )]
@@ -190,7 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column(
-        type: 'string'
+        type: Types::STRING
     )]
     private string $password;
 
@@ -204,7 +205,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -216,7 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $active;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -228,7 +229,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $locked;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -239,7 +240,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $twoFactorEnabled;
 
     #[ORM\Column(
-        type: 'datetime'
+        type: Types::DATETIME_MUTABLE
     )]
     #[Groups(
         groups: [
@@ -299,7 +300,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $groupMembers;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     #[Assert\NotNull]
     #[Groups(
