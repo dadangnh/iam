@@ -76,6 +76,22 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     name: 'idx_kantor_active'
 )]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'legacy_kode',
+        'provinsi',
+        'provinsi_name',
+        'kabupaten_kota',
+        'kabupaten_kota_name',
+        'kecamatan',
+        'kecamatan_name',
+        'kelurahan',
+        'kelurahan_name'
+    ],
+    name: 'idx_kantor_position'
+)]
 #[ApiResource(
     collectionOperations: [
         'get' => [
@@ -150,6 +166,14 @@ use Symfony\Component\Validator\Constraints as Assert;
         'jenisKantor.id' => 'exact',
         'jenisKantor.nama' => 'iexact',
         'jenisKantor.tipe' => 'iexact',
+        'provinsi' => 'iexact',
+        'provinsiName' => 'iexact',
+        'kabupatenKota' => 'iexact',
+        'kabupatenKotaName' => 'iexact',
+        'kecamatan' => 'iexact',
+        'kecamatanName' => 'iexact',
+        'kelurahan' => 'iexact',
+        'kelurahanName' => 'iexact',
     ]
 )]
 #[ApiFilter(
@@ -448,6 +472,7 @@ class Kantor
     )]
     #[Groups(
         groups: [
+            'kantor:read',
             'kantor:write'
         ]
     )]
@@ -488,6 +513,54 @@ class Kantor
         ]
     )]
     private ?UuidV4 $kelurahan;
+
+    #[ORM\Column(
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
+    private ?string $provinsiName = null;
+
+    #[ORM\Column(
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
+    private ?string $KabupatenKotaName = null;
+
+    #[ORM\Column(
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
+    private ?string $KecamatanName = null;
+
+    #[ORM\Column(
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
+    private ?string $KelurahanName = null;
 
     public function __construct()
     {
@@ -902,6 +975,54 @@ class Kantor
             }
             $this->kelurahan = $kelurahan;
         }
+
+        return $this;
+    }
+
+    public function getProvinsiName(): ?string
+    {
+        return $this->provinsiName;
+    }
+
+    public function setProvinsiName(?string $provinsiName): self
+    {
+        $this->provinsiName = $provinsiName;
+
+        return $this;
+    }
+
+    public function getKabupatenKotaName(): ?string
+    {
+        return $this->KabupatenKotaName;
+    }
+
+    public function setKabupatenKotaName(?string $KabupatenKotaName): self
+    {
+        $this->KabupatenKotaName = $KabupatenKotaName;
+
+        return $this;
+    }
+
+    public function getKecamatanName(): ?string
+    {
+        return $this->KecamatanName;
+    }
+
+    public function setKecamatanName(?string $KecamatanName): self
+    {
+        $this->KecamatanName = $KecamatanName;
+
+        return $this;
+    }
+
+    public function getKelurahanName(): ?string
+    {
+        return $this->KelurahanName;
+    }
+
+    public function setKelurahanName(?string $KelurahanName): self
+    {
+        $this->KelurahanName = $KelurahanName;
 
         return $this;
     }

@@ -8,6 +8,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JenisKantor;
@@ -18,6 +19,7 @@ use App\Entity\User\User;
 use App\Repository\Core\RoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -31,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(
     repositoryClass: RoleRepository::class
 )]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\Table(
     name: 'role'
 )]
@@ -50,6 +53,17 @@ use Symfony\Component\Validator\Constraints as Assert;
         'subs_of_role_id'
     ],
     name: 'idx_role_relation'
+)]
+#[ORM\Index(
+    columns: [
+        'id',
+        'nama',
+        'system_name',
+        'jenis',
+        'start_date',
+        'end_date'
+    ],
+    name: 'idx_role_date'
 )]
 #[UniqueEntity(
     fields: [
@@ -117,6 +131,13 @@ use Symfony\Component\Validator\Constraints as Assert;
     properties: [
         'level',
         'jenis'
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'startDate',
+        'endDate'
     ]
 )]
 #[ApiFilter(PropertyFilter::class)]
@@ -435,6 +456,29 @@ class Role
         ]
     )]
     private ?int $jenis;
+
+    #[ORM\Column(
+        type: Types::DATE_IMMUTABLE
+    )]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
+    private ?\DateTimeImmutable $startDate = null;
+
+    #[ORM\Column(
+        type: Types::DATE_IMMUTABLE,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
+    private ?\DateTimeImmutable $endDate = null;
 
     public function __construct()
     {
@@ -783,6 +827,38 @@ class Role
     public function setJenis(int $jenis): self
     {
         $this->jenis = $jenis;
+
+        return $this;
+    }
+
+    public function getStartDate(): ?\DateTimeImmutable
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate(\DateTimeImmutable $startDate): self
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setStartDateValue(): void
+    {
+        // Only create start date if no date provided
+        if (!isset($this->startDate)) {
+            $this->startDate = new \DateTimeImmutable();
+        }
+    }
+    public function getEndDate(): ?\DateTimeImmutable
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(?\DateTimeImmutable $endDate): self
+    {
+        $this->endDate = $endDate;
 
         return $this;
     }

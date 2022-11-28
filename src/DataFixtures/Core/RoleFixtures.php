@@ -3,6 +3,7 @@
 namespace App\DataFixtures\Core;
 
 use App\Entity\Core\Role;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -21,6 +22,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         $superAdminRole->setDeskripsi('Default Super Admin Role');
         $superAdminRole->setJenis(1);
         $superAdminRole->setLevel(0);
+        $superAdminRole->setStartDate(new DateTimeImmutable('now'));
         $superAdminRole->addUser($this->getReference(NewUserFixtures::USER_SUPER_ADMIN));
         $manager->persist($superAdminRole);
 
@@ -30,6 +32,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         $adminRole->setDeskripsi('Default Admin Role');
         $adminRole->setJenis(1);
         $adminRole->setLevel(1);
+        $adminRole->setStartDate(new DateTimeImmutable('now'));
         $adminRole->addUser($this->getReference(NewUserFixtures::USER_SUPER_ADMIN));
         $adminRole->addUser($this->getReference(NewUserFixtures::USER_ADMIN));
         $adminRole->setSubsOfRole($superAdminRole);
@@ -41,6 +44,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         $userRole->setDeskripsi('Default User Role');
         $userRole->setJenis(1);
         $userRole->setLevel(0);
+        $userRole->setStartDate(new DateTimeImmutable('now'));
         $manager->persist($userRole);
 
         $upkPusatRole = new Role();
@@ -49,6 +53,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         $upkPusatRole->setDeskripsi('Default UPK Pusat Role');
         $upkPusatRole->setJenis(10);
         $upkPusatRole->setLevel(0);
+        $upkPusatRole->setStartDate(new DateTimeImmutable('now'));
         $upkPusatRole->addUser($this->getReference(NewUserFixtures::USER_UPK_PUSAT));
         $manager->persist($upkPusatRole);
 
@@ -58,6 +63,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         $upkWilayahRole->setDeskripsi('Default UPK Wilayah Role');
         $upkWilayahRole->setJenis(10);
         $upkWilayahRole->setLevel(1);
+        $upkWilayahRole->setStartDate(new DateTimeImmutable('now'));
         $upkWilayahRole->setSubsOfRole($upkPusatRole);
         $manager->persist($upkWilayahRole);
 
@@ -67,6 +73,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         $upkLokalRole->setDeskripsi('Default UPK Lokal Role');
         $upkLokalRole->setJenis(10);
         $upkLokalRole->setLevel(0);
+        $upkLokalRole->setStartDate(new DateTimeImmutable('now'));
         $manager->persist($upkLokalRole);
 
         $inactiveRole = new Role();
@@ -77,6 +84,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         );
         $inactiveRole->setJenis(1);
         $inactiveRole->setLevel(0);
+        $inactiveRole->setStartDate(new DateTimeImmutable('now'));
         $manager->persist($inactiveRole);
 
         $retiredRole = new Role();
@@ -87,6 +95,7 @@ class RoleFixtures extends Fixture implements DependentFixtureInterface
         );
         $retiredRole->setJenis(1);
         $retiredRole->setLevel(0);
+        $retiredRole->setStartDate(new DateTimeImmutable('now'));
         $manager->persist($retiredRole);
 
         $manager->flush();

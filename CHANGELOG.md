@@ -1,13 +1,22 @@
 # IAM Changelog
 
-## Version 2.2.0 (current stable)
+## Version 2.2.1 (current stable)
+  * Fix failed build on Caddy (#105)
+  * Add location name on office entity (#106)
+  * Fix failed test job
+  * Updated Symfony Components and dependencies (#104)
+  * Updated Symfony recipes
+  * Added start and end date on ROLE (#107)
+  * Fix user last change data
+
+## Version 2.2.0
   * Display only active attributes (#101)
   * Fix deprecated on JWT Bundle (#102)
   * Update docker and infrastructure configuration (#103)
   * Updated Symfony Components and dependencies
   * Updated Symfony recipes
 
-## Version 2.1.7 (current stable)
+## Version 2.1.7
   * Fix failed publish to registries job (#99)
   * Add new endpoint for invalidating expired tokens (#100)
   * Updated dependencies

@@ -82,6 +82,14 @@ class KantorCrudController extends AbstractCrudController
                 ->hideOnIndex(),
             TextField::new('kelurahan', 'Kelurahan Id')
                 ->hideOnIndex(),
+            TextField::new('provinsiName', 'Provinsi Name')
+                ->hideOnIndex(),
+            TextField::new('kabupatenKotaName', 'Kabupaten Kota Name')
+                ->hideOnIndex(),
+            TextField::new('kecamatanName', 'Kecamatan Name')
+                ->hideOnIndex(),
+            TextField::new('kelurahanName', 'Kelurahan Name')
+                ->hideOnIndex(),
             AssociationField::new('roles', 'Roles')
                 ->onlyOnDetail()
         ];
