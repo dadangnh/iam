@@ -3,6 +3,7 @@
 namespace App\Entity\Pegawai;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -13,6 +14,7 @@ use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
 use App\Repository\Pegawai\JabatanPegawaiRepository;
 use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -105,7 +107,19 @@ use Symfony\Component\Validator\Constraints as Assert;
         'tipe.nama' => 'ipartial',
         'unit.id' => 'exact',
         'unit.nama' => 'ipartial',
-        'unit.legacyKode' => 'partial'
+        'unit.legacyKode' => 'partial',
+        'kantor.id' => 'exact',
+        'kantor.nama' => 'ipartial',
+        'kantor.legacyKode' => 'partial',
+        'kantor.legacyKodeKpp' => 'partial',
+        'kantor.legacyKodeKanwil' => 'partial',
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'tanggalMulai',
+        'tanggalSelesai'
     ]
 )]
 #[ApiFilter(PropertyFilter::class)]
@@ -187,7 +201,7 @@ class JabatanPegawai
     private ?Unit $unit;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -199,7 +213,7 @@ class JabatanPegawai
     private ?string $referensi;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     #[Groups(
         groups: [
@@ -209,7 +223,7 @@ class JabatanPegawai
     private ?DateTimeImmutable $tanggalMulai;
 
     #[ORM\Column(
-        type: 'datetime_immutable',
+        type: Types::DATETIME_IMMUTABLE,
         nullable: true
     )]
     #[Groups(

@@ -12,6 +12,7 @@ use App\Repository\Aplikasi\AplikasiRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -135,7 +136,7 @@ class Aplikasi
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -147,25 +148,25 @@ class Aplikasi
     private ?string $nama;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
     private ?string $systemName;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     #[Assert\NotNull]
     private ?bool $status;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     private ?DateTimeImmutable $createDate;
 
     #[ORM\Column(
-        type: 'text',
+        type: Types::TEXT,
         nullable: true
     )]
     private ?string $deskripsi;
@@ -178,14 +179,14 @@ class Aplikasi
     private Collection $moduls;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
     private ?string $hostName;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]

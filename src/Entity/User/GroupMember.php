@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\User\GroupMemberRepository;
 use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
@@ -108,12 +109,12 @@ class GroupMember
     private ?User $user;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     private ?DateTimeImmutable $joinDate;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     private ?bool $status;
 

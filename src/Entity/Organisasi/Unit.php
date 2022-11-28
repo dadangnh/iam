@@ -14,6 +14,7 @@ use App\Repository\Organisasi\UnitRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -167,7 +168,7 @@ class Unit
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -198,7 +199,7 @@ class Unit
     private ?JenisKantor $jenisKantor;
 
     #[ORM\Column(
-        type: 'integer'
+        type: Types::INTEGER
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -241,7 +242,7 @@ class Unit
     private ?Eselon $eselon;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -253,7 +254,7 @@ class Unit
     private ?DateTimeImmutable $tanggalAktif;
 
     #[ORM\Column(
-        type: 'datetime_immutable',
+        type: Types::DATETIME_IMMUTABLE,
         nullable: true
     )]
     #[Groups(
@@ -265,7 +266,7 @@ class Unit
     private ?DateTimeImmutable $tanggalNonaktif;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 10,
         nullable: true
     )]

@@ -14,6 +14,7 @@ use App\Repository\Organisasi\KantorRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -209,7 +210,7 @@ class Kantor
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -241,7 +242,7 @@ class Kantor
     private ?JenisKantor $jenisKantor;
 
     #[ORM\Column(
-        type: 'integer',
+        type: Types::INTEGER,
         nullable: true
     )]
     #[Groups(
@@ -271,7 +272,7 @@ class Kantor
     private Collection $childs;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -283,7 +284,7 @@ class Kantor
     private ?DateTimeImmutable $tanggalAktif;
 
     #[ORM\Column(
-        type: 'datetime_immutable',
+        type: Types::DATETIME_IMMUTABLE,
         nullable: true
     )]
     #[Groups(
@@ -295,7 +296,7 @@ class Kantor
     private ?DateTimeImmutable $tanggalNonaktif;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -308,7 +309,7 @@ class Kantor
     private ?string $sk;
 
     #[ORM\Column(
-        type: 'text',
+        type: Types::TEXT,
         nullable: true
     )]
     #[Groups(
@@ -320,7 +321,7 @@ class Kantor
     private ?string $alamat;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -333,7 +334,7 @@ class Kantor
     private ?string $telp;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -346,7 +347,7 @@ class Kantor
     private ?string $fax;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 4,
         nullable: true
     )]
@@ -359,7 +360,7 @@ class Kantor
     private ?string $zonaWaktu;
 
     #[ORM\Column(
-        type: 'float',
+        type: Types::FLOAT,
         nullable: true
     )]
     #[Groups(
@@ -371,7 +372,7 @@ class Kantor
     private ?float $latitude;
 
     #[ORM\Column(
-        type: 'float',
+        type: Types::FLOAT,
         nullable: true
     )]
     #[Groups(
@@ -383,7 +384,7 @@ class Kantor
     private ?float $longitude;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 10,
         nullable: true
     )]
@@ -396,7 +397,7 @@ class Kantor
     private ?string $legacyKode;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 3,
         nullable: true
     )]
@@ -409,7 +410,7 @@ class Kantor
     private ?string $legacyKodeKpp;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 3,
         nullable: true
     )]
@@ -515,6 +516,7 @@ class Kantor
     private ?UuidV4 $kelurahan;
 
     #[ORM\Column(
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -527,6 +529,7 @@ class Kantor
     private ?string $provinsiName = null;
 
     #[ORM\Column(
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -539,6 +542,7 @@ class Kantor
     private ?string $KabupatenKotaName = null;
 
     #[ORM\Column(
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -551,6 +555,7 @@ class Kantor
     private ?string $KecamatanName = null;
 
     #[ORM\Column(
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]

@@ -13,6 +13,7 @@ use App\Repository\Pegawai\PegawaiRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -158,7 +159,7 @@ class Pegawai
     private ?User $user;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -172,7 +173,7 @@ class Pegawai
     private ?string $nama;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     #[Assert\NotNull]
     #[Groups(
@@ -185,7 +186,7 @@ class Pegawai
     private ?DateTimeImmutable $tanggalLahir;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -199,7 +200,7 @@ class Pegawai
     private ?string $tempatLahir;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     #[Groups(
         groups: [
@@ -211,7 +212,7 @@ class Pegawai
     private ?bool $pensiun;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -224,7 +225,7 @@ class Pegawai
     private ?string $npwp;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 16,
         nullable: true
     )]
@@ -237,7 +238,7 @@ class Pegawai
     private ?string $nik;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 9,
         nullable: true
     )]
@@ -251,7 +252,7 @@ class Pegawai
     private ?string $nip9;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 18,
         nullable: true
     )]
@@ -287,7 +288,7 @@ class Pegawai
     private array $activePositionIds;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -300,7 +301,7 @@ class Pegawai
     private ?string $pangkat;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     #[Assert\NotNull]
     #[Groups(

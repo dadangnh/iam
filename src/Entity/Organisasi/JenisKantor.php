@@ -13,6 +13,7 @@ use App\Repository\Organisasi\JenisKantorRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
@@ -123,45 +124,45 @@ class JenisKantor
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
     private ?string $nama;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotNull]
     private ?string $tipe;
 
     #[ORM\Column(
-        type: 'integer'
+        type: Types::INTEGER
     )]
     #[Assert\NotNull]
     private ?int $klasifikasi;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     #[Assert\NotNull]
     private ?DateTimeImmutable $tanggalAktif;
 
     #[ORM\Column(
-        type: 'datetime_immutable',
+        type: Types::DATETIME_IMMUTABLE,
         nullable: true
     )]
     private ?DateTimeImmutable $tanggalNonaktif;
 
     #[ORM\Column(
-        type: 'integer',
+        type: Types::INTEGER,
         nullable: true
     )]
     private ?int $legacyId;
 
     #[ORM\Column(
-        type: 'integer',
+        type: Types::INTEGER,
         nullable: true
     )]
     private ?int $legacyKode;
