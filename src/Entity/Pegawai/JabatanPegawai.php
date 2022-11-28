@@ -3,6 +3,7 @@
 namespace App\Entity\Pegawai;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -112,6 +113,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         'kantor.legacyKode' => 'partial',
         'kantor.legacyKodeKpp' => 'partial',
         'kantor.legacyKodeKanwil' => 'partial',
+    ]
+)]
+#[ApiFilter(
+    DateFilter::class,
+    properties: [
+        'tanggalMulai',
+        'tanggalSelesai'
     ]
 )]
 #[ApiFilter(PropertyFilter::class)]
