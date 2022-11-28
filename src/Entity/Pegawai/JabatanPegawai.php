@@ -106,7 +106,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         'tipe.nama' => 'ipartial',
         'unit.id' => 'exact',
         'unit.nama' => 'ipartial',
-        'unit.legacyKode' => 'partial'
+        'unit.legacyKode' => 'partial',
+        'kantor.id' => 'exact',
+        'kantor.nama' => 'ipartial',
+        'kantor.legacyKode' => 'partial',
+        'kantor.legacyKodeKpp' => 'partial',
+        'kantor.legacyKodeKanwil' => 'partial',
     ]
 )]
 #[ApiFilter(PropertyFilter::class)]
