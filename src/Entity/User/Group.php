@@ -13,6 +13,7 @@ use App\Repository\User\GroupRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Uid\Uuid;
@@ -121,21 +122,21 @@ class Group
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
     private ?string $nama;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
     private ?string $systemName;
 
     #[ORM\Column(
-        type: 'text',
+        type: Types::TEXT,
         nullable: true
     )]
     private ?string $deskripsi;
@@ -151,12 +152,12 @@ class Group
     private ?User $owner;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     private ?DateTimeImmutable $createDate;
 
     #[ORM\Column(
-        type: 'boolean'
+        type: Types::BOOLEAN
     )]
     #[Assert\NotNull]
     private ?bool $status;

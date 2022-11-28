@@ -13,6 +13,7 @@ use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
 use App\Repository\Pegawai\JabatanPegawaiRepository;
 use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -187,7 +188,7 @@ class JabatanPegawai
     private ?Unit $unit;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255,
         nullable: true
     )]
@@ -199,7 +200,7 @@ class JabatanPegawai
     private ?string $referensi;
 
     #[ORM\Column(
-        type: 'datetime_immutable'
+        type: Types::DATETIME_IMMUTABLE
     )]
     #[Groups(
         groups: [
@@ -209,7 +210,7 @@ class JabatanPegawai
     private ?DateTimeImmutable $tanggalMulai;
 
     #[ORM\Column(
-        type: 'datetime_immutable',
+        type: Types::DATETIME_IMMUTABLE,
         nullable: true
     )]
     #[Groups(

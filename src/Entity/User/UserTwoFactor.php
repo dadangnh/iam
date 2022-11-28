@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\User\UserTwoFactorRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
@@ -95,13 +96,13 @@ class UserTwoFactor
     private ?User $user;
 
     #[ORM\Column(
-        type: 'json',
+        type: Types::JSON,
         nullable: true
     )]
     private ?array $backupCode = [];
 
     #[ORM\Column(
-        type: 'integer'
+        type: Types::INTEGER
     )]
     private ?int $tfaType;
 

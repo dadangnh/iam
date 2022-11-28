@@ -11,6 +11,7 @@ use App\Entity\Core\Role;
 use App\Repository\Organisasi\EselonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
@@ -101,7 +102,7 @@ class Eselon
     private UuidV4 $id;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
@@ -113,20 +114,20 @@ class Eselon
     private ?string $nama;
 
     #[ORM\Column(
-        type: 'integer'
+        type: Types::INTEGER
     )]
     #[Assert\NotNull]
     private ?int $tingkat;
 
     #[ORM\Column(
-        type: 'string',
+        type: Types::STRING,
         length: 255
     )]
     #[Assert\NotBlank]
     private ?string $kode;
 
     #[ORM\Column(
-        type: 'integer',
+        type: Types::INTEGER,
         nullable: true
     )]
     private ?int $legacyKode;
