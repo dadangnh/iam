@@ -87,7 +87,8 @@ class UserTwoFactor
     private UuidV4 $id;
 
     #[ORM\ManyToOne(
-        targetEntity: User::class, inversedBy: 'userTwoFactors'
+        targetEntity: User::class,
+        inversedBy: 'userTwoFactors'
     )]
     #[ORM\JoinColumn(
         nullable: false
