@@ -534,7 +534,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PreUpdate]
     public function setLastChangeValue(): void
     {
-        $this->lastChange = new DateTimeImmutable(true);
+        $this->lastChange = new DateTimeImmutable('now');
     }
 
     /**
