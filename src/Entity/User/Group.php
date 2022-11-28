@@ -181,6 +181,11 @@ class Group
         $this->roles = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->nama;
+    }
+
     public function getId(): Uuid
     {
         return $this->id;
