@@ -539,7 +539,7 @@ class Kantor
             'kantor:write'
         ]
     )]
-    private ?string $KabupatenKotaName = null;
+    private ?string $kabupatenKotaName = null;
 
     #[ORM\Column(
         type: Types::STRING,
@@ -552,7 +552,7 @@ class Kantor
             'kantor:write'
         ]
     )]
-    private ?string $KecamatanName = null;
+    private ?string $kecamatanName = null;
 
     #[ORM\Column(
         type: Types::STRING,
@@ -565,7 +565,7 @@ class Kantor
             'kantor:write'
         ]
     )]
-    private ?string $KelurahanName = null;
+    private ?string $kelurahanName = null;
 
     public function __construct()
     {
@@ -998,36 +998,36 @@ class Kantor
 
     public function getKabupatenKotaName(): ?string
     {
-        return $this->KabupatenKotaName;
+        return $this->kabupatenKotaName;
     }
 
-    public function setKabupatenKotaName(?string $KabupatenKotaName): self
+    public function setKabupatenKotaName(?string $kabupatenKotaName): self
     {
-        $this->KabupatenKotaName = $KabupatenKotaName;
+        $this->kabupatenKotaName = $kabupatenKotaName;
 
         return $this;
     }
 
     public function getKecamatanName(): ?string
     {
-        return $this->KecamatanName;
+        return $this->kecamatanName;
     }
 
-    public function setKecamatanName(?string $KecamatanName): self
+    public function setKecamatanName(?string $kecamatanName): self
     {
-        $this->KecamatanName = $KecamatanName;
+        $this->kecamatanName = $kecamatanName;
 
         return $this;
     }
 
     public function getKelurahanName(): ?string
     {
-        return $this->KelurahanName;
+        return $this->kelurahanName;
     }
 
-    public function setKelurahanName(?string $KelurahanName): self
+    public function setKelurahanName(?string $kelurahanName): self
     {
-        $this->KelurahanName = $KelurahanName;
+        $this->kelurahanName = $kelurahanName;
 
         return $this;
     }
