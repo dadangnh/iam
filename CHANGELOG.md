@@ -1,6 +1,12 @@
 # IAM Changelog
 
-## Version 2.2.2 (current stable)
+## Version 2.2.3 (current stable)
+  * Use camelCase on Entity Attributes (#111)
+  * add ministryOfficeCode to Kantor Entity (#112)
+  * Updated Symfony Components and dependencies
+  * Updated Symfony recipes
+
+## Version 2.2.2
   * Use Doctrine Types on Entities (#108)
   * Expose Kantor Filter on JabatanPegawais Endpoint (#109)
   * Expose DateFilter on JabatanPegawais Endpoint (#110)

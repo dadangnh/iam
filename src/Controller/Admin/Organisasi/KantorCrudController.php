@@ -74,6 +74,9 @@ class KantorCrudController extends AbstractCrudController
             TextField::new('legacyKodeKanwil', 'Kode Kanwil di SIDJP')
                 ->hideOnIndex()
                 ->setMaxLength(3),
+            TextField::new('ministryOfficeCode', 'Kode Kantor di HRIS Kementerian')
+                ->hideOnIndex()
+                ->setMaxLength(10),
             TextField::new('provinsi', 'Provinsi Id')
                 ->hideOnIndex(),
             TextField::new('kabupatenKota', 'Kabupaten Kota Id')
