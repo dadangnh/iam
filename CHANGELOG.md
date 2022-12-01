@@ -3,7 +3,7 @@
 ## Version 2.2.3 (current stable)
   * Use camelCase on Entity Attributes (#111)
   * add ministryOfficeCode to Kantor Entity (#112)
-  * Updated Symfony Components and dependencies (#104)
+  * Updated Symfony Components and dependencies
   * Updated Symfony recipes
 
 ## Version 2.2.2
