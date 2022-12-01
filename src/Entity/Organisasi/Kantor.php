@@ -45,7 +45,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         'id',
         'legacy_kode',
         'legacy_kode_kpp',
-        'legacy_kode_kanwil'
+        'legacy_kode_kanwil',
+        'ministry_office_code',
     ],
     name: 'idx_kantor_legacy'
 )]
@@ -175,6 +176,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'kecamatanName' => 'iexact',
         'kelurahan' => 'iexact',
         'kelurahanName' => 'iexact',
+        'ministryOfficeCode' => 'exact',
     ]
 )]
 #[ApiFilter(
@@ -566,6 +568,19 @@ class Kantor
         ]
     )]
     private ?string $kelurahanName = null;
+
+    #[ORM\Column(
+        type: Types::STRING,
+        length: 10,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
+    private ?string $ministryOfficeCode = null;
 
     public function __construct()
     {
@@ -1028,6 +1043,18 @@ class Kantor
     public function setKelurahanName(?string $kelurahanName): self
     {
         $this->kelurahanName = $kelurahanName;
+
+        return $this;
+    }
+
+    public function getMinistryOfficeCode(): ?string
+    {
+        return $this->ministryOfficeCode;
+    }
+
+    public function setMinistryOfficeCode(?string $ministryOfficeCode): self
+    {
+        $this->ministryOfficeCode = $ministryOfficeCode;
 
         return $this;
     }
