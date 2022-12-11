@@ -128,6 +128,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'eselon.id' => 'exact',
         'eselon.nama' => 'ipartial',
         'eselon.kode' => 'ipartial',
+        'eselon.tingkat' => 'exact',
         'units.id' => 'exact',
         'units.nama' => 'ipartial',
         'units.legacyKode' => 'partial',
