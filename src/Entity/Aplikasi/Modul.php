@@ -233,6 +233,10 @@ class Modul
 
     public function __toString(): string
     {
+        if ($this->getAplikasi()?->getNama()) {
+            return $this->getAplikasi()?->getNama() . ' - ' . $this->nama;
+        }
+
         return $this->nama;
     }
 
