@@ -43,8 +43,9 @@ build_backend:
     IMAGE_TAG_BACKEND: $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_SLUG
     IMAGE_TAG_PHP: $CI_REGISTRY_IMAGE/php:$CI_COMMIT_REF_SLUG
     DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: 1
   services:
-    - name: 'docker:20.10.6-dind'
+    - name: 'docker:20.10.21-dind'
       command: [ '--tls=false', '--host=tcp://0.0.0.0:2375' ]
       alias: docker
   script:
@@ -61,8 +62,9 @@ build_caddy:
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_REF_SLUG
     DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: 1
   services:
-    - name: 'docker:20.10.6-dind'
+    - name: 'docker:20.10.21-dind'
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
       alias: docker
   script:
@@ -77,8 +79,9 @@ build_nginx:
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_REF_SLUG
     DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: 1
   services:
-    - name: 'docker:20.10.6-dind'
+    - name: 'docker:20.10.21-dind'
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
       alias: docker
   script:
@@ -181,8 +184,9 @@ deploy_to_registries:
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
     DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: 1
   services:
-    - name: 'docker:20.10.6-dind'
+    - name: 'docker:20.10.21-dind'
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
       alias: dockercompose
   before_script:
