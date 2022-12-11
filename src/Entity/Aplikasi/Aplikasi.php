@@ -2,12 +2,18 @@
 
 namespace App\Entity\Aplikasi;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Serializer\Filter\PropertyFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\Aplikasi\AplikasiRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -23,6 +29,40 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Aplikasi Class
  */
+#[ApiResource(
+    operations: [
+        new Get(
+            security: 'is_granted("ROLE_USER")',
+            securityMessage: 'Only a valid user can access this.'
+        ),
+        new Put(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        ),
+        new Patch(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        ),
+        new Delete(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        ),
+        new GetCollection(
+            security: 'is_granted("ROLE_USER")',
+            securityMessage: 'Only a valid user can access this.'
+        ),
+        new Post(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        )
+    ],
+    order: [
+        'createDate' => 'ASC',
+        'nama' => 'ASC'
+    ],
+    security: 'is_granted("ROLE_USER")',
+    securityMessage: 'Only a valid user can access this.'
+)]
 #[ORM\Entity(
     repositoryClass: AplikasiRepository::class
 )]
@@ -53,46 +93,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         'systemName'
     ]
 )]
-#[ApiResource(
-    collectionOperations: [
-        'get' => [
-            'security' => 'is_granted("ROLE_USER")',
-            'security_message' => 'Only a valid user can access this.'
-        ],
-        'post' => [
-            'security'=>'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message'=>'Only admin/app can add new resource to this entity type.'
-        ]
-    ],
-    itemOperations: [
-        'get' => [
-            'security' => 'is_granted("ROLE_USER")',
-            'security_message' => 'Only a valid user can access this.'
-        ],
-        'put' => [
-            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message' => 'Only admin/app can add new resource to this entity type.'
-        ],
-        'patch' => [
-            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message' => 'Only admin/app can add new resource to this entity type.'
-        ],
-        'delete' => [
-            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message' => 'Only admin/app can add new resource to this entity type.'
-        ],
-    ],
-    attributes: [
-        'security' => 'is_granted("ROLE_USER")',
-        'security_message' => 'Only a valid user can access this.',
-        'order' => [
-            'createDate' => 'ASC',
-            'nama' => 'ASC'
-        ]
-    ],
-)]
 #[ApiFilter(
-    SearchFilter::class,
+    filterClass: SearchFilter::class,
     properties: [
         'id' => 'exact',
         'nama' => 'ipartial',
@@ -104,23 +106,25 @@ use Symfony\Component\Validator\Constraints as Assert;
         'moduls.nama' => 'ipartial',
         'moduls.permissions.id' => 'exact',
         'moduls.permissions.nama' => 'exact',
-        'moduls.permissions.roles.nama' => 'exact',
+        'moduls.permissions.roles.nama' => 'exact'
     ]
 )]
 #[ApiFilter(
-    DateFilter::class,
+    filterClass: DateFilter::class,
     properties: [
         'createDate'
     ]
 )]
 #[ApiFilter(
-    BooleanFilter::class,
+    filterClass: BooleanFilter::class,
     properties: [
         'status',
         'moduls.status'
     ]
 )]
-#[ApiFilter(PropertyFilter::class)]
+#[ApiFilter(
+    filterClass: PropertyFilter::class
+)]
 class Aplikasi
 {
     #[ORM\Id]
