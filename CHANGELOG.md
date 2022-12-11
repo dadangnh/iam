@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 2.2.3 (current stable)
+## Version 2.2.4 (current stable)
+  * Update infrastructure configuration from upstream (#113)
+  * Updated Symfony Components and dependencies
+
+## Version 2.2.3
   * Use camelCase on Entity Attributes (#111)
   * add ministryOfficeCode to Kantor Entity (#112)
   * Updated Symfony Components and dependencies
