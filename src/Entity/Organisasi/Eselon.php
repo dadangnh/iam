@@ -2,11 +2,17 @@
 
 namespace App\Entity\Organisasi;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
-use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Serializer\Filter\PropertyFilter;
+use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Entity\Core\Role;
 use App\Repository\Organisasi\EselonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,6 +27,40 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Eselon Class
  */
+#[ApiResource(
+    operations: [
+        new Get(
+            security: 'is_granted("ROLE_USER")',
+            securityMessage: 'Only a valid user can access this.'
+        ),
+        new Put(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        ),
+        new Patch(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        ),
+        new Delete(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        ),
+        new GetCollection(
+            security: 'is_granted("ROLE_USER")',
+            securityMessage: 'Only a valid user can access this.'
+        ),
+        new Post(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        )
+    ],
+    order: [
+        'tingkat' => 'ASC',
+        'nama' => 'ASC'
+    ],
+    security: 'is_granted("ROLE_USER")',
+    securityMessage: 'Only a valid user can access this.'
+)]
 #[ORM\Entity(
     repositoryClass: EselonRepository::class
 )]
@@ -42,42 +82,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     name: 'idx_eselon_legacy'
 )]
-#[ApiResource(
-    collectionOperations: [
-        'get' => [
-            'security' => 'is_granted("ROLE_USER")',
-            'security_message' => 'Only a valid user can access this.'
-        ],
-        'post' => [
-            'security'=>'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message'=>'Only admin/app can add new resource to this entity type.'
-        ]
-    ],
-    itemOperations: [
-        'get' => [
-            'security' => 'is_granted("ROLE_USER")',
-            'security_message' => 'Only a valid user can access this.'
-        ],
-        'put' => [
-            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message' => 'Only admin/app can add new resource to this entity type.'
-        ],
-        'patch' => [
-            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message' => 'Only admin/app can add new resource to this entity type.'
-        ],
-        'delete' => [
-            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message' => 'Only admin/app can add new resource to this entity type.'
-        ],
-    ],
-    attributes: [
-        'security' => 'is_granted("ROLE_USER")',
-        'security_message' => 'Only a valid user can access this.',
-    ],
-)]
 #[ApiFilter(
-    SearchFilter::class,
+    filterClass: SearchFilter::class,
     properties: [
         'id' => 'exact',
         'nama' => 'ipartial',
@@ -85,13 +91,15 @@ use Symfony\Component\Validator\Constraints as Assert;
     ]
 )]
 #[ApiFilter(
-    NumericFilter::class,
+    filterClass: NumericFilter::class,
     properties: [
         'tingkat',
         'legacyKode'
     ]
 )]
-#[ApiFilter(PropertyFilter::class)]
+#[ApiFilter(
+    filterClass: PropertyFilter::class
+)]
 class Eselon
 {
     #[ORM\Id]
