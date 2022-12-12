@@ -9,11 +9,11 @@ use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\Unit;
 use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Uid\Uuid;
 
 /**
