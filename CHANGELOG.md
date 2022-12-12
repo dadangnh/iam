@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 2.3.0 (current stable)
+## Version 2.3.1 (current stable)
+  * Fix GitHub Action failed to run (#119)
+
+## Version 2.3.0
   * Update Symfony to v6.2 (#114)
   * Update Api Platform to v3 (#115)
   * Update PHP to v8.2 (#116)
