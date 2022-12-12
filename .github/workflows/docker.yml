@@ -12,16 +12,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build Backend Images
-      run: docker build --no-cache --target symfony_php --build-arg STABILITY=-stable -t backend .
+      run: docker build --no-cache --target app_php --build-arg STABILITY=-stable -t backend .
   build_caddy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build Caddy Images
-      run: docker build --no-cache --target symfony_caddy -t caddy .
+      run: docker build --no-cache --target app_caddy -t caddy .
   build_nginx:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build Caddy Images
-      run: docker build --no-cache --target symfony_nginx -t nginx .
+      run: docker build --no-cache --target app_nginx -t nginx .
