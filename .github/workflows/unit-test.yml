@@ -58,7 +58,7 @@ jobs:
           touch data/database.sqlite
       - name: Execute fixtures
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?serverVersion=14&charset=utf8
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?serverVersion=15&charset=utf8
           REDIS_URL: redis://localhost:6379
           REDIS_HOST: localhost
           REDIS_PORT: 6379
@@ -75,7 +75,7 @@ jobs:
           setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?serverVersion=14&charset=utf8
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres?serverVersion=15&charset=utf8
           REDIS_URL: redis://localhost:6379
           REDIS_HOST: localhost
           REDIS_PORT: 6379
