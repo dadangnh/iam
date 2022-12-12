@@ -31,7 +31,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""
 
 services:
-  - name: postgres:14-alpine
+  - name: postgres:15-alpine
     alias: database
   - name: redis:latest
     alias: redis
@@ -100,7 +100,7 @@ test:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
   services:
-    - name: postgres:14-alpine
+    - name: postgres:15-alpine
       alias: database
     - name: redis:latest
       alias: redis
@@ -203,8 +203,8 @@ deploy_to_registries:
     - docker tag iam-caddy:latest dadang/iam_caddy:latest
     - docker tag redis:latest dadang/iam_redis:$CI_COMMIT_TAG
     - docker tag redis:latest dadang/iam_redis:latest
-    - docker tag postgres:14-alpine dadang/iam_database:$CI_COMMIT_TAG
-    - docker tag postgres:14-alpine dadang/iam_database:latest
+    - docker tag postgres:15-alpine dadang/iam_database:$CI_COMMIT_TAG
+    - docker tag postgres:15-alpine dadang/iam_database:latest
     - docker push dadang/iam_caddy:$CI_COMMIT_TAG
     - docker push dadang/iam_caddy:latest
     - docker push dadang/iam_backend:$CI_COMMIT_TAG
@@ -225,8 +225,8 @@ deploy_to_registries:
     - docker tag iam-caddy:latest $CI_REGISTRY_IMAGE/caddy:latest
     - docker tag redis:latest $CI_REGISTRY_IMAGE/redis:$CI_COMMIT_TAG
     - docker tag redis:latest $CI_REGISTRY_IMAGE/redis:latest
-    - docker tag postgres:14-alpine $CI_REGISTRY_IMAGE/database:$CI_COMMIT_TAG
-    - docker tag postgres:14-alpine $CI_REGISTRY_IMAGE/database:latest
+    - docker tag postgres:15-alpine $CI_REGISTRY_IMAGE/database:$CI_COMMIT_TAG
+    - docker tag postgres:15-alpine $CI_REGISTRY_IMAGE/database:latest
     - docker push $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
     - docker push $CI_REGISTRY_IMAGE/caddy:latest
     - docker push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_TAG
