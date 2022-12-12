@@ -27,19 +27,19 @@ jobs:
           --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 5          
+          --health-retries 5
         ports:
           - 6379:6379
     steps:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
       - name: Cache Composer packages
         id: composer-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: vendor
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
