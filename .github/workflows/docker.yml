@@ -10,18 +10,18 @@ jobs:
   build_backend:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build Backend Images
       run: docker build --no-cache --target app_php --build-arg STABILITY=-stable -t backend .
   build_caddy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build Caddy Images
       run: docker build --no-cache --target app_caddy -t caddy .
   build_nginx:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build Caddy Images
       run: docker build --no-cache --target app_nginx -t nginx .
