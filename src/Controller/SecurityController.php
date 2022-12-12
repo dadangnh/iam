@@ -6,14 +6,13 @@ use App\Entity\User\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -194,7 +193,6 @@ class SecurityController extends AbstractController
      */
     #[Route('/api/users/change_password_by_sikka', name: 'app_change_password_by_sikka', methods: ['POST'])]
     #[Route('/api/change_password_by_sikka', name: 'app_change_password_by_sikka_old', methods: ['POST'])]
-    #[Security("is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_HRIS') or is_granted('ROLE_UPK_PUSAT') or is_granted('ROLE_UPK_WILAYAH') or is_granted('ROLE_UPK_LOKAL')")]
     public function forceChangePassword(Request                     $request,
                                         UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
@@ -241,9 +239,18 @@ class SecurityController extends AbstractController
      */
     #[Route('/api/token/whoami', name: 'app_whoami', methods: ['POST'])]
     #[Route('/api/whoami', name: 'app_whoami_old', methods: ['POST'])]
-    #[Security("is_granted('ROLE_USER') or is_granted('ROLE_INACTIVE') or is_granted('ROLE_SERVICE_ACCOUNT')")]
     public function whoami(): JsonResponse
     {
+        if (!$this->isGranted('ROLE_USER')
+            && !$this->isGranted('ROLE_INACTIVE')
+            && !$this->isGranted('ROLE_SERVICE_ACCOUNT')
+        ) {
+            return $this->json([
+                'code' => 401,
+                'error' => 'Unauthorized API access.',
+            ], 203);
+        }
+
         return $this->json($this->getUser());
     }
 

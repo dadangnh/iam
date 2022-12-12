@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\OpenApi;
 
-use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
-use ApiPlatform\Core\OpenApi\OpenApi;
-use ApiPlatform\Core\OpenApi\Model;
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\Parameter;
+use ApiPlatform\OpenApi\Model\PathItem;
+use ApiPlatform\OpenApi\Model\RequestBody;
+use ApiPlatform\OpenApi\OpenApi;
 use ArrayObject;
 
 class OrganisasiCustomDecorator implements OpenApiFactoryInterface
@@ -44,9 +47,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $activeKantorByKantorNameItem = new Model\PathItem(
+        $activeKantorByKantorNameItem = new PathItem(
             ref: 'Kantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getActiveKantorByKantorName',
                 tags: ['Kantor'],
                 responses: [
@@ -62,7 +65,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get list of Active Kantor from Kantor Name',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'name',
                     'path',
                     'Please provide the kantor name. Minimum consist of 3 character, case insensitive.',
@@ -71,9 +74,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $allActiveKantorItem = new Model\PathItem(
+        $allActiveKantorItem = new PathItem(
             ref: 'Kantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getAllActiveKantor',
                 tags: ['Kantor'],
                 responses: [
@@ -116,9 +119,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $activeUnitByUnitNameItem = new Model\PathItem(
+        $activeUnitByUnitNameItem = new PathItem(
             ref: 'Unit',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getActiveUnitByUnitName',
                 tags: ['Unit'],
                 responses: [
@@ -134,7 +137,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get list of Active Unit from Unit Name',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'name',
                     'path',
                     'Please provide the unit name. Minimum consist of 3 character, case insensitive.',
@@ -143,9 +146,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $allActiveUnitItem = new Model\PathItem(
+        $allActiveUnitItem = new PathItem(
             ref: 'Unit',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getAllActiveUnit',
                 tags: ['Unit'],
                 responses: [
@@ -188,9 +191,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $activeJenisKantorByJenisKantorNameItem = new Model\PathItem(
+        $activeJenisKantorByJenisKantorNameItem = new PathItem(
             ref: 'JenisKantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getActiveJenisKantorByJenisKantorName',
                 tags: ['JenisKantor'],
                 responses: [
@@ -206,7 +209,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get list of Active Jenis Kantor from Jenis Kantor Name',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'name',
                     'path',
                     'Please provide the jenis kantor name. Minimum consist of 3 character, case insensitive.',
@@ -215,9 +218,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $allActiveJenisKantorItem = new Model\PathItem(
+        $allActiveJenisKantorItem = new PathItem(
             ref: 'JenisKantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getAllActiveJenisKantor',
                 tags: ['JenisKantor'],
                 responses: [
@@ -260,9 +263,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $activeJabatanByJabatanNameItem = new Model\PathItem(
+        $activeJabatanByJabatanNameItem = new PathItem(
             ref: 'Jabatan',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getActiveJabatanByJabatanName',
                 tags: ['Jabatan'],
                 responses: [
@@ -278,7 +281,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get list of Active Jabatan from Jabatan Name',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'name',
                     'path',
                     'Please provide the jabatan name. Minimum consist of 3 character, case insensitive.',
@@ -287,9 +290,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $allActiveJabatanItem = new Model\PathItem(
+        $allActiveJabatanItem = new PathItem(
             ref: 'Jabatan',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getAllActiveJabatan',
                 tags: ['Jabatan'],
                 responses: [
@@ -329,9 +332,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $fetchKepalaKantorFromKantorIdItem = new Model\PathItem(
+        $fetchKepalaKantorFromKantorIdItem = new PathItem(
             ref: 'Kantor',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postKepalaKantorFromKantorIdItem',
                 tags: ['Kantor'],
                 responses: [
@@ -347,7 +350,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get Kepala Kantor data from Kantor Id',
-                requestBody: new Model\RequestBody(
+                requestBody: new RequestBody(
                     description: 'Get Kepala kantor data from kantor uuid',
                     content: new ArrayObject([
                         'application/json' => [
@@ -386,9 +389,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $parentKantorByKantorIdItem = new Model\PathItem(
+        $parentKantorByKantorIdItem = new PathItem(
             ref: 'Kantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getParentKantorByKantorId',
                 tags: ['Kantor'],
                 responses: [
@@ -404,7 +407,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get parent kantor information from kantor id',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'id',
                     'path',
                     'Please provide the kantor id (uuid).',
@@ -413,9 +416,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $parentKantorByKantorExactNameItem = new Model\PathItem(
+        $parentKantorByKantorExactNameItem = new PathItem(
             ref: 'Kantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getParentKantorByKantorExactName',
                 tags: ['Kantor'],
                 responses: [
@@ -431,7 +434,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get parent kantor information from kantor name (only for active kantor)',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'name',
                     'path',
                     'Please provide the kantor name.',
@@ -440,9 +443,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $parentKantorByKantorLegacyKodeItem = new Model\PathItem(
+        $parentKantorByKantorLegacyKodeItem = new PathItem(
             ref: 'Kantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getParentKantorByKantorLegacyKode',
                 tags: ['Kantor'],
                 responses: [
@@ -458,7 +461,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get parent kantor information from kantor legacy kode',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'legacyKode',
                     'path',
                     'Please provide the kantor legacy kode.',
@@ -493,9 +496,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $childKantorsByKantorIdItem = new Model\PathItem(
+        $childKantorsByKantorIdItem = new PathItem(
             ref: 'Kantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getChildKantorsByKantorId',
                 tags: ['Kantor'],
                 responses: [
@@ -511,7 +514,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get child kantors information from kantor id',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'id',
                     'path',
                     'Please provide the kantor id (uuid).',
@@ -520,9 +523,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $childKantorsByKantorExactNameItem = new Model\PathItem(
+        $childKantorsByKantorExactNameItem = new PathItem(
             ref: 'Kantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getChildKantorsByKantorExactName',
                 tags: ['Kantor'],
                 responses: [
@@ -538,7 +541,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get child kantors information from kantor name (only for active kantor)',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'name',
                     'path',
                     'Please provide the kantor name.',
@@ -547,9 +550,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $childKantorsByKantorLegacyKodeItem = new Model\PathItem(
+        $childKantorsByKantorLegacyKodeItem = new PathItem(
             ref: 'Kantor',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getChildKantorsByKantorLegacyKode',
                 tags: ['Kantor'],
                 responses: [
@@ -565,7 +568,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get child kantors information from kantor legacy kode',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'legacyKode',
                     'path',
                     'Please provide the kantor legacy kode.',
@@ -600,9 +603,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $parentUnitByUnitIdItem = new Model\PathItem(
+        $parentUnitByUnitIdItem = new PathItem(
             ref: 'Unit',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getParentUnitByUnitId',
                 tags: ['Unit'],
                 responses: [
@@ -618,7 +621,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get parent unit information from unit id',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'id',
                     'path',
                     'Please provide the unit id (uuid).',
@@ -627,9 +630,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $parentUnitByUnitExactNameItem = new Model\PathItem(
+        $parentUnitByUnitExactNameItem = new PathItem(
             ref: 'Unit',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getParentUnitByUnitExactName',
                 tags: ['Unit'],
                 responses: [
@@ -645,7 +648,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get parent unit information from unit name (only for active unit)',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'name',
                     'path',
                     'Please provide the unit name.',
@@ -654,9 +657,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $parentUnitByUnitLegacyKodeItem = new Model\PathItem(
+        $parentUnitByUnitLegacyKodeItem = new PathItem(
             ref: 'Unit',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getParentUnitByUnitLegacyKode',
                 tags: ['Unit'],
                 responses: [
@@ -672,7 +675,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get parent unit information from unit legacy kode',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'legacyKode',
                     'path',
                     'Please provide the unit legacy kode.',
@@ -707,9 +710,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $childUnitsByUnitIdItem = new Model\PathItem(
+        $childUnitsByUnitIdItem = new PathItem(
             ref: 'Unit',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getChildUnitsByUnitId',
                 tags: ['Unit'],
                 responses: [
@@ -725,7 +728,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get child units information from unit id',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'id',
                     'path',
                     'Please provide the unit id (uuid).',
@@ -734,9 +737,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $childUnitsByUnitExactNameItem = new Model\PathItem(
+        $childUnitsByUnitExactNameItem = new PathItem(
             ref: 'Unit',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getChildUnitsByUnitExactName',
                 tags: ['Unit'],
                 responses: [
@@ -752,7 +755,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get child units information from unit name (only for active unit)',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'name',
                     'path',
                     'Please provide the unit name.',
@@ -761,9 +764,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $childUnitsByUnitLegacyKodeItem = new Model\PathItem(
+        $childUnitsByUnitLegacyKodeItem = new PathItem(
             ref: 'Unit',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'getChildUnitsByUnitLegacyKode',
                 tags: ['Unit'],
                 responses: [
@@ -779,7 +782,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get child units information from unit legacy kode',
-                parameters: [new Model\Parameter(
+                parameters: [new Parameter(
                     'legacyKode',
                     'path',
                     'Please provide the unit legacy kode.',

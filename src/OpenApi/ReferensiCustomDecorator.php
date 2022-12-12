@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\OpenApi;
 
-use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
-use ApiPlatform\Core\OpenApi\OpenApi;
-use ApiPlatform\Core\OpenApi\Model;
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\PathItem;
+use ApiPlatform\OpenApi\Model\RequestBody;
+use ApiPlatform\OpenApi\OpenApi;
 use ArrayObject;
 
 class ReferensiCustomDecorator implements OpenApiFactoryInterface
@@ -77,9 +79,9 @@ class ReferensiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $legacyDataReferenceItem = new Model\PathItem(
+        $legacyDataReferenceItem = new PathItem(
             ref: 'Referensi',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postLegacyDataItems',
                 tags: ['Referensi'],
                 responses: [
@@ -95,7 +97,7 @@ class ReferensiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get entity data include the legacy data',
-                requestBody: new Model\RequestBody(
+                requestBody: new RequestBody(
                     description: 'Get Entity data including legacy data for the specified entities,
                                         For the keyword, use the following (can be used simultaneous),
                                         and provide the value with arrays of uuid

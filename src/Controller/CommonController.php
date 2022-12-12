@@ -4,7 +4,7 @@
 namespace App\Controller;
 
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
@@ -12,12 +12,12 @@ use App\Helper\AplikasiHelper;
 use App\Helper\RoleHelper;
 use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CommonController extends AbstractController
 {
@@ -552,7 +552,7 @@ class CommonController extends AbstractController
             if (null !== $permissions) {
                 /** @var Permission $permission */
                 foreach ($permissions as $permission) {
-                    $iri = $iriConverter->getIriFromItem($permission);
+                    $iri = $iriConverter->getIriFromResource($permission);
                     if (!in_array($iri, $uniquePermissions, true)) {
                         $uniquePermissionsCount++;
                         $uniquePermissions[] = $iri;

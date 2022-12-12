@@ -2,7 +2,7 @@
 
 namespace App\Helper;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Pegawai\JabatanPegawai;
 use Doctrine\ORM\EntityManagerInterface;
@@ -390,21 +390,21 @@ class PosisiHelper
     private function makeOutputSinglePegawaiFromJabatanPegawai(JabatanPegawai $jabatanPegawai): array
     {
         return [
-            'userIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getPegawai()?->getUser()),
+            'userIri' => $this->iriConverter->getIriFromResource($jabatanPegawai->getPegawai()?->getUser()),
             'usedId' => $jabatanPegawai->getPegawai()?->getUser()?->getId(),
             'userIdentifier' => $jabatanPegawai->getPegawai()?->getUser()?->getUserIdentifier(),
-            'pegawaiIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getPegawai()),
+            'pegawaiIri' => $this->iriConverter->getIriFromResource($jabatanPegawai->getPegawai()),
             'pegawaiId' => $jabatanPegawai->getPegawai()?->getId(),
             'name' => $jabatanPegawai->getPegawai()?->getNama(),
             'nip9' => $jabatanPegawai->getPegawai()?->getNip9(),
             'nip18' => $jabatanPegawai->getPegawai()?->getNip18(),
-            'jabatanIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getJabatan()),
+            'jabatanIri' => $this->iriConverter->getIriFromResource($jabatanPegawai->getJabatan()),
             'jabatanId' => $jabatanPegawai->getJabatan()?->getId(),
             'jabatanName' => $jabatanPegawai->getJabatan()?->getNama(),
-            'kantorIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getKantor()),
+            'kantorIri' => $this->iriConverter->getIriFromResource($jabatanPegawai->getKantor()),
             'kantorId' => $jabatanPegawai->getKantor()?->getId(),
             'kantorName' => $jabatanPegawai->getKantor()?->getNama(),
-            'unitIri' => $this->iriConverter->getIriFromItem($jabatanPegawai->getUnit()),
+            'unitIri' => $this->iriConverter->getIriFromResource($jabatanPegawai->getUnit()),
             'unitId' => $jabatanPegawai->getUnit()?->getId(),
             'unitName' => $jabatanPegawai->getUnit()?->getNama(),
             'eselonName' => $jabatanPegawai->getJabatan()?->getEselon()?->getNama(),

@@ -4,7 +4,7 @@
 namespace App\Helper;
 
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Aplikasi\Aplikasi;
 use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
@@ -150,7 +150,7 @@ class RoleHelper
     public static function createRoleDefaultResponseFromRole(Role $role, IriConverterInterface $iriConverter): array
     {
         return [
-            'iri' => $iriConverter->getIriFromItem($role),
+            'iri' => $iriConverter->getIriFromResource($role),
             'id' => $role->getId(),
             'nama' => $role->getNama(),
             'deskripsi' => $role->getDeskripsi(),
