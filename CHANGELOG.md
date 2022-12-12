@@ -1,6 +1,14 @@
 # IAM Changelog
 
-## Version 2.2.4 (current stable)
+## Version 2.3.0 (current stable)
+  * Update Symfony to v6.2 (#114)
+  * Update Api Platform to v3 (#115)
+  * Update PHP to v8.2 (#116)
+  * Use PostgreSQL 15 (#117)
+  * Remove sensio/framework-extra-bundle packages (#118)
+  * Updated Symfony recipes
+
+## Version 2.2.4
   * Update infrastructure configuration from upstream (#113)
   * Updated Symfony Components and dependencies
 
