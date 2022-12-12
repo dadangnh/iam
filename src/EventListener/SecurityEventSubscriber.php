@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventListener;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Organisasi\TipeJabatan;
@@ -72,7 +72,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
 
                     // Assign to jabatanPegawais array
                     $jabatanPegawais[] = [
-                        'jabatanPegawai_iri' => $this->iriConverter->getIriFromItem($jabatanPegawai),
+                        'jabatanPegawai_iri' => $this->iriConverter->getIriFromResource($jabatanPegawai),
                         'jabatan_name' => $namaJabatan,
                         'kantor_name' => $namaKantor,
                         'unit_name' => $namaUnit,

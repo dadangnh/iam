@@ -4,7 +4,7 @@
 namespace App\Controller;
 
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
@@ -552,7 +552,7 @@ class CommonController extends AbstractController
             if (null !== $permissions) {
                 /** @var Permission $permission */
                 foreach ($permissions as $permission) {
-                    $iri = $iriConverter->getIriFromItem($permission);
+                    $iri = $iriConverter->getIriFromResource($permission);
                     if (!in_array($iri, $uniquePermissions, true)) {
                         $uniquePermissionsCount++;
                         $uniquePermissions[] = $iri;

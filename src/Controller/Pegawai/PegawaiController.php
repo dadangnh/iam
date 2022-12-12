@@ -2,7 +2,7 @@
 
 namespace App\Controller\Pegawai;
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Pegawai\Pegawai;
 use App\Helper\PosisiHelper;
 use DateTimeImmutable;
@@ -140,7 +140,7 @@ class PegawaiController extends AbstractController
                     || $today <= $jabatanPegawai->getTanggalSelesai())
             ) {
                 $output['jabatanPegawais'] = [
-                    'iri' => $iriConverter->getIriFromItem($jabatanPegawai),
+                    'iri' => $iriConverter->getIriFromResource($jabatanPegawai),
                     'jabatanName' => $jabatanPegawai->getJabatan()?->getNama(),
                     'kantorName' => $jabatanPegawai->getKantor()?->getNama(),
                     'unitName' => $jabatanPegawai->getUnit()?->getNama(),
@@ -154,7 +154,7 @@ class PegawaiController extends AbstractController
             // For the non active, provide status.
             } else {
                 $output['jabatanPegawais'] = [
-                    'iri' => $iriConverter->getIriFromItem($jabatanPegawai),
+                    'iri' => $iriConverter->getIriFromResource($jabatanPegawai),
                     'jabatanName' => $jabatanPegawai->getJabatan()?->getNama(),
                     'kantorName' => $jabatanPegawai->getKantor()?->getNama(),
                     'unitName' => $jabatanPegawai->getUnit()?->getNama(),

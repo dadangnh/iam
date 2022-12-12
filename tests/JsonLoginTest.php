@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
+use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use JsonException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 

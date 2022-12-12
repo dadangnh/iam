@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\OpenApi;
 
-use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
-use ApiPlatform\Core\OpenApi\OpenApi;
-use ApiPlatform\Core\OpenApi\Model;
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\PathItem;
+use ApiPlatform\OpenApi\Model\RequestBody;
+use ApiPlatform\OpenApi\OpenApi;
 use ArrayObject;
 
 class PegawaiCustomDecorator implements OpenApiFactoryInterface
@@ -62,9 +64,9 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $bulkPegawaiDataFromIdsItem = new Model\PathItem(
+        $bulkPegawaiDataFromIdsItem = new PathItem(
             ref: 'Pegawai',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postBulkPegawaiIdsItem',
                 tags: ['Pegawai'],
                 responses: [
@@ -80,7 +82,7 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get bulk data of Pegawai Entity',
-                requestBody: new Model\RequestBody(
+                requestBody: new RequestBody(
                     description: 'Get Pegawai data from array of pegawai uuid',
                     content: new ArrayObject([
                         'application/json' => [
@@ -93,9 +95,9 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $fetchAtasanFromPegawaiIdItem = new Model\PathItem(
+        $fetchAtasanFromPegawaiIdItem = new PathItem(
             ref: 'Pegawai',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postAtasanFromPegawaiIdItem',
                 tags: ['Pegawai'],
                 responses: [
@@ -111,7 +113,7 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get Atasan data of Pegawai Uid',
-                requestBody: new Model\RequestBody(
+                requestBody: new RequestBody(
                     description: 'Get Atasan data from pegawai uuid',
                     content: new ArrayObject([
                         'application/json' => [

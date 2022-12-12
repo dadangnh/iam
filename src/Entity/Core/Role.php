@@ -2,12 +2,18 @@
 
 namespace App\Entity\Core;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiProperty;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Serializer\Filter\PropertyFilter;
+use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
@@ -30,6 +36,54 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Role Class
  */
+#[ApiResource(
+    operations: [
+        new Get(
+            security: 'is_granted("ROLE_USER")',
+            securityMessage: 'Only a valid user can access this.'
+        ),
+        new Put(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        ),
+        new Patch(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        ),
+        new Delete(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        ),
+        new GetCollection(
+            security: 'is_granted("ROLE_USER")',
+            securityMessage: 'Only a valid user can access this.'
+        ),
+        new Post(
+            security: 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
+            securityMessage: 'Only admin/app can add new resource to this entity type.'
+        )
+    ],
+    normalizationContext: [
+        'groups' => [
+            'pegawai:read',
+            'role:read'
+        ],
+        'swagger_definition_name' => 'read'
+    ],
+    denormalizationContext: [
+        'groups' => [
+            'pegawai:write',
+            'role:write'
+        ],
+        'swagger_definition_name' => 'write'
+    ],
+    order: [
+        'level' => 'ASC',
+        'nama' => 'ASC'
+    ],
+    security: 'is_granted("ROLE_USER")',
+    securityMessage: 'Only a valid user can access this.'
+)]
 #[ORM\Entity(
     repositoryClass: RoleRepository::class
 )]
@@ -71,76 +125,32 @@ use Symfony\Component\Validator\Constraints as Assert;
         'systemName'
     ]
 )]
-#[ApiResource(
-    collectionOperations: [
-        'get' => [
-            'security' => 'is_granted("ROLE_USER")',
-            'security_message' => 'Only a valid user can access this.'
-        ],
-        'post' => [
-            'security'=>'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message'=>'Only admin/app can add new resource to this entity type.'
-        ]
-    ],
-    itemOperations: [
-        'get' => [
-            'security' => 'is_granted("ROLE_USER")',
-            'security_message' => 'Only a valid user can access this.'
-        ],
-        'put' => [
-            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message' => 'Only admin/app can add new resource to this entity type.'
-        ],
-        'patch' => [
-            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message' => 'Only admin/app can add new resource to this entity type.'
-        ],
-        'delete' => [
-            'security' => 'is_granted("ROLE_APLIKASI") or is_granted("ROLE_ADMIN") or is_granted("ROLE_UPK_PUSAT")',
-            'security_message' => 'Only admin/app can add new resource to this entity type.'
-        ],
-    ],
-    attributes: [
-        'security' => 'is_granted("ROLE_USER")',
-        'security_message' => 'Only a valid user can access this.',
-        'order' => [
-            'level' => 'ASC',
-            'nama' => 'ASC',
-        ]
-    ],
-    denormalizationContext: [
-        'groups' => ['pegawai:write', 'role:write'],
-        'swagger_definition_name' => 'write'
-    ],
-    normalizationContext: [
-        'groups' => ['pegawai:read', 'role:read'],
-        'swagger_definition_name' => 'read'
-    ]
-)]
 #[ApiFilter(
-    SearchFilter::class,
+    filterClass: SearchFilter::class,
     properties: [
         'id' => 'exact',
         'nama' => 'ipartial',
         'systemName' => 'ipartial',
-        'deskripsi' => 'ipartial',
+        'deskripsi' => 'ipartial'
     ]
 )]
 #[ApiFilter(
-    NumericFilter::class,
+    filterClass: NumericFilter::class,
     properties: [
         'level',
         'jenis'
     ]
 )]
 #[ApiFilter(
-    DateFilter::class,
+    filterClass: DateFilter::class,
     properties: [
         'startDate',
         'endDate'
     ]
 )]
-#[ApiFilter(PropertyFilter::class)]
+#[ApiFilter(
+    filterClass: PropertyFilter::class
+)]
 class Role
 {
     #[ORM\Id]
@@ -207,6 +217,7 @@ class Role
     )]
     private ?int $level;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToOne(
         targetEntity: Role::class,
         inversedBy: 'containRoles'
@@ -218,9 +229,9 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private ?Role $subsOfRole;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\OneToMany(
         mappedBy: 'subsOfRole',
         targetEntity: Role::class
@@ -231,9 +242,9 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private Collection $containRoles;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
         targetEntity: User::class,
         inversedBy: 'role',
@@ -259,9 +270,9 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private Collection $users;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
         targetEntity: Jabatan::class,
         inversedBy: 'roles',
@@ -287,9 +298,9 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private Collection $jabatans;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
         targetEntity: Unit::class,
         inversedBy: 'roles',
@@ -315,9 +326,9 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private Collection $units;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
         targetEntity: Kantor::class,
         inversedBy: 'roles',
@@ -343,9 +354,9 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private Collection $kantors;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
         targetEntity: Eselon::class,
         inversedBy: 'roles',
@@ -371,9 +382,9 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private Collection $eselons;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
         targetEntity: JenisKantor::class,
         inversedBy: 'roles',
@@ -399,9 +410,9 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private Collection $jenisKantors;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
         targetEntity: Group::class,
         inversedBy: 'roles',
@@ -427,9 +438,9 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private Collection $groups;
 
+    #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
         targetEntity: Permission::class,
         mappedBy: 'roles'
@@ -440,7 +451,6 @@ class Role
             'role:write'
         ]
     )]
-    #[ApiProperty(readableLink: false, writableLink: false)]
     private Collection $permissions;
 
     #[ORM\Column(

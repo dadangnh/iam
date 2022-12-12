@@ -2,9 +2,10 @@
 
 namespace App\OpenApi;
 
-use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
-use ApiPlatform\Core\OpenApi\OpenApi;
-use ApiPlatform\Core\OpenApi\Model;
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\PathItem;
+use ApiPlatform\OpenApi\OpenApi;
 use ArrayObject;
 
 class RefreshTokenDecorator implements OpenApiFactoryInterface
@@ -34,9 +35,9 @@ class RefreshTokenDecorator implements OpenApiFactoryInterface
         ]);
 
 
-        $clearExpiredTokenItem = new Model\PathItem(
+        $clearExpiredTokenItem = new PathItem(
             ref: 'Clear Expired Refresh Token',
-            get: new Model\Operation(
+            get: new Operation(
                 operationId: 'clearExpiredRefreshToken',
                 tags: ['Token'],
                 responses: [

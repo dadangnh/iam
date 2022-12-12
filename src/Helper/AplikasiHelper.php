@@ -4,7 +4,7 @@
 namespace App\Helper;
 
 
-use ApiPlatform\Core\Api\IriConverterInterface;
+use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Aplikasi\Aplikasi;
 use JetBrains\PhpStorm\ArrayShape;
 
@@ -27,7 +27,7 @@ class AplikasiHelper
     public static function createReadableAplikasiJsonData(Aplikasi $aplikasi, IriConverterInterface $iriConverter): array
     {
         return [
-            'iri' => $iriConverter->getIriFromItem($aplikasi),
+            'iri' => $iriConverter->getIriFromResource($aplikasi),
             'id' => $aplikasi->getId(),
             'nama' => $aplikasi->getNama(),
             'deskripsi' => $aplikasi->getDeskripsi(),

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\OpenApi;
 
-use ApiPlatform\Core\OpenApi\Factory\OpenApiFactoryInterface;
-use ApiPlatform\Core\OpenApi\OpenApi;
-use ApiPlatform\Core\OpenApi\Model;
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\PathItem;
+use ApiPlatform\OpenApi\Model\RequestBody;
+use ApiPlatform\OpenApi\OpenApi;
 use ArrayObject;
 
 final class AuthenticationDecorator implements OpenApiFactoryInterface
@@ -162,9 +164,9 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $authItem = new Model\PathItem(
+        $authItem = new PathItem(
             ref: 'JWT Token',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postCredentialsItem',
                 tags: ['Authentication - Create JWT Token'],
                 responses: [
@@ -180,7 +182,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Get JWT token to login.',
-                requestBody: new Model\RequestBody(
+                requestBody: new RequestBody(
                     description: 'Generate new JWT Token',
                     content: new ArrayObject([
                         'application/json' => [
@@ -193,9 +195,9 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $refreshTokenItem = new Model\PathItem(
+        $refreshTokenItem = new PathItem(
             ref: 'Refresh JWT Token',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postRefreshTokenItem',
                 tags: ['Token'],
                 responses: [
@@ -211,7 +213,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Create new JWT Token from Refresh Token.',
-                requestBody: new Model\RequestBody(
+                requestBody: new RequestBody(
                     description: 'Generate new JWT Token using Refresh Token',
                     content: new ArrayObject([
                         'application/json' => [
@@ -224,9 +226,9 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $checkUserIdentifierItem = new Model\PathItem(
+        $checkUserIdentifierItem = new PathItem(
             ref: 'Check user identifier',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postCredentialsItem',
                 tags: ['User'],
                 responses: [
@@ -252,7 +254,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Check whether username is valid or not.',
-                requestBody: new Model\RequestBody(
+                requestBody: new RequestBody(
                     description: 'Check whether username is valid or not',
                     content: new ArrayObject([
                         'application/json' => [
@@ -265,9 +267,9 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $changePasswordItem = new Model\PathItem(
+        $changePasswordItem = new PathItem(
             ref: 'Change Password',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postCredentialsToChangePasswordItem',
                 tags: ['User'],
                 responses: [
@@ -283,7 +285,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Change user password.',
-                requestBody: new Model\RequestBody(
+                requestBody: new RequestBody(
                     description: 'Generate new JWT Token',
                     content: new ArrayObject([
                         'application/json' => [
@@ -296,9 +298,9 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $whoAmIOldItem = new Model\PathItem(
+        $whoAmIOldItem = new PathItem(
             ref: 'Who Am I?',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postCredentialsItem',
                 tags: ['Authentication - Get User Data From Token'],
                 responses: [
@@ -318,9 +320,9 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $whoAmIItem = new Model\PathItem(
+        $whoAmIItem = new PathItem(
             ref: 'Token',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postWhoAmIItem',
                 tags: ['Token'],
                 responses: [
@@ -340,9 +342,9 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ),
         );
 
-        $invalidateTokenItem = new Model\PathItem(
+        $invalidateTokenItem = new PathItem(
             ref: 'Logout/ Invalidate Refresh Token ',
-            post: new Model\Operation(
+            post: new Operation(
                 operationId: 'postInvalidateTokenItem',
                 tags: ['Token'],
                 responses: [
@@ -358,7 +360,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                     ],
                 ],
                 summary: 'Logout endpoint by invalidating refresh token.',
-                requestBody: new Model\RequestBody(
+                requestBody: new RequestBody(
                     description: 'Logout endpoint by invalidating refresh token.',
                     content: new ArrayObject([
                         'application/json' => [
