@@ -60,7 +60,7 @@
         "symfony/uid": "6.2.*",
         "symfony/validator": "6.2.*",
         "symfony/yaml": "6.2.*",
-        "webonyx/graphql-php": "^14.11"
+        "webonyx/graphql-php": "^15.1"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
