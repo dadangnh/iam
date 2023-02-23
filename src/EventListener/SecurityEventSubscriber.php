@@ -72,6 +72,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                     $legacyKodeKpp      = $kantor?->getLegacyKodeKpp();
                     $legacyKodeKanwil   = $kantor?->getLegacyKodeKanwil();
                     $unitId             = $unit?->getId();
+                    $kantorId           = $kantor?->getId();
 
                     // Assign to jabatanPegawais array
                     $jabatanPegawais[] = [
@@ -82,6 +83,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                         'tipeJabatan_name'      => $namaTipe,
                         'legacyKodeKpp'         => $legacyKodeKpp,
                         'legacyKodeKanwil'      => $legacyKodeKanwil,
+                        'kantorId'              => $kantorId,
                         'unitId'                => $unitId,
                         'roles'                 => RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
                     ];
