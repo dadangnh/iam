@@ -29,7 +29,7 @@
         "ext-json": "*",
         "api-platform/core": "^3.0",
         "composer/package-versions-deprecated": "^1.11.99.4",
-        "doctrine/annotations": "^1.13",
+        "doctrine/annotations": "^2.0",
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.10",
@@ -60,7 +60,7 @@
         "symfony/uid": "6.2.*",
         "symfony/validator": "6.2.*",
         "symfony/yaml": "6.2.*",
-        "webonyx/graphql-php": "^14.11"
+        "webonyx/graphql-php": "^15.1"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",

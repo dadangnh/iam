@@ -65,19 +65,27 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                     $tipe = $jabatanPegawai->getTipe();
 
                     // Get the name from related entity
-                    $namaJabatan = $jabatan?->getNama();
-                    $namaKantor = $kantor?->getNama();
-                    $namaUnit = $unit?->getNama();
-                    $namaTipe = $tipe?->getNama();
+                    $namaJabatan        = $jabatan?->getNama();
+                    $namaKantor         = $kantor?->getNama();
+                    $namaUnit           = $unit?->getNama();
+                    $namaTipe           = $tipe?->getNama();
+                    $legacyKodeKpp      = $kantor?->getLegacyKodeKpp();
+                    $legacyKodeKanwil   = $kantor?->getLegacyKodeKanwil();
+                    $unitId             = $unit?->getId();
+                    $kantorId           = $kantor?->getId();
 
                     // Assign to jabatanPegawais array
                     $jabatanPegawais[] = [
-                        'jabatanPegawai_iri' => $this->iriConverter->getIriFromResource($jabatanPegawai),
-                        'jabatan_name' => $namaJabatan,
-                        'kantor_name' => $namaKantor,
-                        'unit_name' => $namaUnit,
-                        'tipeJabatan_name' => $namaTipe,
-                        'roles' => RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
+                        'jabatanPegawai_iri'    => $this->iriConverter->getIriFromResource($jabatanPegawai),
+                        'jabatan_name'          => $namaJabatan,
+                        'kantor_name'           => $namaKantor,
+                        'unit_name'             => $namaUnit,
+                        'tipeJabatan_name'      => $namaTipe,
+                        'legacyKodeKpp'         => $legacyKodeKpp,
+                        'legacyKodeKanwil'      => $legacyKodeKanwil,
+                        'kantorId'              => $kantorId,
+                        'unitId'                => $unitId,
+                        'roles'                 => RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
                     ];
                 }
             }
