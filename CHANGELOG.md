@@ -1,6 +1,6 @@
 # IAM Changelog
 
-## Version 2.3.3
+## Version 2.3.3 (current stable)
   * Expose legacy_kode_kpp, legacy_kode_kanwil, unit_id, kantor_id to JWT Token (#120)
   * Update Symfony to v6.2.6 (#121)
   * Updated Symfony Components and dependencies
@@ -8,7 +8,7 @@
   * Updated Api Platform to v.3.1.2
   * disable graphql playground
 
-## Version 2.3.1 (current stable)
+## Version 2.3.1
   * Fix GitHub Action failed to run (#119)
 
 ## Version 2.3.0
