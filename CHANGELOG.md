@@ -1,6 +1,15 @@
 # IAM Changelog
 
-## Version 2.3.3 (current stable)
+## Version 2.3.4 (current stable)
+  * Remove unused files (#122)
+  * Update Symfony to v6.2.8
+  * Updated Symfony Components and dependencies
+  * Updated Symfony recipes
+  * Updated Api Platform to v.3.1.7
+  * disable graphql playground
+  * Fix docker image failed to build
+
+## Version 2.3.3
   * Expose legacy_kode_kpp, legacy_kode_kanwil, unit_id, kantor_id to JWT Token (#120)
   * Update Symfony to v6.2.6 (#121)
   * Updated Symfony Components and dependencies
