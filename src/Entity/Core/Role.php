@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use App\Entity\Organisasi\Eselon;
@@ -146,6 +147,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     properties: [
         'startDate',
         'endDate'
+    ]
+)]
+#[ApiFilter(
+    filterClass: BooleanFilter::class,
+    properties: [
+        'Operator',
     ]
 )]
 #[ApiFilter(
@@ -489,6 +496,18 @@ class Role
         ]
     )]
     private ?\DateTimeImmutable $endDate = null;
+
+    #[ORM\Column(
+        type: Types::BOOLEAN,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
+    private ?bool $Operator = null;
 
     public function __construct()
     {
@@ -869,6 +888,18 @@ class Role
     public function setEndDate(?\DateTimeImmutable $endDate): self
     {
         $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    public function isOperator(): ?bool
+    {
+        return $this->Operator;
+    }
+
+    public function setOperator(?bool $Operator): self
+    {
+        $this->Operator = $Operator;
 
         return $this;
     }

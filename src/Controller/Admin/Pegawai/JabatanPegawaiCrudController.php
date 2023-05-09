@@ -30,7 +30,8 @@ class JabatanPegawaiCrudController extends AbstractCrudController
             AssociationField::new('atribut', 'Jabatan Atribut')
                 ->autocomplete()
                 ->setHelp('Khusus jabatan AR/ PK/ Pelaksana yang memiliki atribut 1-100')
-                ->hideOnIndex(),
+                ->hideOnIndex()
+                ->setRequired(false),
             AssociationField::new('kantor', 'Kantor')
                 ->autocomplete()
                 ->setRequired(true),
