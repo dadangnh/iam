@@ -115,4 +115,39 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findRoleCombinationByPegawai($pegawaiId): mixed
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "select string_agg(nama, ',') role
+from (
+         select pegawai_id, nama
+         from (select r2.nama, r2.id role_id, a.*, jabatan_adhoc
+               from (select pegawai_id, jabatan_id
+                     FROM jabatan_pegawai p
+                              left join jabatan j on p.jabatan_id = j.id
+                     where jenis in ('STRUKTURAL', 'FUNGSIONAL')) a
+                        left join (select pegawai_id, jabatan_id jabatan_adhoc
+                                   FROM jabatan_pegawai p
+                                            left join jabatan j on p.jabatan_id = j.id
+                                   where jenis in ('ADHOC')) b on b.pegawai_id = a.pegawai_id
+                        JOIN role_jabatan rj ON rj.jabatan_id = a.jabatan_id
+                        join role r2 ON r2.id = rj.role_id AND r2.jenis in (2, 8, 9, 10, 11, 12) AND
+                                        (r2.end_date IS NULL OR now() <= r2.end_date) and r2.operator = true) x
+         where role_id in (select role_id
+                           from role_jabatan y
+                           where y.jabatan_id = jabatan_adhoc
+         ) AND pegawai_id = :pegawai_id
+     ) y;";
+
+        $stmt       = $conn->prepare($sql);
+        $resultSet  = $stmt->executeQuery([
+            'pegawai_id' => $pegawaiId,
+        ]);
+
+        return $resultSet->fetchAssociative();
+    }
 }

@@ -13,6 +13,7 @@ use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\User\User;
 use App\Helper\RoleHelper;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use JetBrains\PhpStorm\ArrayShape;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
@@ -23,9 +24,12 @@ class SecurityEventSubscriber implements EventSubscriberInterface
     /** @var IriConverterInterface  */
     private IriConverterInterface $iriConverter;
 
-    public function __construct(IriConverterInterface $iriConverter)
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(IriConverterInterface $iriConverter, EntityManagerInterface $entityManager)
     {
         $this->iriConverter = $iriConverter;
+        $this->entityManager = $entityManager;
     }
 
     #[ArrayShape([Events::JWT_CREATED => "string"])]
@@ -85,7 +89,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                         'legacyKodeKanwil'      => $legacyKodeKanwil,
                         'kantorId'              => $kantorId,
                         'unitId'                => $unitId,
-                        'roles'                 => RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
+                        'roles'                 => RoleHelper::getPlainRolesNameFromJabatanPegawai($this->entityManager, $jabatanPegawai),
                     ];
                 }
             }
@@ -93,7 +97,8 @@ class SecurityEventSubscriber implements EventSubscriberInterface
 
         $payload = $event->getData();
         $payload['id'] = $user->getId();
-        $payload['roles'] = $user->getRoles();
+//         $payload['roles'] = $user->getRoles();
+        $payload['roles'] = $user->getRolesCustom($this->entityManager);
         $payload['username'] = $user->getUserIdentifier();
         $payload['exp'] = (new DateTimeImmutable())->getTimestamp() + 3600;
         $payload['expired'] = (new DateTimeImmutable())->getTimestamp() + 3600;

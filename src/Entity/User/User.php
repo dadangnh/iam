@@ -24,7 +24,10 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -326,6 +329,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->role = new ArrayCollection();
         $this->ownedGroups = new ArrayCollection();
         $this->groupMembers = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -370,6 +374,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
+        return $this->roles;
+
+    }
+
+    public function getRolesCustom(EntityManagerInterface $entityManager): array
+    {
         // Get Direct Role Relation
         $plainRoles = $this->getDirectRoles();
 
@@ -395,19 +405,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                             || null === $jabatanPegawai->getTanggalSelesai())
                     ) {
                         $arrayOfRoles[] = array_values(
-                            RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai)
+                            RoleHelper::getRolesFromJabatanPegawaiCustom($entityManager,$jabatanPegawai)
                         );
+                        $arrayOfRoles[] = array_values($this->roles);
                     }
                 }
             } else {
                 return ['ROLE_RETIRED'];
             }
-
             $plainRoles = array_values(array_merge($plainRoles, ...$arrayOfRoles));
         }
 
         return array_values(array_unique($plainRoles));
     }
+
 
     /**
      * @see UserInterface
@@ -680,5 +691,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->serviceAccount = $serviceAccount;
         return $this;
+    }
+
+    public function generateRoles(LifecycleEventArgs $event): array
+    {
+        return $this->roles = $this->getRolesCustom($event->getObjectManager());
     }
 }

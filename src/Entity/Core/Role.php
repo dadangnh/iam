@@ -499,7 +499,11 @@ class Role
 
     #[ORM\Column(
         type: Types::BOOLEAN,
-        nullable: true
+        nullable: true,
+        options: [
+        'default' => false
+        ]
+
     )]
     #[Groups(
         groups: [
@@ -507,7 +511,7 @@ class Role
             'role:write'
         ]
     )]
-    private ?bool $Operator = null;
+    private ?bool $Operator = false;
 
     public function __construct()
     {

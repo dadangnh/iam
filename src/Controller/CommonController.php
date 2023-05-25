@@ -10,6 +10,8 @@ use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Helper\AplikasiHelper;
 use App\Helper\RoleHelper;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,14 +24,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class CommonController extends AbstractController
 {
     /**
-     * @var ManagerRegistry
+     * @var EntityManagerInterface
      */
-    private ManagerRegistry $doctrine;
+    private EntityManagerInterface $doctrine;
 
-    public function __construct(ManagerRegistry $doctrine) {
+    public function __construct(EntityManagerInterface $doctrine) {
         $this->doctrine = $doctrine;
     }
-
     /**
      * @return RedirectResponse
      */
