@@ -454,7 +454,7 @@ class CommonController extends AbstractController
             ], 204);
         }
 
-        $roles = RoleHelper::getRolesFromJabatanPegawai($jabatanPegawai);
+        $roles = RoleHelper::getRolesFromJabatanPegawaiCustom($this->doctrine,$jabatanPegawai);
 
         if (empty($roles)) {
             return $this->json([

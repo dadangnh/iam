@@ -329,7 +329,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->role = new ArrayCollection();
         $this->ownedGroups = new ArrayCollection();
         $this->groupMembers = new ArrayCollection();
-        $this->roles = new ArrayCollection();
     }
 
     public function __toString(): string
