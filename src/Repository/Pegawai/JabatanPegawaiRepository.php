@@ -141,7 +141,7 @@ from (
                            from role_jabatan y
                            where y.jabatan_id = jabatan_adhoc
          ) AND pegawai_id = :pegawai_id
-     ) y;";
+     ) y";
 
         $stmt       = $conn->prepare($sql);
         $resultSet  = $stmt->executeQuery([

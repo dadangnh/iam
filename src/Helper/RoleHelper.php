@@ -11,6 +11,7 @@ use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use JetBrains\PhpStorm\ArrayShape;
 
 class RoleHelper
@@ -26,6 +27,7 @@ class RoleHelper
     /**
      * @param JabatanPegawai $jabatanPegawai
      * @param EntityManagerInterface $entityManager
+     * @throws NonUniqueResultException
      * @return array
      */
     public static function getRolesFromJabatanPegawaiCustom(EntityManagerInterface $entityManager, JabatanPegawai $jabatanPegawai): array
@@ -151,32 +153,18 @@ class RoleHelper
 
         return array_values(array_unique($plainRoles));
 
-//        return $roleCombination;
     }
 
 
     /**
      * @param JabatanPegawai $jabatanPegawai
      * @param EntityManagerInterface $entityManager
+     * @throws NonUniqueResultException
      * @return array
      */
     public static function getPlainRolesNameFromJabatanPegawai(EntityManagerInterface $entityManager, JabatanPegawai $jabatanPegawai): array
     {
-//        $roles = self::getRolesFromJabatanPegawai($jabatanPegawai);
         $roles = self::getRolesFromJabatanPegawaiCustom($entityManager, $jabatanPegawai);
-//        $plainRoles = [];
-
-//        /** @var Role $role */
-//        foreach ($roles as $role) {
-//            if ($role->getStartDate() <= new DateTimeImmutable('now')
-//                && ($role->getEndDate() >= new DateTimeImmutable('now')
-//                    || null === $role->getEndDate())
-//            ) {
-//                $plainRoles[] = $role->getNama();
-//            }
-//        }
-
-//        return array_values(array_unique($plainRoles));
         return [$roles];
     }
 

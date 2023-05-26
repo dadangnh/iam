@@ -3,7 +3,8 @@
 namespace App\EventListener;
 
 use App\Entity\User\User;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\ManagerRegistry;
 
 class customEventListener
