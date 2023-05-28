@@ -31,11 +31,11 @@ class JenisKantorController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $name
+     * @param string $name
      * @return JsonResponse
      */
     #[Route('/api/jenis_kantors/active/{name}', methods: ['GET'])]
-    public function getActiveJenisKantorByKeyword(ManagerRegistry $doctrine, String $name): JsonResponse
+    public function getActiveJenisKantorByKeyword(ManagerRegistry $doctrine, string $name): JsonResponse
     {
         if (3 > strlen($name)) {
             return $this->json([

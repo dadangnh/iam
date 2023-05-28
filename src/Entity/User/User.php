@@ -2,23 +2,23 @@
 
 namespace App\Entity\User;
 
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\Pegawai;
-use App\Repository\User\UserRepository;
 use App\Helper\RoleHelper;
+use App\Repository\User\UserRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -374,7 +374,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         return $this->roles;
-
     }
 
     /**
@@ -470,6 +469,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // for inactive user, give inactive role
         return ['ROLE_INACTIVE'];
     }
+
     /**
      * @see PasswordAuthenticatedUserInterface
      */
@@ -685,11 +685,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $this;
     }
-    public function isServiceAccount() : ?bool
+
+    public function isServiceAccount(): ?bool
     {
         return $this->serviceAccount;
     }
-    public function setServiceAccount(bool $serviceAccount) : self
+
+    public function setServiceAccount(bool $serviceAccount): self
     {
         $this->serviceAccount = $serviceAccount;
         return $this;

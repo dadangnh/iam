@@ -51,7 +51,7 @@ class CommonController extends AbstractController
      */
     #[Route('/api/get_roles_by_jabatan_pegawai', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function getRoleByJabatanPegawai(Request $request,
+    public function getRoleByJabatanPegawai(Request               $request,
                                             IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
@@ -82,7 +82,7 @@ class CommonController extends AbstractController
      */
     #[Route('/api/get_aplikasi_by_role_name', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function getAplikasiByRoleName(Request $request,
+    public function getAplikasiByRoleName(Request               $request,
                                           IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
@@ -407,7 +407,7 @@ class CommonController extends AbstractController
      */
     #[Route('/api/jabatan_pegawais/{id}/roles', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function showRolesByJabatanPegawais(string $id,
+    public function showRolesByJabatanPegawais(string                $id,
                                                IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
@@ -445,7 +445,7 @@ class CommonController extends AbstractController
      * @return JsonResponse
      * @throws NonUniqueResultException|Exception
      */
-    private function findRoleFromIdJabatanPegawai(mixed $idJabatan,
+    private function findRoleFromIdJabatanPegawai(mixed                 $idJabatan,
                                                   IriConverterInterface $iriConverter): JsonResponse
     {
         /** @var JabatanPegawai $jabatanPegawai */

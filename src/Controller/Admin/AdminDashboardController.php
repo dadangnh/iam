@@ -63,12 +63,12 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Unit Organisasi', 'fa fa-building-o', Unit::class);
         yield MenuItem::linkToCrud('Jabatan', 'fa fa-id-card', Jabatan::class);
         yield MenuItem::section('Pegawai');
-        yield MenuItem::linkToCrud('Pegawai','far fa-address-book',Pegawai::class);
-        yield MenuItem::linkToCrud('Jabatan Pegawai','far fa-id-card',JabatanPegawai::class);
+        yield MenuItem::linkToCrud('Pegawai', 'far fa-address-book', Pegawai::class);
+        yield MenuItem::linkToCrud('Jabatan Pegawai', 'far fa-id-card', JabatanPegawai::class);
         yield MenuItem::section('User');
-        yield MenuItem::linkToCrud('User', 'fa fa-user', User::class) ;
+        yield MenuItem::linkToCrud('User', 'fa fa-user', User::class);
         yield MenuItem::section('Core');
-        yield MenuItem::linkToCrud('Role', 'fa fa-user-secret', Role::class) ;
-        yield MenuItem::linkToCrud('Permissions', 'fa fa-terminal', Permission::class) ;
+        yield MenuItem::linkToCrud('Role', 'fa fa-user-secret', Role::class);
+        yield MenuItem::linkToCrud('Permissions', 'fa fa-terminal', Permission::class);
     }
 }

@@ -157,8 +157,8 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
                     AND pegawai_id = :pegawai_id) y
         ";
 
-        $stmt       = $conn->prepare($sql);
-        $resultSet  = $stmt->executeQuery([
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery([
             'pegawai_id' => $pegawaiId,
         ]);
 

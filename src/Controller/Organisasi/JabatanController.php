@@ -31,11 +31,11 @@ class JabatanController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $name
+     * @param string $name
      * @return JsonResponse
      */
     #[Route('/api/jabatans/active/{name}', methods: ['GET'])]
-    public function getActiveJabatanByKeyword(ManagerRegistry $doctrine, String $name): JsonResponse
+    public function getActiveJabatanByKeyword(ManagerRegistry $doctrine, string $name): JsonResponse
     {
         if (3 > strlen($name)) {
             return $this->json([

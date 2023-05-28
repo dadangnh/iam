@@ -17,7 +17,7 @@ class NewUserFixtures extends Fixture
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
-     $this->passwordHasher = $passwordHasher;
+        $this->passwordHasher = $passwordHasher;
     }
 
     public function load(ObjectManager $manager): void

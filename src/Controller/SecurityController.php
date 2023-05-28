@@ -27,7 +27,8 @@ class SecurityController extends AbstractController
      */
     private EntityManagerInterface $entityManager;
 
-    public function __construct(ManagerRegistry $doctrine, EntityManagerInterface $entityManager) {
+    public function __construct(ManagerRegistry $doctrine, EntityManagerInterface $entityManager)
+    {
         $this->doctrine = $doctrine;
         $this->entityManager = $entityManager;
     }
