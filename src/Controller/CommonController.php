@@ -10,9 +10,9 @@ use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Helper\AplikasiHelper;
 use App\Helper\RoleHelper;
-use Doctrine\ORM\EntityManager;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,9 +28,11 @@ class CommonController extends AbstractController
      */
     private EntityManagerInterface $doctrine;
 
-    public function __construct(EntityManagerInterface $doctrine) {
+    public function __construct(EntityManagerInterface $doctrine)
+    {
         $this->doctrine = $doctrine;
     }
+
     /**
      * @return RedirectResponse
      */
@@ -44,7 +46,8 @@ class CommonController extends AbstractController
      * @param Request $request
      * @param IriConverterInterface $iriConverter
      * @return JsonResponse
-     * @throws JsonException
+     * @throws JsonException|NonUniqueResultException
+     * @throws Exception
      */
     #[Route('/api/get_roles_by_jabatan_pegawai', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
@@ -201,7 +204,7 @@ class CommonController extends AbstractController
      */
     #[Route('/api/get_all_aplikasi_by_role_name', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function getAllAplikasiByRoleName(Request $request,
+    public function getAllAplikasiByRoleName(Request               $request,
                                              IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
@@ -272,7 +275,7 @@ class CommonController extends AbstractController
      */
     #[Route('/api/roles/{roleName}/aplikasis', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function showAplikasisFromRoleName(string $roleName,
+    public function showAplikasisFromRoleName(string                $roleName,
                                               IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
@@ -306,7 +309,7 @@ class CommonController extends AbstractController
      */
     #[Route('/api/roles/{roleName}/all_aplikasis', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function showAllAplikasisFromRoleName(string $roleName,
+    public function showAllAplikasisFromRoleName(string                $roleName,
                                                  IriConverterInterface $iriConverter): JsonResponse
     {
         $this->ensureUserLoggedIn();
@@ -399,6 +402,8 @@ class CommonController extends AbstractController
      * @param string $id
      * @param IriConverterInterface $iriConverter
      * @return JsonResponse
+     * @throws NonUniqueResultException
+     * @throws Exception
      */
     #[Route('/api/jabatan_pegawais/{id}/roles', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -438,6 +443,7 @@ class CommonController extends AbstractController
      * @param mixed $idJabatan
      * @param IriConverterInterface $iriConverter
      * @return JsonResponse
+     * @throws NonUniqueResultException|Exception
      */
     private function findRoleFromIdJabatanPegawai(mixed $idJabatan,
                                                   IriConverterInterface $iriConverter): JsonResponse
@@ -454,7 +460,7 @@ class CommonController extends AbstractController
             ], 204);
         }
 
-        $roles = RoleHelper::getRolesFromJabatanPegawaiCustom($this->doctrine,$jabatanPegawai);
+        $roles = RoleHelper::getRolesFromJabatanPegawai($this->doctrine, $jabatanPegawai);
 
         if (empty($roles)) {
             return $this->json([

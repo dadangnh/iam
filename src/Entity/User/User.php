@@ -23,11 +23,11 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -377,7 +377,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     }
 
-    public function getRolesCustom(EntityManagerInterface $entityManager): array
+    /**
+     * @throws Exception
+     */
+    public function getCustomRoles(ObjectManager $objectManager): array
     {
         // Get Direct Role Relation
         $plainRoles = $this->getDirectRoles();
@@ -404,7 +407,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                             || null === $jabatanPegawai->getTanggalSelesai())
                     ) {
                         $arrayOfRoles[] = array_values(
-                            RoleHelper::getRolesFromJabatanPegawaiCustom($entityManager,$jabatanPegawai)
+                            RoleHelper::getRolesFromJabatanPegawai($objectManager, $jabatanPegawai)
                         );
                         $arrayOfRoles[] = array_values($this->roles);
                     }
@@ -692,8 +695,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     public function generateRoles(LifecycleEventArgs $event): array
     {
-        return $this->roles = $this->getRolesCustom($event->getObjectManager());
+        return $this->roles = $this->getCustomRoles($event->getObjectManager());
     }
 }

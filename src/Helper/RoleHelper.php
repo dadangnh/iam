@@ -10,29 +10,21 @@ use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\DBAL\Exception;
+use Doctrine\Persistence\ObjectManager;
 use JetBrains\PhpStorm\ArrayShape;
 
 class RoleHelper
 {
-    private EntityManagerInterface $entityManager;
-
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     /**
      * @param JabatanPegawai $jabatanPegawai
-     * @param EntityManagerInterface $entityManager
-     * @throws NonUniqueResultException
+     * @param ObjectManager $objectManager
      * @return array
+     * @throws Exception
      */
-    public static function getRolesFromJabatanPegawaiCustom(EntityManagerInterface $entityManager, JabatanPegawai $jabatanPegawai): array
+    public static function getRolesFromJabatanPegawai(ObjectManager  $objectManager,
+                                                      JabatanPegawai $jabatanPegawai): array
     {
-
         // Get role by jabatan pegawai
         // Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
         // 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
@@ -47,8 +39,6 @@ class RoleHelper
         $pegawai = $jabatanPegawai->getPegawai();
         $pegawaiId = $pegawai->getId();
 
-        $role = $jabatan->getRoles();
-
         if ($jenisKantorKantor === $jenisKantorUnit
             && null !== $jenisKantorKantor
             && null !== $jenisKantorUnit
@@ -62,12 +52,12 @@ class RoleHelper
         if (null !== $jabatan) {
             // direct role from jabatan/ jabatan unit/ jabatan kantor/ combination
             foreach ($jabatan->getRoles() as $role) {
-                if (true === $role->isOperator()){
-                    $roleCombination = $entityManager
+                if (true === $role->isOperator()) {
+                    $roleCombination = $objectManager
                         ->getRepository(JabatanPegawai::class)
                         ->findRoleCombinationByPegawai($pegawaiId);
-                    if(2 === $role->getJenis() && $role->getNama()) {
-                        if(null !== $roleCombination['role']){
+                    if (2 === $role->getJenis() && $role->getNama()) {
+                        if (null !== $roleCombination['role']) {
                             $plainRoles[] = $roleCombination['role'];
                         }
                     }
@@ -139,9 +129,7 @@ class RoleHelper
             }
         }
 
-
         /** @var Role $role */
-
         foreach ($roles as $role) {
             if ($role->getStartDate() <= new DateTimeImmutable('now')
                 && ($role->getEndDate() >= new DateTimeImmutable('now')
@@ -152,19 +140,19 @@ class RoleHelper
         }
 
         return array_values(array_unique($plainRoles));
-
     }
-
 
     /**
      * @param JabatanPegawai $jabatanPegawai
-     * @param EntityManagerInterface $entityManager
-     * @throws NonUniqueResultException
+     * @param ObjectManager $objectManager
      * @return array
+     * @throws Exception
      */
-    public static function getPlainRolesNameFromJabatanPegawai(EntityManagerInterface $entityManager, JabatanPegawai $jabatanPegawai): array
+    public static function getPlainRolesNameFromJabatanPegawai(ObjectManager  $objectManager,
+                                                               JabatanPegawai $jabatanPegawai): array
     {
-        $roles = self::getRolesFromJabatanPegawaiCustom($entityManager, $jabatanPegawai);
+        $roles = self::getRolesFromJabatanPegawai($objectManager, $jabatanPegawai);
+
         return [$roles];
     }
 
@@ -180,7 +168,8 @@ class RoleHelper
         'deskripsi' => "null|string",
         'level' => "int|null"
     ])]
-    public static function createRoleDefaultResponseFromRole(Role $role, IriConverterInterface $iriConverter): array
+    public static function createRoleDefaultResponseFromRole(Role                  $role,
+                                                             IriConverterInterface $iriConverter): array
     {
         return [
             'iri' => $iriConverter->getIriFromResource($role),
@@ -196,7 +185,8 @@ class RoleHelper
      * @param IriConverterInterface $iriConverter
      * @return array
      */
-    public static function createRoleDefaultResponseFromArrayOfRoles(array $roles, IriConverterInterface $iriConverter): array
+    public static function createRoleDefaultResponseFromArrayOfRoles(array                 $roles,
+                                                                     IriConverterInterface $iriConverter): array
     {
         $response = [];
 
@@ -233,6 +223,7 @@ class RoleHelper
                 }
             }
         }
+
         return $listAplikasi;
     }
 
@@ -247,6 +238,7 @@ class RoleHelper
         foreach ($roles as $role) {
             $listAplikasi[] = self::getAplikasiByRole($role);
         }
+
         return array_merge(...$listAplikasi);
     }
 
@@ -272,6 +264,7 @@ class RoleHelper
                 }
             }
         }
+
         return $listAplikasi;
     }
 
@@ -286,6 +279,7 @@ class RoleHelper
         foreach ($roles as $role) {
             $listAplikasi[] = self::getAllAplikasiByRole($role);
         }
+
         return array_merge(...$listAplikasi);
     }
 }
