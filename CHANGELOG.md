@@ -1,6 +1,15 @@
 # IAM Changelog
 
-## Version 2.3.4 (current stable)
+## Version 2.4.0 (current stable)
+  * Add or logic operator on roles (#123)
+  * Update Symfony to v6.2.11
+  * Updated Symfony Components and dependencies
+  * Updated Symfony recipes
+  * Updated Api Platform to v.3.1.12
+  * Updated infra config
+  * Fix docker image failed to build
+
+## Version 2.3.4
   * Remove unused files (#122)
   * Update Symfony to v6.2.8
   * Updated Symfony Components and dependencies
