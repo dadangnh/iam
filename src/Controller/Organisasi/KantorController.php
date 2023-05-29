@@ -36,11 +36,11 @@ class KantorController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $name
+     * @param string $name
      * @return JsonResponse
      */
     #[Route('/api/kantors/active/{name}', methods: ['GET'])]
-    public function getActiveKantorByKeyword(ManagerRegistry $doctrine, String $name): JsonResponse
+    public function getActiveKantorByKeyword(ManagerRegistry $doctrine, string $name): JsonResponse
     {
         if (3 > strlen($name)) {
             return $this->json([
@@ -108,12 +108,12 @@ class KantorController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $id
+     * @param string $id
      * @return JsonResponse
      */
     #[Route('/api/kantors/{id}/parent', methods: ['GET'])]
     #[Route('/api/kantors/find_parent/by_id/{id}', methods: ['GET'])]
-    public function getParentKantorFromKantorId(ManagerRegistry $doctrine, String $id): JsonResponse
+    public function getParentKantorFromKantorId(ManagerRegistry $doctrine, string $id): JsonResponse
     {
         $kantor = $doctrine
             ->getRepository(Kantor::class)
@@ -131,12 +131,12 @@ class KantorController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $name
+     * @param string $name
      * @return JsonResponse
      * @throws NonUniqueResultException
      */
     #[Route('/api/kantors/find_parent/by_exact_name/{name}', methods: ['GET'])]
-    public function getParentKantorFromKantorName(ManagerRegistry $doctrine, String $name): JsonResponse
+    public function getParentKantorFromKantorName(ManagerRegistry $doctrine, string $name): JsonResponse
     {
         $kantor = $doctrine
             ->getRepository(Kantor::class)
@@ -154,11 +154,11 @@ class KantorController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $legacyKode
+     * @param string $legacyKode
      * @return JsonResponse
      */
     #[Route('/api/kantors/find_parent/by_legacy_kode/{legacyKode}', methods: ['GET'])]
-    public function getParentKantorFromKantorLegacyKode(ManagerRegistry $doctrine, String $legacyKode): JsonResponse
+    public function getParentKantorFromKantorLegacyKode(ManagerRegistry $doctrine, string $legacyKode): JsonResponse
     {
         $kantor = $doctrine
             ->getRepository(Kantor::class)
@@ -176,12 +176,12 @@ class KantorController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $id
+     * @param string $id
      * @return JsonResponse
      */
     #[Route('/api/kantors/{id}/childs', methods: ['GET'])]
     #[Route('/api/kantors/find_childs/by_id/{id}', methods: ['GET'])]
-    public function getChildKantorsFromKantorId(ManagerRegistry $doctrine, String $id): JsonResponse
+    public function getChildKantorsFromKantorId(ManagerRegistry $doctrine, string $id): JsonResponse
     {
         $kantor = $doctrine
             ->getRepository(Kantor::class)
@@ -199,12 +199,12 @@ class KantorController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $name
+     * @param string $name
      * @return JsonResponse
      * @throws NonUniqueResultException
      */
     #[Route('/api/kantors/find_childs/by_exact_name/{name}', methods: ['GET'])]
-    public function getChildKantorsFromKantorName(ManagerRegistry $doctrine, String $name): JsonResponse
+    public function getChildKantorsFromKantorName(ManagerRegistry $doctrine, string $name): JsonResponse
     {
         $kantor = $doctrine
             ->getRepository(Kantor::class)
@@ -222,11 +222,11 @@ class KantorController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $legacyKode
+     * @param string $legacyKode
      * @return JsonResponse
      */
     #[Route('/api/kantors/find_childs/by_legacy_kode/{legacyKode}', methods: ['GET'])]
-    public function getChildKantorsFromKantorLegacyKode(ManagerRegistry $doctrine, String $legacyKode): JsonResponse
+    public function getChildKantorsFromKantorLegacyKode(ManagerRegistry $doctrine, string $legacyKode): JsonResponse
     {
         $kantor = $doctrine
             ->getRepository(Kantor::class)

@@ -5,6 +5,7 @@ namespace App\Repository\Pegawai;
 use App\Entity\Pegawai\JabatanPegawai;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -114,5 +115,53 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
             ->addOrderBy('jp.tanggalMulai', 'DESC')
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function findRoleCombinationByPegawai($pegawaiId): mixed
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "
+            SELECT string_agg(nama, ',') role
+            FROM (SELECT nama
+                  FROM (SELECT r2.nama,
+                               r2.id role_id,
+                               a.*,
+                               jabatan_adhoc
+                        FROM (SELECT pegawai_id,
+                                     jabatan_id
+                              FROM jabatan_pegawai p
+                                       LEFT JOIN jabatan j
+                                                 ON p.jabatan_id = j.id
+                              WHERE jenis IN ('STRUKTURAL', 'FUNGSIONAL')) a
+                                 LEFT JOIN (SELECT pegawai_id,
+                                                   jabatan_id jabatan_adhoc
+                                            FROM jabatan_pegawai p
+                                                     LEFT JOIN jabatan j
+                                                               ON p.jabatan_id = j.id
+                                            WHERE jenis IN ('ADHOC')) b
+                                           ON b.pegawai_id = a.pegawai_id
+                                 JOIN role_jabatan rj
+                                      ON rj.jabatan_id = a.jabatan_id
+                                 join role r2
+                                      ON r2.id = rj.role_id
+                                          AND r2.jenis IN (2, 8, 9, 10, 11, 12)
+                                          AND (r2.end_date IS NULL OR now() <= r2.end_date)
+                                          AND r2.operator = true) x
+                  WHERE role_id
+                      IN (SELECT role_id
+                          FROM role_jabatan y
+                          WHERE y.jabatan_id = jabatan_adhoc)
+                    AND pegawai_id = :pegawai_id) y
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery([
+            'pegawai_id' => $pegawaiId,
+        ]);
+
+        return $resultSet->fetchAssociative();
     }
 }

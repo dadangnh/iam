@@ -2,29 +2,32 @@
 
 namespace App\Entity\User;
 
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Serializer\Filter\PropertyFilter;
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\Pegawai;
-use App\Repository\User\UserRepository;
 use App\Helper\RoleHelper;
+use App\Repository\User\UserRepository;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -370,6 +373,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
+        return $this->roles;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getCustomRoles(ObjectManager $objectManager): array
+    {
         // Get Direct Role Relation
         $plainRoles = $this->getDirectRoles();
 
@@ -395,19 +406,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                             || null === $jabatanPegawai->getTanggalSelesai())
                     ) {
                         $arrayOfRoles[] = array_values(
-                            RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai)
+                            RoleHelper::getRolesFromJabatanPegawai($objectManager, $jabatanPegawai)
                         );
+                        $arrayOfRoles[] = array_values($this->roles);
                     }
                 }
             } else {
                 return ['ROLE_RETIRED'];
             }
-
             $plainRoles = array_values(array_merge($plainRoles, ...$arrayOfRoles));
         }
 
         return array_values(array_unique($plainRoles));
     }
+
 
     /**
      * @see UserInterface
@@ -457,6 +469,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // for inactive user, give inactive role
         return ['ROLE_INACTIVE'];
     }
+
     /**
      * @see PasswordAuthenticatedUserInterface
      */
@@ -672,13 +685,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $this;
     }
-    public function isServiceAccount() : ?bool
+
+    public function isServiceAccount(): ?bool
     {
         return $this->serviceAccount;
     }
-    public function setServiceAccount(bool $serviceAccount) : self
+
+    public function setServiceAccount(bool $serviceAccount): self
     {
         $this->serviceAccount = $serviceAccount;
         return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function generateRoles(LifecycleEventArgs $event): array
+    {
+        return $this->roles = $this->getCustomRoles($event->getObjectManager());
     }
 }

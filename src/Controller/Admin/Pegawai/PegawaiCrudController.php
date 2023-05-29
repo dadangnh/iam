@@ -37,21 +37,21 @@ class PegawaiCrudController extends AbstractCrudController
             BooleanField::new('pensiun', 'Pensiun')
                 ->setHelp('Pegawai Pensiun?')
                 ->hideOnIndex(),
-            TextField::new('npwp','NPWP')
+            TextField::new('npwp', 'NPWP')
                 ->hideOnIndex(),
-            TextField::new('nik','NIK')
+            TextField::new('nik', 'NIK')
                 ->setRequired(true)
                 ->setMaxLength(16)
                 ->hideOnIndex(),
-            TextField::new('nip9','IP SIKKA')
+            TextField::new('nip9', 'IP SIKKA')
                 ->setRequired(true)
                 ->setMaxLength(9)
                 ->hideOnIndex(),
-            TextField::new('nip18','NIP')
+            TextField::new('nip18', 'NIP')
                 ->setRequired(true)
                 ->setMaxLength(18)
                 ->hideOnIndex(),
-            TextField::new('pangkat','Pangkat')
+            TextField::new('pangkat', 'Pangkat')
                 ->setRequired(false)
                 ->setMaxLength(255)
                 ->hideOnIndex(),

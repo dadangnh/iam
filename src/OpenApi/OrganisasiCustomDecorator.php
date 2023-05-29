@@ -16,7 +16,9 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
 {
     public function __construct(
         private readonly OpenApiFactoryInterface $decorated
-    ) {}
+    )
+    {
+    }
 
     public function __invoke(array $context = []): OpenApi
     {
