@@ -151,9 +151,7 @@ class RoleHelper
     public static function getPlainRolesNameFromJabatanPegawai(ObjectManager  $objectManager,
                                                                JabatanPegawai $jabatanPegawai): array
     {
-        $roles = self::getRolesFromJabatanPegawai($objectManager, $jabatanPegawai);
-
-        return [$roles];
+        return self::getRolesFromJabatanPegawai($objectManager, $jabatanPegawai);
     }
 
     /**
