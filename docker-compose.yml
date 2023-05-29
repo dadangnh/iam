@@ -67,7 +67,6 @@ services:
       SERVER_NAME: ${SERVER_NAME:-localhost, caddy:80}
       MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      PWA_UPSTREAM: ${CADDY_PWA_UPSTREAM:-localhost}
       BACKEND_FASTCGI: ${BACKEND_FASTCGI_CONTAINER_NAME:-php}:${BACKEND_FASTCGI_CONTAINER_PORT:-9000}
     restart: unless-stopped
     networks:
@@ -99,7 +98,6 @@ services:
       SERVER_NAME: ${SERVER_NAME:-localhost}
       MERCURE_PUBLISHER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
       MERCURE_SUBSCRIBER_JWT_KEY: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      PWA_UPSTREAM: ${CADDY_PWA_UPSTREAM:-localhost}
       BACKEND_FASTCGI: ${BACKEND_FASTCGI_CONTAINER_NAME:-php}:${BACKEND_FASTCGI_CONTAINER_PORT:-9000}
     restart: unless-stopped
     links:
