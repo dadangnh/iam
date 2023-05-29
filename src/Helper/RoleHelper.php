@@ -143,18 +143,6 @@ class RoleHelper
     }
 
     /**
-     * @param JabatanPegawai $jabatanPegawai
-     * @param ObjectManager $objectManager
-     * @return array
-     * @throws Exception
-     */
-    public static function getPlainRolesNameFromJabatanPegawai(ObjectManager  $objectManager,
-                                                               JabatanPegawai $jabatanPegawai): array
-    {
-        return self::getRolesFromJabatanPegawai($objectManager, $jabatanPegawai);
-    }
-
-    /**
      * @param Role $role
      * @param IriConverterInterface $iriConverter
      * @return array
