@@ -91,7 +91,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                         'legacyKodeKanwil' => $legacyKodeKanwil,
                         'kantorId' => $kantorId,
                         'unitId' => $unitId,
-                        'roles' => RoleHelper::getPlainRolesNameFromJabatanPegawai(
+                        'roles' => RoleHelper::getRolesFromJabatanPegawai(
                             $this->entityManager,
                             $jabatanPegawai
                         ),
