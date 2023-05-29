@@ -2,19 +2,20 @@
 
 namespace App\Entity\Core;
 
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Serializer\Filter\PropertyFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JenisKantor;
@@ -146,6 +147,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     properties: [
         'startDate',
         'endDate'
+    ]
+)]
+#[ApiFilter(
+    filterClass: BooleanFilter::class,
+    properties: [
+        'Operator',
     ]
 )]
 #[ApiFilter(
@@ -489,6 +496,22 @@ class Role
         ]
     )]
     private ?\DateTimeImmutable $endDate = null;
+
+    #[ORM\Column(
+        type: Types::BOOLEAN,
+        nullable: true,
+        options: [
+            'default' => false
+        ]
+
+    )]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
+    private ?bool $Operator = false;
 
     public function __construct()
     {
@@ -861,6 +884,7 @@ class Role
             $this->startDate = new \DateTimeImmutable();
         }
     }
+
     public function getEndDate(): ?\DateTimeImmutable
     {
         return $this->endDate;
@@ -869,6 +893,18 @@ class Role
     public function setEndDate(?\DateTimeImmutable $endDate): self
     {
         $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    public function isOperator(): ?bool
+    {
+        return $this->Operator;
+    }
+
+    public function setOperator(?bool $Operator): self
+    {
+        $this->Operator = $Operator;
 
         return $this;
     }

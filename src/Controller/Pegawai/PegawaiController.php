@@ -85,8 +85,9 @@ class PegawaiController extends AbstractController
      * @throws JsonException
      */
     #[Route('/api/pegawais/atasan', methods: ['POST'])]
-    public function getAtasanPegawaiFromPegawaiId(ManagerRegistry $doctrine, Request $request,
-                                                  PosisiHelper $posisiUtils,
+    public function getAtasanPegawaiFromPegawaiId(ManagerRegistry       $doctrine,
+                                                  Request               $request,
+                                                  PosisiHelper          $posisiUtils,
                                                   IriConverterInterface $iriConverter): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -146,9 +147,9 @@ class PegawaiController extends AbstractController
                     'unitName' => $jabatanPegawai->getUnit()?->getNama(),
                     'atasan' => $posisiUtils->getAtasanFromJabatanPegawai($jabatanPegawai, null),
                     'atasanCuti' => $posisiUtils->getAtasanFromJabatanPegawai($jabatanPegawai, 'atasanCuti'),
-                    'pyb' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,null),
-                    'pybCutiDiatur' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,'pybCutiDiatur'),
-                    'pybIzin' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai,'pybIzin')
+                    'pyb' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai, null),
+                    'pybCutiDiatur' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai, 'pybCutiDiatur'),
+                    'pybIzin' => $posisiUtils->getPybFromJabatanPegawai($jabatanPegawai, 'pybIzin')
                 ];
 
             // For the non active, provide status.

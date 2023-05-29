@@ -32,11 +32,11 @@ class UnitController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $name
+     * @param string $name
      * @return JsonResponse
      */
     #[Route('/api/units/active/{name}', methods: ['GET'])]
-    public function getActiveUnitByKeyword(ManagerRegistry $doctrine, String $name): JsonResponse
+    public function getActiveUnitByKeyword(ManagerRegistry $doctrine, string $name): JsonResponse
     {
         if (3 > strlen($name)) {
             return $this->json([
@@ -54,12 +54,12 @@ class UnitController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $id
+     * @param string $id
      * @return JsonResponse
      */
     #[Route('/api/units/{id}/parent', methods: ['GET'])]
     #[Route('/api/units/find_parent/by_id/{id}', methods: ['GET'])]
-    public function getParentUnitFromUnitId(ManagerRegistry $doctrine, String $id): JsonResponse
+    public function getParentUnitFromUnitId(ManagerRegistry $doctrine, string $id): JsonResponse
     {
         $unit = $doctrine
             ->getRepository(Unit::class)
@@ -77,12 +77,12 @@ class UnitController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $name
+     * @param string $name
      * @return JsonResponse
      * @throws NonUniqueResultException
      */
     #[Route('/api/units/find_parent/by_exact_name/{name}', methods: ['GET'])]
-    public function getParentUnitFromUnitName(ManagerRegistry $doctrine, String $name): JsonResponse
+    public function getParentUnitFromUnitName(ManagerRegistry $doctrine, string $name): JsonResponse
     {
         $unit = $doctrine
             ->getRepository(Unit::class)
@@ -100,11 +100,11 @@ class UnitController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $legacyKode
+     * @param string $legacyKode
      * @return JsonResponse
      */
     #[Route('/api/units/find_parent/by_legacy_kode/{legacyKode}', methods: ['GET'])]
-    public function getParentUnitFromUnitLegacyKode(ManagerRegistry $doctrine, String $legacyKode): JsonResponse
+    public function getParentUnitFromUnitLegacyKode(ManagerRegistry $doctrine, string $legacyKode): JsonResponse
     {
         $unit = $doctrine
             ->getRepository(Unit::class)
@@ -122,12 +122,12 @@ class UnitController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $id
+     * @param string $id
      * @return JsonResponse
      */
     #[Route('/api/units/{id}/childs', methods: ['GET'])]
     #[Route('/api/units/find_childs/by_id/{id}', methods: ['GET'])]
-    public function getChildUnitsFromUnitId(ManagerRegistry $doctrine, String $id): JsonResponse
+    public function getChildUnitsFromUnitId(ManagerRegistry $doctrine, string $id): JsonResponse
     {
         $unit = $doctrine
             ->getRepository(Unit::class)
@@ -145,12 +145,12 @@ class UnitController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $name
+     * @param string $name
      * @return JsonResponse
      * @throws NonUniqueResultException
      */
     #[Route('/api/units/find_childs/by_exact_name/{name}', methods: ['GET'])]
-    public function getChildUnitsFromUnitName(ManagerRegistry $doctrine, String $name): JsonResponse
+    public function getChildUnitsFromUnitName(ManagerRegistry $doctrine, string $name): JsonResponse
     {
         $unit = $doctrine
             ->getRepository(Unit::class)
@@ -168,11 +168,11 @@ class UnitController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
-     * @param String $legacyKode
+     * @param string $legacyKode
      * @return JsonResponse
      */
     #[Route('/api/units/find_childs/by_legacy_kode/{legacyKode}', methods: ['GET'])]
-    public function getChildUnitsFromUnitLegacyKode(ManagerRegistry $doctrine, String $legacyKode): JsonResponse
+    public function getChildUnitsFromUnitLegacyKode(ManagerRegistry $doctrine, string $legacyKode): JsonResponse
     {
         $unit = $doctrine
             ->getRepository(Unit::class)

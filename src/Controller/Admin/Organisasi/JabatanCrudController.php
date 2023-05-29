@@ -38,10 +38,12 @@ class JabatanCrudController extends AbstractCrudController
                 ]),
             AssociationField::new('eselon', 'Eselon')
                 ->autocomplete()
-                ->setHelp('Untuk jabatan struktural, isi eselon'),
+                ->setHelp('Untuk jabatan struktural, isi eselon')
+                ->setRequired(false),
             AssociationField::new('groupJabatan', 'Group Jabatan')
                 ->autocomplete()
-                ->setHelp('Pilih group jabatannya (normalnya untuk fungsional)'),
+                ->setHelp('Pilih group jabatannya (normalnya untuk fungsional)')
+                ->setRequired(false),
             DateTimeField::new('tanggalAktif', 'Tanggal Aktif')
                 ->setRequired(true)
                 ->renderAsNativeWidget(),

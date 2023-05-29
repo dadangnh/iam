@@ -44,10 +44,11 @@ class User implements UserInterface
     public function __construct(
         string $id,
         string $username,
-        array $roles,
-        int $expiredTime,
+        array  $roles,
+        int    $expiredTime,
         ?array $pegawai,
-    ) {
+    )
+    {
         $this->id = $id;
         $this->roles = $roles;
         $this->username = $username;

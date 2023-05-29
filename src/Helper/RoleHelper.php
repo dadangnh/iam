@@ -10,27 +10,35 @@ use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use DateTimeImmutable;
+use Doctrine\DBAL\Exception;
+use Doctrine\Persistence\ObjectManager;
 use JetBrains\PhpStorm\ArrayShape;
 
 class RoleHelper
 {
-
     /**
      * @param JabatanPegawai $jabatanPegawai
+     * @param ObjectManager $objectManager
      * @return array
+     * @throws Exception
      */
-    public static function getRolesFromJabatanPegawai(JabatanPegawai $jabatanPegawai): array
+    public static function getRolesFromJabatanPegawai(ObjectManager  $objectManager,
+                                                      JabatanPegawai $jabatanPegawai): array
     {
         // Get role by jabatan pegawai
         // Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
         // 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
         // 10 => jabatan + unit + kantor, 11 => jabatan + unit + jenis kantor"
         $roles = [];
+        $plainRoles = [];
         $jabatan = $jabatanPegawai->getJabatan();
         $unit = $jabatanPegawai->getUnit();
         $kantor = $jabatanPegawai->getKantor();
         $jenisKantorKantor = $kantor?->getJenisKantor();
         $jenisKantorUnit = $unit?->getJenisKantor();
+        $pegawai = $jabatanPegawai->getPegawai();
+        $pegawaiId = $pegawai->getId();
+
         if ($jenisKantorKantor === $jenisKantorUnit
             && null !== $jenisKantorKantor
             && null !== $jenisKantorUnit
@@ -44,22 +52,33 @@ class RoleHelper
         if (null !== $jabatan) {
             // direct role from jabatan/ jabatan unit/ jabatan kantor/ combination
             foreach ($jabatan->getRoles() as $role) {
-                if (2 === $role->getJenis()) {
-                    $roles[] = $role;
-                } elseif (8 === $role->getJenis() && $role->getUnits()->contains($unit)) {
-                    $roles[] = $role;
-                } elseif (9 === $role->getJenis() && $role->getKantors()->contains($kantor)) {
-                    $roles[] = $role;
-                } elseif (10 === $role->getJenis()
-                    && $role->getUnits()->contains($unit)
-                    && $role->getKantors()->contains($kantor)
-                ) {
-                    $roles[] = $role;
-                } elseif (11 === $role->getJenis()
-                    && $role->getUnits()->contains($unit)
-                    && $role->getJenisKantors()->contains($jenisKantor)
-                ) {
-                    $roles[] = $role;
+                if (true === $role->isOperator()) {
+                    $roleCombination = $objectManager
+                        ->getRepository(JabatanPegawai::class)
+                        ->findRoleCombinationByPegawai($pegawaiId);
+                    if (2 === $role->getJenis() && $role->getNama()) {
+                        if (null !== $roleCombination['role']) {
+                            $plainRoles[] = $roleCombination['role'];
+                        }
+                    }
+                } else {
+                    if (2 === $role->getJenis()) {
+                        $roles[] = $role;
+                    } elseif (8 === $role->getJenis() && $role->getUnits()->contains($unit)) {
+                        $roles[] = $role;
+                    } elseif (9 === $role->getJenis() && $role->getKantors()->contains($kantor)) {
+                        $roles[] = $role;
+                    } elseif (10 === $role->getJenis()
+                        && $role->getUnits()->contains($unit)
+                        && $role->getKantors()->contains($kantor)
+                    ) {
+                        $roles[] = $role;
+                    } elseif (11 === $role->getJenis()
+                        && $role->getUnits()->contains($unit)
+                        && $role->getJenisKantors()->contains($jenisKantor)
+                    ) {
+                        $roles[] = $role;
+                    }
                 }
             }
 
@@ -110,18 +129,6 @@ class RoleHelper
             }
         }
 
-        return $roles;
-    }
-
-    /**
-     * @param JabatanPegawai $jabatanPegawai
-     * @return array
-     */
-    public static function getPlainRolesNameFromJabatanPegawai(JabatanPegawai $jabatanPegawai): array
-    {
-        $roles = self::getRolesFromJabatanPegawai($jabatanPegawai);
-        $plainRoles = [];
-
         /** @var Role $role */
         foreach ($roles as $role) {
             if ($role->getStartDate() <= new DateTimeImmutable('now')
@@ -136,6 +143,20 @@ class RoleHelper
     }
 
     /**
+     * @param JabatanPegawai $jabatanPegawai
+     * @param ObjectManager $objectManager
+     * @return array
+     * @throws Exception
+     */
+    public static function getPlainRolesNameFromJabatanPegawai(ObjectManager  $objectManager,
+                                                               JabatanPegawai $jabatanPegawai): array
+    {
+        $roles = self::getRolesFromJabatanPegawai($objectManager, $jabatanPegawai);
+
+        return [$roles];
+    }
+
+    /**
      * @param Role $role
      * @param IriConverterInterface $iriConverter
      * @return array
@@ -147,7 +168,8 @@ class RoleHelper
         'deskripsi' => "null|string",
         'level' => "int|null"
     ])]
-    public static function createRoleDefaultResponseFromRole(Role $role, IriConverterInterface $iriConverter): array
+    public static function createRoleDefaultResponseFromRole(Role                  $role,
+                                                             IriConverterInterface $iriConverter): array
     {
         return [
             'iri' => $iriConverter->getIriFromResource($role),
@@ -163,7 +185,8 @@ class RoleHelper
      * @param IriConverterInterface $iriConverter
      * @return array
      */
-    public static function createRoleDefaultResponseFromArrayOfRoles(array $roles, IriConverterInterface $iriConverter): array
+    public static function createRoleDefaultResponseFromArrayOfRoles(array                 $roles,
+                                                                     IriConverterInterface $iriConverter): array
     {
         $response = [];
 
@@ -200,6 +223,7 @@ class RoleHelper
                 }
             }
         }
+
         return $listAplikasi;
     }
 
@@ -214,6 +238,7 @@ class RoleHelper
         foreach ($roles as $role) {
             $listAplikasi[] = self::getAplikasiByRole($role);
         }
+
         return array_merge(...$listAplikasi);
     }
 
@@ -239,6 +264,7 @@ class RoleHelper
                 }
             }
         }
+
         return $listAplikasi;
     }
 
@@ -253,6 +279,7 @@ class RoleHelper
         foreach ($roles as $role) {
             $listAplikasi[] = self::getAllAplikasiByRole($role);
         }
+
         return array_merge(...$listAplikasi);
     }
 }

@@ -13,6 +13,8 @@ use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\User\User;
 use App\Helper\RoleHelper;
 use DateTimeImmutable;
+use Doctrine\DBAL\Exception;
+use Doctrine\ORM\EntityManagerInterface;
 use JetBrains\PhpStorm\ArrayShape;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
@@ -20,12 +22,15 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SecurityEventSubscriber implements EventSubscriberInterface
 {
-    /** @var IriConverterInterface  */
+    /** @var IriConverterInterface */
     private IriConverterInterface $iriConverter;
 
-    public function __construct(IriConverterInterface $iriConverter)
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(IriConverterInterface $iriConverter, EntityManagerInterface $entityManager)
     {
         $this->iriConverter = $iriConverter;
+        $this->entityManager = $entityManager;
     }
 
     #[ArrayShape([Events::JWT_CREATED => "string"])]
@@ -38,6 +43,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
 
     /**
      * @param JWTCreatedEvent $event
+     * @throws Exception
      */
     public function onJwtCreated(JWTCreatedEvent $event): void
     {
@@ -65,27 +71,30 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                     $tipe = $jabatanPegawai->getTipe();
 
                     // Get the name from related entity
-                    $namaJabatan        = $jabatan?->getNama();
-                    $namaKantor         = $kantor?->getNama();
-                    $namaUnit           = $unit?->getNama();
-                    $namaTipe           = $tipe?->getNama();
-                    $legacyKodeKpp      = $kantor?->getLegacyKodeKpp();
-                    $legacyKodeKanwil   = $kantor?->getLegacyKodeKanwil();
-                    $unitId             = $unit?->getId();
-                    $kantorId           = $kantor?->getId();
+                    $namaJabatan = $jabatan?->getNama();
+                    $namaKantor = $kantor?->getNama();
+                    $namaUnit = $unit?->getNama();
+                    $namaTipe = $tipe?->getNama();
+                    $legacyKodeKpp = $kantor?->getLegacyKodeKpp();
+                    $legacyKodeKanwil = $kantor?->getLegacyKodeKanwil();
+                    $unitId = $unit?->getId();
+                    $kantorId = $kantor?->getId();
 
                     // Assign to jabatanPegawais array
                     $jabatanPegawais[] = [
-                        'jabatanPegawai_iri'    => $this->iriConverter->getIriFromResource($jabatanPegawai),
-                        'jabatan_name'          => $namaJabatan,
-                        'kantor_name'           => $namaKantor,
-                        'unit_name'             => $namaUnit,
-                        'tipeJabatan_name'      => $namaTipe,
-                        'legacyKodeKpp'         => $legacyKodeKpp,
-                        'legacyKodeKanwil'      => $legacyKodeKanwil,
-                        'kantorId'              => $kantorId,
-                        'unitId'                => $unitId,
-                        'roles'                 => RoleHelper::getPlainRolesNameFromJabatanPegawai($jabatanPegawai),
+                        'jabatanPegawai_iri' => $this->iriConverter->getIriFromResource($jabatanPegawai),
+                        'jabatan_name' => $namaJabatan,
+                        'kantor_name' => $namaKantor,
+                        'unit_name' => $namaUnit,
+                        'tipeJabatan_name' => $namaTipe,
+                        'legacyKodeKpp' => $legacyKodeKpp,
+                        'legacyKodeKanwil' => $legacyKodeKanwil,
+                        'kantorId' => $kantorId,
+                        'unitId' => $unitId,
+                        'roles' => RoleHelper::getPlainRolesNameFromJabatanPegawai(
+                            $this->entityManager,
+                            $jabatanPegawai
+                        ),
                     ];
                 }
             }
@@ -93,7 +102,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
 
         $payload = $event->getData();
         $payload['id'] = $user->getId();
-        $payload['roles'] = $user->getRoles();
+        $payload['roles'] = $user->getCustomRoles($this->entityManager);
         $payload['username'] = $user->getUserIdentifier();
         $payload['exp'] = (new DateTimeImmutable())->getTimestamp() + 3600;
         $payload['expired'] = (new DateTimeImmutable())->getTimestamp() + 3600;
