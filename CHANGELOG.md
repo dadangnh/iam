@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 2.4.0 (current stable)
+## Version 2.4.1 (current stable)
+* Fix bug in commonController (#126)
+* remove unused method in RoleHelper
+
+
+## Version 2.4.0
   * Add or logic operator on roles (#123)
   * Update Symfony to v6.2.11
   * Updated Symfony Components and dependencies
