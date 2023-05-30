@@ -462,6 +462,21 @@ class CommonController extends AbstractController
 
         $roles = RoleHelper::getRolesFromJabatanPegawai($this->doctrine, $jabatanPegawai);
 
+        $listRoles = [];
+        foreach ($roles as $role) {
+            $getRole = $this->doctrine
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $role]);
+
+            $listRoles[] = [
+                'iri' => $iriConverter->getIriFromResource($getRole),
+                'id' => $getRole->getId(),
+                'nama' => $getRole->getNama(),
+                'deskripsi' => $getRole->getDeskripsi(),
+                'level' => $getRole->getLevel()
+            ];
+        }
+
         if (empty($roles)) {
             return $this->json([
                 'code' => 404,
@@ -471,7 +486,7 @@ class CommonController extends AbstractController
 
         return $this->json([
             'roles_count' => count($roles),
-            'roles' => RoleHelper::createRoleDefaultResponseFromArrayOfRoles($roles, $iriConverter)
+            'roles' => $listRoles
         ]);
     }
 
