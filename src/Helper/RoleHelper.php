@@ -156,48 +156,6 @@ class RoleHelper
 
     /**
      * @param Role $role
-     * @param IriConverterInterface $iriConverter
-     * @return array
-     */
-    #[ArrayShape([
-        'iri' => "string",
-        'id' => "null|string",
-        'nama' => "null|string",
-        'deskripsi' => "null|string",
-        'level' => "int|null"
-    ])]
-    public static function createRoleDefaultResponseFromRole(Role                  $role,
-                                                             IriConverterInterface $iriConverter): array
-    {
-        return [
-            'iri' => $iriConverter->getIriFromResource($role),
-            'id' => $role->getId(),
-            'nama' => $role->getNama(),
-            'deskripsi' => $role->getDeskripsi(),
-            'level' => $role->getLevel()
-        ];
-    }
-
-    /**
-     * @param array $roles
-     * @param IriConverterInterface $iriConverter
-     * @return array
-     */
-    public static function createRoleDefaultResponseFromArrayOfRoles(array                 $roles,
-                                                                     IriConverterInterface $iriConverter): array
-    {
-        $response = [];
-
-        /** @var Role $role */
-        foreach ($roles as $role) {
-            $response[] = self::createRoleDefaultResponseFromRole($role, $iriConverter);
-        }
-
-        return $response;
-    }
-
-    /**
-     * @param Role $role
      * @return array
      */
     public static function getAplikasiByRole(Role $role): array
