@@ -1,9 +1,11 @@
 # IAM Changelog
 
-## Version 2.4.1 (current stable)
-* Fix bug in commonController (#126)
-* remove unused method in RoleHelper
+## Version 2.4.2 (current stable)
+  * Optimize the code and update dependencies (#127)
 
+## Version 2.4.1
+  * Fix bug in commonController (#126)
+  * remove unused method in RoleHelper
 
 ## Version 2.4.0
   * Add or logic operator on roles (#123)
