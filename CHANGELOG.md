@@ -1,5 +1,9 @@
 # IAM Changelog
 
+## Version 2.5.0
+  * Upgrade Symfony to v6.3 (#128)
+  * Upgrade symfony recipes
+
 ## Version 2.4.2 (current stable)
   * Optimize the code and update dependencies (#127)
 
