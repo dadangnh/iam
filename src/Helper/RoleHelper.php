@@ -26,7 +26,7 @@ class RoleHelper
         // Get role by jabatan pegawai
         // Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
         // 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
-        // 10 => jabatan + unit + kantor, 11 => jabatan + unit + jenis kantor"
+        // 10 => jabatan + unit + kantor, 11 => jabatan + unit + jenis kantor, 12 => jabatan + jenis kantor, 13 => eselon + jenis kantor"
         $roles = [];
         $plainRoles = [];
         $jabatan = $jabatanPegawai->getJabatan();
@@ -36,6 +36,7 @@ class RoleHelper
         $jenisKantorUnit = $unit?->getJenisKantor();
         $pegawai = $jabatanPegawai->getPegawai();
         $pegawaiId = $pegawai->getId();
+        $eselon = $jabatan->getEselon();
 
         if ($jenisKantorKantor === $jenisKantorUnit
             && null !== $jenisKantorKantor
@@ -76,15 +77,22 @@ class RoleHelper
                         && $role->getJenisKantors()->contains($jenisKantor)
                     ) {
                         $roles[] = $role;
+                    } elseif (12 === $role->getJenis()
+                        && $role->getJenisKantors()->contains($jenisKantor)
+                    ) {
+                        $roles[] = $role;
                     }
                 }
             }
 
             // get eselon level
-            $eselon = $jabatan->getEselon();
             if (null !== $eselon) {
                 foreach ($eselon->getRoles() as $role) {
                     if (5 === $role->getJenis()) {
+                        $roles[] = $role;
+                    } elseif (13 === $role->getJenis()
+                        && $role->getJenisKantors()->contains($jenisKantor)
+                    ) {
                         $roles[] = $role;
                     }
                 }
