@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 2.5.0 (current stable)
+## Version 2.5.1 (current stable)
+  * add new relasi role jabatan + jenis kantor
+  * add new relasi role eselon + jenis kantor
+
+## Version 2.5.0
   * Upgrade Symfony to v6.3 (#128)
   * Upgrade symfony recipes
 
