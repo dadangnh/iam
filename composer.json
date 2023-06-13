@@ -64,7 +64,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^10.2",
         "roave/security-advisories": "dev-latest",
         "symfony/browser-kit": "6.3.*",
         "symfony/debug-bundle": "^6.3",
