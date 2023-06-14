@@ -124,7 +124,7 @@ class JabatanPegawaiRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "
-            SELECT string_agg(nama, ',') role
+            SELECT string_agg(nama, ',') as role
             FROM (SELECT nama
                   FROM (SELECT r2.nama,
                                r2.id role_id,

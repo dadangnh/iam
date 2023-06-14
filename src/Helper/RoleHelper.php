@@ -57,7 +57,10 @@ class RoleHelper
                         ->findRoleCombinationByPegawai($pegawaiId);
                     if (2 === $role->getJenis() && $role->getNama()) {
                         if (null !== $roleCombination['role']) {
-                            $plainRoles[] = $roleCombination['role'];
+                            $arrRole =  explode(',', $roleCombination['role']);
+                            foreach ( $arrRole as $key => $val ){
+                                $plainRoles[] = $val;
+                            }
                         }
                     }
                 } else {
