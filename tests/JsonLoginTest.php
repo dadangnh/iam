@@ -32,6 +32,7 @@ class JsonLoginTest extends ApiTestCase
     public function testAuthentication(): void
     {
         $defaultCredential = 'admin';
+        $defaultCredentialpassword = 'Pajak123';
         try {
             $response = static::createClient()->request('POST', '/api/authentication', [
                 'headers' => [
@@ -40,7 +41,7 @@ class JsonLoginTest extends ApiTestCase
                 ],
                 'body' => json_encode([
                     'username' => $defaultCredential,
-                    'password' => $defaultCredential,
+                    'password' => $defaultCredentialpassword,
                 ], JSON_THROW_ON_ERROR)
             ]);
         } catch (TransportExceptionInterface | JsonException $e) {
