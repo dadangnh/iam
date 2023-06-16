@@ -33,6 +33,7 @@ class JsonLoginTest extends ApiTestCase
     {
         $defaultCredential = 'admin';
         $defaultCredentialpassword = 'Pajak123';
+
         try {
             $response = static::createClient()->request('POST', '/api/authentication', [
                 'headers' => [
