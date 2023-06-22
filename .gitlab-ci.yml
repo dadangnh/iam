@@ -137,6 +137,7 @@ test:
     - symfony server:ca:install
     - symfony serve -d
   script:
+    - php bin/console cache:clear
     - php bin/phpunit --coverage-text --colors=never --log-junit test-report.xml
   cache:
     key: cacheTest
