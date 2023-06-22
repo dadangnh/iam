@@ -41,7 +41,7 @@ class JsonLoginTest extends ApiTestCase
                 ],
                 'body' => json_encode([
                     'username' => $defaultCredential,
-                    'password' => $defaultCredentialpassword,
+                    'password' => $defaultCredential,
                 ], JSON_THROW_ON_ERROR)
             ]);
         } catch (TransportExceptionInterface | JsonException $e) {
