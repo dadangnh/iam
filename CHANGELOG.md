@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 2.5.1 (current stable)
+## Version 2.5.2 (current stable)
+* update gitlab-ci.yml
+* downgrade dependency phpunit
+
+## Version 2.5.1
   * add new relasi role jabatan + jenis kantor
   * add new relasi role eselon + jenis kantor
 
