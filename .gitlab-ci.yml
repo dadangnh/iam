@@ -50,7 +50,7 @@ build_backend:
       alias: docker
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --no-cache --target app_php --build-arg STABILITY=-stable -t backend .
+    - docker build --no-cache --target php_prod -t backend .
     - docker tag backend $IMAGE_TAG_BACKEND
     - docker tag backend $IMAGE_TAG_PHP
     - docker push $IMAGE_TAG_BACKEND
@@ -69,7 +69,7 @@ build_caddy:
       alias: docker
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --no-cache --target app_caddy -t caddy .
+    - docker build --no-cache --target caddy_prod -t caddy .
     - docker tag caddy $IMAGE_TAG
     - docker push $IMAGE_TAG
 
@@ -86,7 +86,7 @@ build_nginx:
       alias: docker
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --no-cache --target app_nginx -t nginx .
+    - docker build --no-cache --target nginx_prod -t nginx .
     - docker tag nginx $IMAGE_TAG
     - docker push $IMAGE_TAG
 
