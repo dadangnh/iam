@@ -1,8 +1,14 @@
 # IAM Changelog
 
-## Version 2.5.2 (current stable)
-* update gitlab-ci.yml
-* downgrade dependency phpunit
+## Version 2.5.3 (current stable)
+  * Update docker config (#132)
+  * Fix docker in docker build (#132)
+  * Update Symfony version to v6.3.3 (#133)
+  * Update dependencies
+
+## Version 2.5.2
+  * update gitlab-ci.yml
+  * downgrade dependency phpunit (#131)
 
 ## Version 2.5.1
   * add new relasi role jabatan + jenis kantor
