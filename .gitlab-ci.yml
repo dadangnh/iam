@@ -37,7 +37,7 @@ services:
     alias: redis
 
 build_backend:
-  image: docker:dind
+  image: docker:20.10.21-dind
   stage: build
   variables:
     IMAGE_TAG_BACKEND: $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_SLUG
@@ -57,7 +57,7 @@ build_backend:
     - docker push $IMAGE_TAG_PHP
 
 build_caddy:
-  image: docker:dind
+  image: docker:20.10.21-dind
   stage: build
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_REF_SLUG
@@ -74,7 +74,7 @@ build_caddy:
     - docker push $IMAGE_TAG
 
 build_nginx:
-  image: docker:dind
+  image: docker:20.10.21-dind
   stage: build
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_REF_SLUG
@@ -176,7 +176,7 @@ deploy_package:
       - node_modules/
 
 deploy_to_registries:
-  image: docker:dind
+  image: docker:20.10.21-dind
   stage: deploy
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
