@@ -12,16 +12,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build Backend Images
-      run: export DOCKER_BUILDKIT=1; docker build --no-cache --target app_php --build-arg STABILITY=-stable -t backend .
+      run: export DOCKER_BUILDKIT=1; docker build --no-cache --target php_prod -t backend .
   build_caddy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Build Caddy Images
-      run: export DOCKER_BUILDKIT=1; docker build --no-cache --target app_caddy -t caddy .
+      run: export DOCKER_BUILDKIT=1; docker build --no-cache --target caddy_prod -t caddy .
   build_nginx:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Build Caddy Images
-      run: export DOCKER_BUILDKIT=1; docker build --no-cache --target app_nginx -t nginx .
+      run: export DOCKER_BUILDKIT=1; docker build --no-cache --target nginx_prod -t nginx .

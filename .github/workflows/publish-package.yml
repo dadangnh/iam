@@ -37,7 +37,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          target: app_php
+          target: php_prod
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -68,7 +68,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          target: app_caddy
+          target: caddy_prod
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -99,7 +99,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          target: app_nginx
+          target: nginx_prod
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
