@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 2.5.3 (current stable)
+## Version 2.5.4 (current stable)
+  * Fix pipeline to generate image on docker hub (#134)
+
+## Version 2.5.3
   * Update docker config (#132)
   * Fix docker in docker build (#132)
   * Update Symfony version to v6.3.3 (#133)
