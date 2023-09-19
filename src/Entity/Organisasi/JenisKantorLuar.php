@@ -172,16 +172,16 @@ class JenisKantorLuar
     private ?int $legacyKode;
 
     #[ORM\OneToMany(
-        mappedBy: 'jenisKantor',
-        targetEntity: Kantor::class
+        mappedBy: 'JenisKantorLuar',
+        targetEntity: UnitLuar::class
     )]
-    private Collection $kantors;
+    private Collection $unitLuars;
 
     #[ORM\OneToMany(
-        mappedBy: 'jenisKantor',
-        targetEntity: Unit::class
+        mappedBy: 'jenisKantorLuar',
+        targetEntity: KantorLuar::class
     )]
-    private Collection $units;
+    private Collection $kantorLuars;
 
     #[ORM\ManyToMany(
         targetEntity: Role::class,
@@ -192,8 +192,8 @@ class JenisKantorLuar
     public function __construct()
     {
         $this->id = Uuid::v4();
-        $this->kantors = new ArrayCollection();
-        $this->units = new ArrayCollection();
+        $this->unitLuars = new ArrayCollection();
+        $this->kantorLuars = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 
@@ -301,30 +301,29 @@ class JenisKantorLuar
     }
 
     /**
-     * @return Collection|Kantor[]
+     * @return Collection<int, UnitLuar>
      */
-    public function getKantors(): Collection|array
+    public function getUnitLuars(): Collection
     {
-        return $this->kantors;
+        return $this->unitLuars;
     }
 
-    public function addKantor(Kantor $kantor): self
+    public function addUnitLuar(UnitLuar $unitLuar): static
     {
-        if (!$this->kantors->contains($kantor)) {
-            $this->kantors[] = $kantor;
-            $kantor->setJenisKantor($this);
+        if (!$this->unitLuars->contains($unitLuar)) {
+            $this->unitLuars->add($unitLuar);
+            $unitLuar->setJenisKantorLuar($this);
         }
 
         return $this;
     }
 
-    public function removeKantor(Kantor $kantor): self
+    public function removeUnitLuar(UnitLuar $unitLuar): static
     {
-        if ($this->kantors->contains($kantor)) {
-            $this->kantors->removeElement($kantor);
+        if ($this->unitLuars->removeElement($unitLuar)) {
             // set the owning side to null (unless already changed)
-            if ($kantor->getJenisKantor() === $this) {
-                $kantor->setJenisKantor(null);
+            if ($unitLuar->getJenisKantorLuar() === $this) {
+                $unitLuar->setJenisKantorLuar(null);
             }
         }
 
@@ -332,30 +331,29 @@ class JenisKantorLuar
     }
 
     /**
-     * @return Collection|Unit[]
+     * @return Collection<int, KantorLuar>
      */
-    public function getUnits(): Collection|array
+    public function getKantorLuars(): Collection
     {
-        return $this->units;
+        return $this->kantorLuars;
     }
 
-    public function addUnit(Unit $unit): self
+    public function addKantorLuar(KantorLuar $kantorLuar): static
     {
-        if (!$this->units->contains($unit)) {
-            $this->units[] = $unit;
-            $unit->setJenisKantor($this);
+        if (!$this->kantorLuars->contains($kantorLuar)) {
+            $this->kantorLuars->add($kantorLuar);
+            $kantorLuar->setJenisKantorLuar($this);
         }
 
         return $this;
     }
 
-    public function removeUnit(Unit $unit): self
+    public function removeKantorLuar(KantorLuar $kantorLuar): static
     {
-        if ($this->units->contains($unit)) {
-            $this->units->removeElement($unit);
+        if ($this->kantorLuars->removeElement($kantorLuar)) {
             // set the owning side to null (unless already changed)
-            if ($unit->getJenisKantor() === $this) {
-                $unit->setJenisKantor(null);
+            if ($kantorLuar->getJenisKantorLuar() === $this) {
+                $kantorLuar->setJenisKantorLuar(null);
             }
         }
 

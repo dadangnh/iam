@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Core\Role;
+use App\Entity\Pegawai\JabatanPegawaiLuar;
 use App\Repository\Organisasi\JabatanLuarRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -272,21 +273,49 @@ class JabatanLuar
     )]
     private ?string $legacyKode;
 
-    #[ORM\ManyToOne(
-        targetEntity: GroupJabatan::class,
-        inversedBy: 'jabatans',
-    )]
+    #[ORM\ManyToOne(inversedBy: 'jabatanLuars')]
     #[Groups(
         groups: [
             'jabatan-luar:read',
             'jabatan-luar:write'
         ]
     )]
-    private ?GroupJabatan $groupJabatan = null;
+    private ?GroupJabatanLuar $GroupJabatanLuar;
+
+    #[ORM\ManyToMany(
+        targetEntity: UnitLuar::class,
+        mappedBy: 'jabatanLuar'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'jabatan-luar:write'
+        ]
+    )]
+    private Collection $unitLuars;
+
+    #[ORM\OneToMany(
+        mappedBy: 'jabatanLuar',
+        targetEntity: JabatanPegawaiLuar::class,
+        orphanRemoval: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan-luar:write'
+        ]
+    )]
+    private Collection $jabatanPegawaiLuars;
+
+    #[ORM\ManyToMany(targetEntity: Role::class, mappedBy: 'jabatanLuars')]
+    private Collection $roles;
+
 
     public function __construct()
     {
         $this->id = Uuid::v4();
+        $this->unitLuars = new ArrayCollection();
+        $this->jabatanPegawaiLuars = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -404,14 +433,97 @@ class JabatanLuar
         return $this;
     }
 
-    public function getGroupJabatan(): ?GroupJabatan
+    public function getGroupJabatanLuar(): ?GroupJabatanLuar
     {
-        return $this->groupJabatan;
+        return $this->GroupJabatanLuar;
     }
 
-    public function setGroupJabatan(?GroupJabatan $groupJabatan): self
+    public function setGroupJabatanLuar(?GroupJabatanLuar $GroupJabatanLuar): self
     {
-        $this->groupJabatan = $groupJabatan;
+        $this->GroupJabatanLuar = $GroupJabatanLuar;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UnitLuar>
+     */
+    public function getUnitLuars(): Collection
+    {
+        return $this->unitLuars;
+    }
+
+    public function addUnitLuar(UnitLuar $unitLuar): static
+    {
+        if (!$this->unitLuars->contains($unitLuar)) {
+            $this->unitLuars->add($unitLuar);
+            $unitLuar->addJabatanLuar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnitLuar(UnitLuar $unitLuar): static
+    {
+        if ($this->unitLuars->removeElement($unitLuar)) {
+            $unitLuar->removeJabatanLuar($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, JabatanPegawaiLuar>
+     */
+    public function getJabatanPegawaiLuars(): Collection
+    {
+        return $this->jabatanPegawaiLuars;
+    }
+
+    public function addJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): static
+    {
+        if (!$this->jabatanPegawaiLuars->contains($jabatanPegawaiLuar)) {
+            $this->jabatanPegawaiLuars->add($jabatanPegawaiLuar);
+            $jabatanPegawaiLuar->setJabatanLuar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): static
+    {
+        if ($this->jabatanPegawaiLuars->removeElement($jabatanPegawaiLuar)) {
+            // set the owning side to null (unless already changed)
+            if ($jabatanPegawaiLuar->getJabatanLuar() === $this) {
+                $jabatanPegawaiLuar->setJabatanLuar(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection|array
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
+        }
 
         return $this;
     }

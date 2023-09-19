@@ -15,7 +15,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Core\Role;
-use App\Entity\Pegawai\JabatanPegawai;
+use App\Entity\Pegawai\JabatanPegawaiLuar;
 use App\Repository\Organisasi\KantorLuarRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -105,7 +105,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(
     columns: [
         'id',
-        'jenis_kantor_id',
+        'jenis_kantor_luar_id',
         'parent_id',
         'level',
         'pembina_id'
@@ -233,10 +233,9 @@ class KantorLuar
         ]
     )]
     private ?string $nama;
-
     #[ORM\ManyToOne(
-        targetEntity: JenisKantor::class,
-        inversedBy: 'kantors'
+        targetEntity: JenisKantorLuar::class,
+        inversedBy: 'kantorLuars'
     )]
     #[ORM\JoinColumn(
         nullable: false
@@ -249,7 +248,8 @@ class KantorLuar
             'kantor-luar:write'
         ]
     )]
-    private ?JenisKantor $jenisKantor;
+    private ?JenisKantorLuar $jenisKantorLuar;
+
 
     #[ORM\Column(
         type: Types::INTEGER,
@@ -264,7 +264,7 @@ class KantorLuar
     private ?int $level;
 
     #[ORM\ManyToOne(
-        targetEntity: Kantor::class,
+        targetEntity: KantorLuar::class,
         inversedBy: 'childs'
     )]
     #[Assert\Valid]
@@ -273,11 +273,11 @@ class KantorLuar
             'kantor-luar:write'
         ]
     )]
-    private ?Kantor $parent;
+    private ?KantorLuar $parent;
 
     #[ORM\OneToMany(
         mappedBy: 'parent',
-        targetEntity: Kantor::class
+        targetEntity: KantorLuar::class
     )]
     private Collection $childs;
 
@@ -433,8 +433,8 @@ class KantorLuar
     private ?string $legacyKodeKanwil;
 
     #[ORM\OneToMany(
-        mappedBy: 'kantor',
-        targetEntity: JabatanPegawai::class,
+        mappedBy: 'kantorLuar',
+        targetEntity: JabatanPegawaiLuar::class,
         orphanRemoval: true
     )]
     #[Groups(
@@ -442,21 +442,10 @@ class KantorLuar
             'kantor-luar:write'
         ]
     )]
-    private Collection $jabatanPegawais;
-
-    #[ORM\ManyToMany(
-        targetEntity: Role::class,
-        mappedBy: 'kantors'
-    )]
-    #[Groups(
-        groups: [
-            'kantor-luar:write'
-        ]
-    )]
-    private Collection $roles;
+    private Collection $jabatanPegawaiLuars;
 
     #[ORM\ManyToOne(
-        targetEntity: Kantor::class,
+        targetEntity: KantorLuar::class,
         inversedBy: 'membina'
     )]
     #[Groups(
@@ -464,11 +453,11 @@ class KantorLuar
             'kantor-luar:write'
         ]
     )]
-    private ?Kantor $pembina;
+    private ?KantorLuar $pembina;
 
     #[ORM\OneToMany(
         mappedBy: 'pembina',
-        targetEntity: Kantor::class
+        targetEntity: KantorLuar::class
     )]
     #[Groups(
         groups: [
@@ -590,13 +579,16 @@ class KantorLuar
     )]
     private ?string $ministryOfficeCode = null;
 
+    #[ORM\ManyToMany(targetEntity: Role::class, mappedBy: 'kantorLuars')]
+    private Collection $roles;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
         $this->childs = new ArrayCollection();
-        $this->jabatanPegawais = new ArrayCollection();
-        $this->roles = new ArrayCollection();
+        $this->jabatanPegawaiLuars = new ArrayCollection();
         $this->membina = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -621,14 +613,14 @@ class KantorLuar
         return $this;
     }
 
-    public function getJenisKantor(): ?JenisKantor
+    public function getJenisKantorLuar(): ?JenisKantorLuar
     {
-        return $this->jenisKantor;
+        return $this->jenisKantorLuar;
     }
 
-    public function setJenisKantor(?JenisKantor $jenisKantor): self
+    public function setJenisKantorLuar(?JenisKantorLuar $jenisKantorLuar): self
     {
-        $this->jenisKantor = $jenisKantor;
+        $this->jenisKantorLuar = $jenisKantorLuar;
 
         return $this;
     }
@@ -841,57 +833,31 @@ class KantorLuar
     }
 
     /**
-     * @return Collection|JabatanPegawai[]
+     * @return Collection|JabatanPegawaiLuar[]
      */
-    public function getJabatanPegawais(): Collection|array
+    public function getJabatanPegawaiLuars(): Collection|array
     {
-        return $this->jabatanPegawais;
+        return $this->jabatanPegawaiLuars;
     }
 
-    public function addJabatanPegawai(JabatanPegawai $jabatanPegawai): self
+    public function addJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): self
     {
-        if (!$this->jabatanPegawais->contains($jabatanPegawai)) {
-            $this->jabatanPegawais[] = $jabatanPegawai;
-            $jabatanPegawai->setKantor($this);
+        if (!$this->jabatanPegawaiLuars->contains($jabatanPegawaiLuar)) {
+            $this->jabatanPegawaiLuars[] = $jabatanPegawaiLuar;
+            $jabatanPegawaiLuar->setKantorLuar($this);
         }
 
         return $this;
     }
 
-    public function removeJabatanPegawai(JabatanPegawai $jabatanPegawai): self
+    public function removeJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): static
     {
-        if ($this->jabatanPegawais->contains($jabatanPegawai)) {
-            $this->jabatanPegawais->removeElement($jabatanPegawai);
+        if ($this->jabatanPegawaiLuars->contains($jabatanPegawaiLuar)) {
+            $this->jabatanPegawaiLuars->removeElement($jabatanPegawaiLuar);
             // set the owning side to null (unless already changed)
-            if ($jabatanPegawai->getKantor() === $this) {
-                $jabatanPegawai->setKantor(null);
+            if ($jabatanPegawaiLuar->getKantor() === $this) {
+                $jabatanPegawaiLuar->setKantor(null);
             }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Role[]
-     */
-    public function getRoles(): Collection|array
-    {
-        return $this->roles;
-    }
-
-    public function addRole(Role $role): self
-    {
-        if (!$this->roles->contains($role)) {
-            $this->roles[] = $role;
-        }
-
-        return $this;
-    }
-
-    public function removeRole(Role $role): self
-    {
-        if ($this->roles->contains($role)) {
-            $this->roles->removeElement($role);
         }
 
         return $this;
@@ -1063,6 +1029,32 @@ class KantorLuar
     public function setMinistryOfficeCode(?string $ministryOfficeCode): self
     {
         $this->ministryOfficeCode = $ministryOfficeCode;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection|array
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
+        }
 
         return $this;
     }

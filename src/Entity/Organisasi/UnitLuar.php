@@ -15,7 +15,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Core\Role;
-use App\Entity\Pegawai\JabatanPegawai;
+use App\Entity\Pegawai\JabatanPegawaiLuar;
 use App\Repository\Organisasi\UnitLuarRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -102,7 +102,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(
     columns: [
         'id',
-        'jenis_kantor_id',
+        'jenis_kantor_luar_id',
         'parent_id',
         'eselon_id'
     ],
@@ -190,8 +190,8 @@ class UnitLuar
     private ?string $nama;
 
     #[ORM\ManyToOne(
-        targetEntity: JenisKantor::class,
-        inversedBy: 'units'
+        targetEntity: JenisKantorLuar::class,
+        inversedBy: 'unitLuars'
     )]
     #[ORM\JoinColumn(
         nullable: false
@@ -204,7 +204,7 @@ class UnitLuar
             'unit-luar:write'
         ]
     )]
-    private ?JenisKantor $jenisKantor;
+    private ?JenisKantorLuar $JenisKantorLuar;
 
     #[ORM\Column(
         type: Types::INTEGER
@@ -220,15 +220,15 @@ class UnitLuar
     private ?int $level;
 
     #[ORM\ManyToOne(
-        targetEntity: Unit::class,
+        targetEntity: UnitLuar::class,
         inversedBy: 'childs'
     )]
     #[Assert\Valid]
-    private ?Unit $parent;
+    private ?UnitLuar $parent;
 
     #[ORM\OneToMany(
         mappedBy: 'parent',
-        targetEntity: Unit::class
+        targetEntity: UnitLuar::class
     )]
     private Collection $childs;
 
@@ -285,43 +285,39 @@ class UnitLuar
         ]
     )]
     private ?string $legacyKode;
-
     #[ORM\OneToMany(
-        mappedBy: 'unit',
-        targetEntity: JabatanPegawai::class
+        mappedBy: 'unitLuar',
+        targetEntity: JabatanPegawaiLuar::class
     )]
-    private Collection $jabatanPegawais;
+    private Collection $jabatanPegawaiLuars;
 
     #[ORM\ManyToMany(
-        targetEntity: Jabatan::class,
-        mappedBy: 'units'
+        targetEntity: JabatanLuar::class,
+        inversedBy: 'unitLuars'
     )]
-    private Collection $jabatans;
-
-    #[ORM\ManyToMany(
-        targetEntity: Role::class,
-        mappedBy: 'units'
-    )]
-    private Collection $roles;
+    private Collection $jabatanLuar;
 
     #[ORM\ManyToOne(
-        targetEntity: Unit::class,
+        targetEntity: UnitLuar::class,
         inversedBy: 'membina'
     )]
-    private ?Unit $pembina;
+    private ?UnitLuar $pembina;
 
     #[ORM\OneToMany(
         mappedBy: 'pembina',
-        targetEntity: Unit::class
+        targetEntity: UnitLuar::class
     )]
     private Collection $membina;
+
+    #[ORM\ManyToMany(targetEntity: Role::class, mappedBy: 'unitLuars')]
+    private Collection $roles;
 
     public function __construct()
     {
         $this->id = Uuid::v4();
         $this->childs = new ArrayCollection();
-        $this->jabatanPegawais = new ArrayCollection();
-        $this->jabatans = new ArrayCollection();
+        $this->jabatanPegawaiLuars = new ArrayCollection();
+        $this->jabatanLuar = new ArrayCollection();
         $this->roles = new ArrayCollection();
         $this->membina = new ArrayCollection();
     }
@@ -348,14 +344,14 @@ class UnitLuar
         return $this;
     }
 
-    public function getJenisKantor(): ?JenisKantor
+    public function getJenisKantorLuar(): ?JenisKantorLuar
     {
-        return $this->jenisKantor;
+        return $this->JenisKantorLuar;
     }
 
-    public function setJenisKantor(?JenisKantor $jenisKantor): self
+    public function setJenisKantorLuar(?JenisKantorLuar $JenisKantorLuar): self
     {
-        $this->jenisKantor = $jenisKantor;
+        $this->JenisKantorLuar = $JenisKantorLuar;
 
         return $this;
     }
@@ -472,30 +468,30 @@ class UnitLuar
     }
 
     /**
-     * @return Collection|JabatanPegawai[]
+     * @return Collection|JabatanPegawaiLuar[]
      */
-    public function getJabatanPegawais(): Collection|array
+    public function getJabatanPegawaiLuars(): Collection|array
     {
-        return $this->jabatanPegawais;
+        return $this->jabatanPegawaiLuars;
     }
 
-    public function addJabatanPegawai(JabatanPegawai $jabatanPegawai): self
+    public function addJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): static
     {
-        if (!$this->jabatanPegawais->contains($jabatanPegawai)) {
-            $this->jabatanPegawais[] = $jabatanPegawai;
-            $jabatanPegawai->setUnit($this);
+        if (!$this->jabatanPegawaiLuars->contains($jabatanPegawaiLuar)) {
+            $this->jabatanPegawaiLuars[] = $jabatanPegawaiLuar;
+            $jabatanPegawaiLuar->setUnitLuar($this);
         }
 
         return $this;
     }
 
-    public function removeJabatanPegawai(JabatanPegawai $jabatanPegawai): self
+    public function removeJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): static
     {
-        if ($this->jabatanPegawais->contains($jabatanPegawai)) {
-            $this->jabatanPegawais->removeElement($jabatanPegawai);
+        if ($this->jabatanPegawaiLuars->contains($jabatanPegawaiLuar)) {
+            $this->jabatanPegawaiLuars->removeElement($jabatanPegawaiLuar);
             // set the owning side to null (unless already changed)
-            if ($jabatanPegawai->getUnit() === $this) {
-                $jabatanPegawai->setUnit(null);
+            if ($jabatanPegawaiLuar->getUnitLuar() === $this) {
+                $jabatanPegawaiLuar->setUnitLuar(null);
             }
         }
 
@@ -503,54 +499,28 @@ class UnitLuar
     }
 
     /**
-     * @return Collection|Jabatan[]
+     * @return Collection|JabatanLuar[]
      */
-    public function getJabatans(): Collection|array
+    public function getJabatanLuar(): Collection|array
     {
-        return $this->jabatans;
+        return $this->jabatanLuar;
     }
 
-    public function addJabatan(Jabatan $jabatan): self
+    public function addJabatanLuar(JabatanLuar $jabatanLuar): self
     {
-        if (!$this->jabatans->contains($jabatan)) {
-            $this->jabatans[] = $jabatan;
-            $jabatan->addUnit($this);
+        if (!$this->jabatanLuar->contains($jabatanLuar)) {
+            $this->jabatanLuar[] = $jabatanLuar;
+            $jabatanLuar->addUnitLuar($this);
         }
 
         return $this;
     }
 
-    public function removeJabatan(Jabatan $jabatan): self
+    public function removeJabatanLuar(JabatanLuar $jabatanLuar): static
     {
-        if ($this->jabatans->contains($jabatan)) {
-            $this->jabatans->removeElement($jabatan);
-            $jabatan->removeUnit($this);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Role[]
-     */
-    public function getRoles(): Collection|array
-    {
-        return $this->roles;
-    }
-
-    public function addRole(Role $role): self
-    {
-        if (!$this->roles->contains($role)) {
-            $this->roles[] = $role;
-        }
-
-        return $this;
-    }
-
-    public function removeRole(Role $role): self
-    {
-        if ($this->roles->contains($role)) {
-            $this->roles->removeElement($role);
+        if ($this->jabatanLuar->contains($jabatanLuar)) {
+            $this->jabatanLuar->removeElement($jabatanLuar);
+            $jabatanLuar->removeUnitLuar($this);
         }
 
         return $this;
@@ -593,6 +563,32 @@ class UnitLuar
             if ($membina->getPembina() === $this) {
                 $membina->setPembina(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection|array
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
         }
 
         return $this;

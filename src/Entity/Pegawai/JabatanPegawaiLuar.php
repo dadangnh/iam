@@ -15,9 +15,12 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JabatanAtribut;
+use App\Entity\Organisasi\JabatanLuar;
 use App\Entity\Organisasi\Kantor;
+use App\Entity\Organisasi\KantorLuar;
 use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
+use App\Entity\Organisasi\UnitLuar;
 use App\Repository\Pegawai\JabatanPegawaiLuarRepository;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
@@ -78,11 +81,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(
     columns: [
         'id',
-        'pegawai_id',
-        'jabatan_id',
+        'pegawai_luar_id',
+        'jabatan_luar_id',
         'tipe_id',
-        'kantor_id',
-        'unit_id'
+        'kantor_luar_id',
+        'unit_luar_id'
     ],
     name: 'idx_jabatan_pegawai_luar_relation'
 )]
@@ -137,19 +140,19 @@ class JabatanPegawaiLuar
     private UuidV4 $id;
 
     #[ORM\ManyToOne(
-        targetEntity: Pegawai::class,
-        inversedBy: 'jabatanPegawais'
+        targetEntity: PegawaiLuar::class,
+        inversedBy: 'jabatanPegawaiLuars'
     )]
     #[ORM\JoinColumn(
         nullable: false
     )]
     #[Assert\NotNull]
     #[Assert\Valid]
-    private ?Pegawai $pegawai;
+    private ?PegawaiLuar $pegawaiLuar;
 
     #[ORM\ManyToOne(
-        targetEntity: Jabatan::class,
-        inversedBy: 'jabatanPegawais'
+        targetEntity: JabatanLuar::class,
+        inversedBy: 'jabatanPegawaiLuars'
     )]
     #[ORM\JoinColumn(
         nullable: false
@@ -158,10 +161,10 @@ class JabatanPegawaiLuar
     #[Assert\Valid]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai-luar:read'
         ]
     )]
-    private ?Jabatan $jabatan;
+    private ?JabatanLuar $jabatanLuar;
 
     #[ORM\ManyToOne(
         targetEntity: TipeJabatan::class,
@@ -171,14 +174,14 @@ class JabatanPegawaiLuar
     #[Assert\Valid]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai-luar:read'
         ]
     )]
     private ?TipeJabatan $tipe;
 
     #[ORM\ManyToOne(
-        targetEntity: Kantor::class,
-        inversedBy: 'jabatanPegawais'
+        targetEntity: KantorLuar::class,
+        inversedBy: 'jabatanPegawaiLuars'
     )]
     #[ORM\JoinColumn(
         nullable: false
@@ -187,22 +190,22 @@ class JabatanPegawaiLuar
     #[Assert\Valid]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai-luar:read'
         ]
     )]
-    private ?Kantor $kantor;
+    private ?KantorLuar $kantorLuar;
 
     #[ORM\ManyToOne(
-        targetEntity: Unit::class,
-        inversedBy: 'jabatanPegawais'
+        targetEntity: UnitLuar::class,
+        inversedBy: 'jabatanPegawaiLuars'
     )]
     #[Assert\Valid]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai-luar:read'
         ]
     )]
-    private ?Unit $unit;
+    private ?UnitLuar $unitLuar;
 
     #[ORM\Column(
         type: Types::STRING,
@@ -211,7 +214,7 @@ class JabatanPegawaiLuar
     )]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai-luar:read'
         ]
     )]
     private ?string $referensi;
@@ -221,7 +224,7 @@ class JabatanPegawaiLuar
     )]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai-luar:read'
         ]
     )]
     private ?DateTimeImmutable $tanggalMulai;
@@ -232,7 +235,7 @@ class JabatanPegawaiLuar
     )]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai-luar:read'
         ]
     )]
     private ?DateTimeImmutable $tanggalSelesai;
@@ -243,7 +246,7 @@ class JabatanPegawaiLuar
     )]
     #[Groups(
         groups: [
-            'pegawai:read'
+            'pegawai-luar:read'
         ]
     )]
     private ?JabatanAtribut $atribut;
@@ -260,27 +263,26 @@ class JabatanPegawaiLuar
     {
         return $this->id;
     }
-
-    public function getPegawai(): ?Pegawai
+    public function getPegawaiLuar(): ?PegawaiLuar
     {
-        return $this->pegawai;
+        return $this->pegawaiLuar;
     }
 
-    public function setPegawai(?Pegawai $pegawai): self
+    public function setPegawaiLuar(?PegawaiLuar $pegawaiLuar): self
     {
-        $this->pegawai = $pegawai;
+        $this->pegawaiLuar = $pegawaiLuar;
 
         return $this;
     }
 
-    public function getJabatan(): ?Jabatan
+    public function getJabatanLuar(): ?JabatanLuar
     {
-        return $this->jabatan;
+        return $this->jabatanLuar;
     }
 
-    public function setJabatan(?Jabatan $jabatan): self
+    public function setJabatanLuar(?JabatanLuar $jabatanLuar): self
     {
-        $this->jabatan = $jabatan;
+        $this->jabatanLuar = $jabatanLuar;
 
         return $this;
     }
@@ -297,26 +299,25 @@ class JabatanPegawaiLuar
         return $this;
     }
 
-    public function getKantor(): ?Kantor
+    public function getKantorLuar(): ?KantorLuar
     {
-        return $this->kantor;
+        return $this->kantorLuar;
     }
 
-    public function setKantor(?Kantor $kantor): self
+    public function setKantorLuar(?KantorLuar $kantorLuar): self
     {
-        $this->kantor = $kantor;
+        $this->kantorLuar = $kantorLuar;
 
         return $this;
     }
-
-    public function getUnit(): ?Unit
+    public function getUnitLuar(): ?UnitLuar
     {
-        return $this->unit;
+        return $this->unitLuar;
     }
 
-    public function setUnit(?Unit $unit): self
+    public function setUnitLuar(?UnitLuar $unitLuar): self
     {
-        $this->unit = $unit;
+        $this->unitLuar = $unitLuar;
 
         return $this;
     }

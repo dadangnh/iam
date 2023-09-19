@@ -112,15 +112,15 @@ class GroupJabatanLuar
     private ?string $legacyKode;
 
     #[ORM\OneToMany(
-        mappedBy: 'groupJabatan',
+        mappedBy: 'GroupJabatanLuar',
         targetEntity: JabatanLuar::class
     )]
-    private Collection $jabatans;
+    private Collection $jabatanLuars;
 
     public function __construct()
     {
         $this->id = Uuid::v4();
-        $this->jabatans = new ArrayCollection();
+        $this->jabatanLuars = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -158,30 +158,29 @@ class GroupJabatanLuar
     }
 
     /**
-     * @return Collection|JabatanLuar[]
+     * @return Collection<int, JabatanLuar>
      */
-    public function getJabatans(): Collection|array
+    public function getJabatanLuars(): Collection
     {
-        return $this->jabatans;
+        return $this->jabatanLuars;
     }
 
-    public function addJabatan(JabatanLuar $jabatan): self
+    public function addJabatanLuar(JabatanLuar $jabatanLuar): static
     {
-        if (!$this->jabatans->contains($jabatan)) {
-            $this->jabatans[] = $jabatan;
-            $jabatan->setGroupJabatan($this);
+        if (!$this->jabatanLuars->contains($jabatanLuar)) {
+            $this->jabatanLuars->add($jabatanLuar);
+            $jabatanLuar->setGroupJabatanLuar($this);
         }
 
         return $this;
     }
 
-    public function removeJabatan(JabatanLuar $jabatan): self
+    public function removeJabatanLuar(JabatanLuar $jabatanLuar): static
     {
-        if ($this->jabatans->contains($jabatan)) {
-            $this->jabatans->removeElement($jabatan);
+        if ($this->jabatanLuars->removeElement($jabatanLuar)) {
             // set the owning side to null (unless already changed)
-            if ($jabatan->getGroupJabatan() === $this) {
-                $jabatan->setGroupJabatan(null);
+            if ($jabatanLuar->getGroupJabatanLuar() === $this) {
+                $jabatanLuar->setGroupJabatanLuar(null);
             }
         }
 
