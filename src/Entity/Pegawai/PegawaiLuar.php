@@ -98,7 +98,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(
     columns: [
         'id',
-        'user_id'
+        'user_luar_id'
     ],
     name: 'idx_pegawai_luar_relation'
 )]
@@ -141,27 +141,17 @@ class PegawaiLuar
         ]
     )]
     private UuidV4 $id;
-
     #[ORM\OneToOne(
-        inversedBy: 'pegawai',
-        targetEntity: User::class,
-        cascade: [
-            'persist',
-            'remove'
-        ]
+        inversedBy: 'pegawaiLuar',
+        cascade: ['persist', 'remove']
     )]
-    #[ORM\JoinColumn(
-        nullable: false
-    )]
-    #[Assert\NotNull]
-    #[Assert\Valid]
     #[Groups(
         groups: [
             'pegawai-luar:read',
             'pegawai-luar:write'
         ]
     )]
-    private ?User $user;
+    private ?User $userLuar = null;
 
     #[ORM\Column(
         type: Types::STRING,
@@ -280,14 +270,14 @@ class PegawaiLuar
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function getUserLuar(): ?User
     {
-        return $this->user;
+        return $this->userLuar;
     }
 
-    public function setUser(User $user): self
+    public function setUserLuar(?User $userLuar): static
     {
-        $this->user = $user;
+        $this->userLuar = $userLuar;
 
         return $this;
     }

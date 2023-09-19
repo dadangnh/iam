@@ -17,6 +17,7 @@ use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\Pegawai;
+use App\Entity\Pegawai\PegawaiLuar;
 use App\Helper\RoleHelper;
 use App\Repository\User\UserRepository;
 use DateTimeImmutable;
@@ -121,7 +122,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     filterClass: SearchFilter::class,
     properties: [
         'id' => 'exact',
-        'username' => 'ipartial',
+        'username' => 'exact',
         'pegawai.nama' => 'ipartial',
         'pegawai.nip9' => 'partial',
         'pegawai.nip18' => 'partial'
@@ -284,6 +285,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         ]
     )]
     private ?Pegawai $pegawai;
+
+    #[ORM\OneToOne(
+        mappedBy: 'userLuar',
+        cascade: ['persist', 'remove'])]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write'
+        ]
+    )]
+    private ?PegawaiLuar $pegawaiLuar = null;
 
     #[ORM\OneToMany(
         mappedBy: 'owner',
@@ -703,5 +715,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function generateRoles(LifecycleEventArgs $event): array
     {
         return $this->roles = $this->getCustomRoles($event->getObjectManager());
+    }
+
+    public function getPegawaiLuar(): ?PegawaiLuar
+    {
+        return $this->pegawaiLuar;
+    }
+
+    public function setPegawaiLuar(?PegawaiLuar $pegawaiLuar): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($pegawaiLuar === null && $this->pegawaiLuar !== null) {
+            $this->pegawaiLuar->setUserLuar(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($pegawaiLuar !== null && $pegawaiLuar->getUserLuar() !== $this) {
+            $pegawaiLuar->setUserLuar($this);
+        }
+
+        $this->pegawaiLuar = $pegawaiLuar;
+
+        return $this;
     }
 }
