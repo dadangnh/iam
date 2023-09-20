@@ -18,9 +18,12 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
+use App\Entity\Organisasi\JabatanLuar;
 use App\Entity\Organisasi\JenisKantor;
 use App\Entity\Organisasi\Kantor;
+use App\Entity\Organisasi\KantorLuar;
 use App\Entity\Organisasi\Unit;
+use App\Entity\Organisasi\UnitLuar;
 use App\Entity\User\Group;
 use App\Entity\User\User;
 use App\Repository\Core\RoleRepository;
@@ -309,6 +312,34 @@ class Role
 
     #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
+        targetEntity: JabatanLuar::class,
+        inversedBy: 'roles',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_jabatan_luar'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'jabatan_luar_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
+    private Collection $jabatanLuars;
+
+    #[ApiProperty(readableLink: false, writableLink: false)]
+    #[ORM\ManyToMany(
         targetEntity: Unit::class,
         inversedBy: 'roles',
         cascade: [
@@ -334,6 +365,33 @@ class Role
         ]
     )]
     private Collection $units;
+
+    #[ORM\ManyToMany(
+        targetEntity: UnitLuar::class,
+        inversedBy: 'roles',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_unit_luar'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'unit_luar_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
+    private Collection $unitLuars;
 
     #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
@@ -362,6 +420,33 @@ class Role
         ]
     )]
     private Collection $kantors;
+
+    #[ORM\ManyToMany(
+        targetEntity: KantorLuar::class,
+        inversedBy: 'roles',
+        cascade: [
+            'persist'
+        ]
+    )]
+    #[ORM\JoinTable(
+        name: 'role_kantor_luar'
+    )]
+    #[ORM\JoinColumn(
+        name: 'role_id',
+        referencedColumnName: 'id'
+    )]
+    #[ORM\InverseJoinColumn(
+        name: 'kantor_luar_id',
+        referencedColumnName: 'id'
+    )]
+    #[Assert\Valid]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
+    private Collection $kantorLuars;
 
     #[ApiProperty(readableLink: false, writableLink: false)]
     #[ORM\ManyToMany(
@@ -525,6 +610,9 @@ class Role
         $this->jenisKantors = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->permissions = new ArrayCollection();
+        $this->jabatanLuars = new ArrayCollection();
+        $this->kantorLuars = new ArrayCollection();
+        $this->unitLuars = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -685,6 +773,34 @@ class Role
     }
 
     /**
+     * @return Collection|JabatanLuar[]
+     */
+    public function getJabatanLuars(): Collection
+    {
+        return $this->jabatanLuars;
+    }
+
+    public function addJabatanLuar(JabatanLuar $jabatanLuar): static
+    {
+        if (!$this->jabatanLuars->contains($jabatanLuar)) {
+            $this->jabatanLuars[] = $jabatanLuar;
+            $jabatanLuar->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJabatanLuar(JabatanLuar $jabatanLuar): static
+    {
+        if ($this->jabatanLuars->contains($jabatanLuar)) {
+            $this->jabatanLuars->removeElement($jabatanLuar);
+            $jabatanLuar->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection|Unit[]
      */
     public function getUnits(): Collection|array
@@ -707,6 +823,34 @@ class Role
         if ($this->units->contains($unit)) {
             $this->units->removeElement($unit);
             $unit->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UnitLuar[]
+     */
+    public function getUnitLuars(): Collection|array
+    {
+        return $this->unitLuars;
+    }
+
+    public function addUnitLuar(UnitLuar $unitLuar): self
+    {
+        if (!$this->unitLuars->contains($unitLuar)) {
+            $this->unitLuars[] = $unitLuar;
+            $unitLuar->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUnitLuar(UnitLuar $unitLuar): self
+    {
+        if ($this->unitLuars->contains($unitLuar)) {
+            $this->unitLuars->removeElement($unitLuar);
+            $unitLuar->removeRole($this);
         }
 
         return $this;
@@ -739,6 +883,36 @@ class Role
 
         return $this;
     }
+
+    /**
+     * @return Collection|KantorLuar[]
+     */
+    public function getKantorLuars(): Collection|array
+    {
+        return $this->kantorLuars;
+    }
+
+    public function addKantorLuar(KantorLuar $kantorLuar): self
+    {
+        if (!$this->kantorLuars->contains($kantorLuar)) {
+            $this->kantorLuars[] = $kantorLuar;
+            $kantorLuar->addRole($this);
+
+        }
+
+        return $this;
+    }
+
+    public function removeKantorLuar(KantorLuar $kantorLuar): static
+    {
+        if ($this->kantorLuars->contains($kantorLuar)) {
+            $this->kantorLuars->removeElement($kantorLuar);
+            $kantorLuar->removeRole($this);
+        }
+
+        return $this;
+    }
+
 
     /**
      * @return Collection|Eselon[]

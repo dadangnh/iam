@@ -8,6 +8,7 @@ use App\Entity\Aplikasi\Aplikasi;
 use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
+use App\Entity\Pegawai\JabatanPegawaiLuar;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ObjectManager;
@@ -152,6 +153,89 @@ class RoleHelper
     }
 
     /**
+     * @param JabatanPegawaiLuar $jabatanPegawaiLuar
+     * @param ObjectManager $objectManager
+     * @return array
+     * @throws Exception
+     */
+    public static function getRolesFromJabatanPegawaiLuar(ObjectManager  $objectManager,
+                                                      JabatanPegawaiLuar $jabatanPegawaiLuar): array
+    {
+        // Get role by jabatan pegawai
+        // Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
+        // 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
+        // 10 => jabatan + unit + kantor, 11 => jabatan + unit + jenis kantor, 12 => jabatan + jenis kantor, 13 => eselon + jenis kantor,
+        // 14 => jabatan luar, 15 => jabatan luar + unit luar, 16 => jabatan luar + kantor luar, 17 => jabatan luar + unit luar + kantor luar,
+        // 18 => unit luar, 19 => kantor luar"
+        $roles = [];
+        $plainRoles = [];
+        $jabatanLuar = $jabatanPegawaiLuar->getJabatanLuar();
+        $unitLuar = $jabatanPegawaiLuar->getUnitLuar();
+        $kantorLuar = $jabatanPegawaiLuar->getKantorLuar();
+        $jenisKantorLuar = $kantorLuar?->getJenisKantorLuar();
+        $jenisKantorUnit = $unitLuar?->getJenisKantorLuar();
+        $pegawaiLuar = $jabatanPegawaiLuar->getPegawaiLuar();
+        $pegawaiIdLuar = $pegawaiLuar->getId();
+        $eselon = $jabatanLuar->getEselon();
+
+        if ($jenisKantorLuar === $jenisKantorUnit
+            && null !== $jenisKantorLuar
+            && null !== $jenisKantorUnit
+        ) {
+            $jenisKantor = $jenisKantorLuar;
+        } else {
+            $jenisKantor = null;
+        }
+
+        // check from jabatan
+        if (null !== $jabatanLuar) {
+            // direct role from jabatan/ jabatan unit/ jabatan kantor/ combination
+            foreach ($jabatanLuar->getRoles() as $role) {
+                if (14 === $role->getJenis()) {
+                    $roles[] = $role;
+                } elseif (15 === $role->getJenis() && $role->getUnitLuars()->contains($unitLuar)) {
+                    $roles[] = $role;
+                } elseif (16 === $role->getJenis() && $role->getKantorLuars()->contains($kantorLuar)) {
+                    $roles[] = $role;
+                } elseif (17 === $role->getJenis()
+                    && $role->getUnitLuars()->contains($unitLuar)
+                    && $role->getKantorLuars()->contains($kantorLuar)
+                ) {
+                    $roles[] = $role;
+                }
+            }
+        }
+        // get role from unit
+        if (null !== $unitLuar) {
+            foreach ($unitLuar->getRoles() as $role) {
+                if (18 === $role->getJenis()) {
+                    $roles[] = $role;
+                }
+            }
+        }
+
+        // get role from kantor
+        if (null !== $kantorLuar) {
+            foreach ($kantorLuar->getRoles() as $role) {
+                if (19 === $role->getJenis()) {
+                    $roles[] = $role;
+                }
+            }
+        }
+        /** @var Role $role */
+        foreach ($roles as $role) {
+            if ($role->getStartDate() <= new DateTimeImmutable('now')
+                && ($role->getEndDate() >= new DateTimeImmutable('now')
+                    || null === $role->getEndDate())
+            ) {
+                $plainRoles[] = $role->getNama();
+            }
+        }
+
+        return array_values(array_unique($plainRoles));
+    }
+
+    /**
      * @param JabatanPegawai $jabatanPegawai
      * @param ObjectManager $objectManager
      * @return array
@@ -162,6 +246,19 @@ class RoleHelper
     {
         return self::getRolesFromJabatanPegawai($objectManager, $jabatanPegawai);
     }
+
+    /**
+     * @param JabatanPegawaiLuar $jabatanPegawaiLuar
+     * @param ObjectManager $objectManager
+     * @return array
+     * @throws Exception
+     */
+    public static function getPlainRolesNameFromJabatanPegawaiLuar(ObjectManager  $objectManager,
+                                                               JabatanPegawaiLuar $jabatanPegawaiLuar): array
+    {
+        return self::getRolesFromJabatanPegawaiLuar($objectManager, $jabatanPegawaiLuar);
+    }
+
 
     /**
      * @param Role $role
