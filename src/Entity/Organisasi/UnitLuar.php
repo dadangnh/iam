@@ -204,7 +204,7 @@ class UnitLuar
             'unit-luar:write'
         ]
     )]
-    private ?JenisKantorLuar $JenisKantorLuar;
+    private ?JenisKantorLuar $jenisKantorLuar;
 
     #[ORM\Column(
         type: Types::INTEGER
@@ -346,12 +346,12 @@ class UnitLuar
 
     public function getJenisKantorLuar(): ?JenisKantorLuar
     {
-        return $this->JenisKantorLuar;
+        return $this->jenisKantorLuar;
     }
 
-    public function setJenisKantorLuar(?JenisKantorLuar $JenisKantorLuar): self
+    public function setJenisKantorLuar(?JenisKantorLuar $jenisKantorLuar): self
     {
-        $this->JenisKantorLuar = $JenisKantorLuar;
+        $this->jenisKantorLuar = $jenisKantorLuar;
 
         return $this;
     }

@@ -349,9 +349,9 @@ class PegawaiLuar
     }
 
     /**
-     * @return Collection<int, JabatanPegawaiLuar>
+     * @return Collection|JabatanPegawaiLuar[]
      */
-    public function getJabatanPegawaiLuars(): Collection
+    public function getJabatanPegawaiLuars(): Collection|array
     {
         return $this->jabatanPegawaiLuars;
     }
@@ -359,7 +359,7 @@ class PegawaiLuar
     public function addJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): self
     {
         if (!$this->jabatanPegawaiLuars->contains($jabatanPegawaiLuar)) {
-            $this->jabatanPegawaiLuars->add($jabatanPegawaiLuar);
+            $this->jabatanPegawaiLuars[] = $jabatanPegawaiLuar;
             $jabatanPegawaiLuar->setPegawaiLuar($this);
         }
 
@@ -368,7 +368,8 @@ class PegawaiLuar
 
     public function removeJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): self
     {
-        if ($this->jabatanPegawaiLuars->removeElement($jabatanPegawaiLuar)) {
+        if ($this->jabatanPegawaiLuars->contains($jabatanPegawaiLuar)) {
+            $this->jabatanPegawaiLuars->removeElement($jabatanPegawaiLuar);
             // set the owning side to null (unless already changed)
             if ($jabatanPegawaiLuar->getPegawaiLuar() === $this) {
                 $jabatanPegawaiLuar->setPegawaiLuar(null);

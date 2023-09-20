@@ -846,7 +846,7 @@ class Role
         return $this;
     }
 
-    public function removeUnitLuar(UnitLuar $unitLuar): static
+    public function removeUnitLuar(UnitLuar $unitLuar): self
     {
         if ($this->unitLuars->contains($unitLuar)) {
             $this->unitLuars->removeElement($unitLuar);
