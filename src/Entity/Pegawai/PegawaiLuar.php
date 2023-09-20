@@ -233,13 +233,13 @@ class PegawaiLuar
     )]
     private Collection $jabatanPegawaiLuars;
 
-    #[Groups(
-        groups: [
-            'user:read',
-            'pegawai-luar:read'
-        ]
-    )]
-    private array $activePositionIds;
+//    #[Groups(
+//        groups: [
+//            'user:read',
+//            'pegawai-luar:read'
+//        ]
+//    )]
+//    private array $activePositionIds;
 
     #[ORM\Column(
         type: Types::STRING,
@@ -391,21 +391,21 @@ class PegawaiLuar
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getActivePositionIds(): array
-    {
-        $activePositions = [];
-        foreach ($this->getJabatanPegawaiLuars() as $jabatanPegawaiLuar) {
-            if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
-                && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
-                    || null === $jabatanPegawaiLuar->getTanggalSelesai())
-            ) {
-                $activePositions[] = $jabatanPegawaiLuar->getId();
-            }
-        }
-
-        return $activePositions;
-    }
+//    /**
+//     * @return array
+//     */
+//    public function getActivePositionIds(): array
+//    {
+//        $activePositions = [];
+//        foreach ($this->getJabatanPegawaiLuars() as $jabatanPegawaiLuar) {
+//            if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
+//                && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
+//                    || null === $jabatanPegawaiLuar->getTanggalSelesai())
+//            ) {
+//                $activePositions[] = $jabatanPegawaiLuar->getId();
+//            }
+//        }
+//
+//        return $activePositions;
+//    }
 }
