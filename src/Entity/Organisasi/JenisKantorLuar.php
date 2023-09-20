@@ -15,20 +15,18 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Core\Role;
-use App\Entity\Pegawai\JabatanPegawaiLuar;
-use App\Repository\Organisasi\JabatanLuarRepository;
+use App\Repository\Organisasi\JenisKantorLuarRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Uid\UuidV4;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Jabatan Luar Class
+ * JenisKantor Class
  */
 #[ApiResource(
     operations: [
@@ -57,54 +55,32 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityMessage: 'Only admin/app can add new resource to this entity type.'
         )
     ],
-    normalizationContext: [
-        'groups' => [
-            'jabatan-luar:read'
-        ],
-        'swagger_definition_name' => 'read'
-    ],
-    denormalizationContext: [
-        'groups' => [
-            'jabatan-luar:write'
-        ],
-        'swagger_definition_name' => 'write'
-    ],
-    order: [
-        'level' => 'ASC',
-        'nama' => 'ASC'
-    ],
     security: 'is_granted("ROLE_USER")',
     securityMessage: 'Only a valid user can access this.'
 )]
 #[ORM\Entity(
-    repositoryClass: JabatanLuarRepository::class
+    repositoryClass: JenisKantorLuarRepository::class
 )]
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Table(
-    name: 'jabatan_luar'
+    name: 'jenis_kantor_luar'
 )]
 #[ORM\Index(
     columns: [
         'id',
         'nama',
-        'level',
-        'jenis'
+        'tipe',
+        'klasifikasi'
     ],
-    name: 'idx_jabatan_luar_nama_status'
+    name: 'idx_jenis_kantor_luar_nama_status'
 )]
 #[ORM\Index(
     columns: [
         'id',
-        'legacy_kode'
+        'legacy_kode',
+        'legacy_id'
     ],
-    name: 'idx_jabatan_luar_legacy'
-)]
-#[ORM\Index(
-    columns: [
-        'id',
-        'eselon_id'
-    ],
-    name: 'idx_jabatan_luar_relation'
+    name: 'idx_jenis_kantor_luar_legacy'
 )]
 #[ORM\Index(
     columns: [
@@ -114,27 +90,14 @@ use Symfony\Component\Validator\Constraints as Assert;
         'tanggal_aktif',
         'tanggal_nonaktif'
     ],
-    name: 'idx_jabatan_luar_active'
+    name: 'idx_jenis_kantor_luar_active'
 )]
 #[ApiFilter(
     filterClass: SearchFilter::class,
     properties: [
         'id' => 'exact',
         'nama' => 'ipartial',
-        'jenis' => 'ipartial',
-        'legacyKode' => 'partial',
-        'eselon.id' => 'exact',
-        'eselon.nama' => 'ipartial',
-        'eselon.kode' => 'ipartial',
-        'eselon.tingkat' => 'exact',
-        'units.id' => 'exact',
-        'units.nama' => 'ipartial',
-        'units.legacyKode' => 'partial',
-        'kantor.id' => 'exact',
-        'kantor.nama' => 'ipartial',
-        'kantor.legacyKode' => 'partial',
-        'kantor.legacyKodeKpp' => 'partial',
-        'kantor.legacyKodeKanwil' => 'partial'
+        'tipe' => 'ipartial'
     ]
 )]
 #[ApiFilter(
@@ -147,24 +110,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(
     filterClass: NumericFilter::class,
     properties: [
-        'level'
+        'klasifikasi',
+        'legacyId',
+        'legacyKode'
     ]
 )]
 #[ApiFilter(
     filterClass: PropertyFilter::class
 )]
-class JabatanLuar
+class JenisKantorLuar
 {
     #[ORM\Id]
     #[ORM\Column(
         type: 'uuid',
         unique: true
-    )]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write'
-        ]
     )]
     private UuidV4 $id;
 
@@ -173,148 +132,68 @@ class JabatanLuar
         length: 255
     )]
     #[Assert\NotBlank]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write',
-            'user:read',
-            'pegawai:read'
-        ]
-    )]
     private ?string $nama;
-
-    #[ORM\Column(
-        type: Types::INTEGER
-    )]
-    #[Assert\NotNull]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write',
-            'pegawai:read'
-        ]
-    )]
-    private ?int $level;
 
     #[ORM\Column(
         type: Types::STRING,
         length: 255
     )]
     #[Assert\NotNull]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write',
-            'pegawai:read'
-        ]
+    private ?string $tipe;
+
+    #[ORM\Column(
+        type: Types::INTEGER
     )]
-    private ?string $jenis;
+    #[Assert\NotNull]
+    private ?int $klasifikasi;
 
     #[ORM\Column(
         type: Types::DATETIME_IMMUTABLE
     )]
     #[Assert\NotNull]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write'
-        ]
-    )]
     private ?DateTimeImmutable $tanggalAktif;
 
     #[ORM\Column(
         type: Types::DATETIME_IMMUTABLE,
         nullable: true
     )]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write'
-        ]
-    )]
     private ?DateTimeImmutable $tanggalNonaktif;
 
     #[ORM\Column(
-        type: Types::STRING,
-        length: 255,
+        type: Types::INTEGER,
         nullable: true
     )]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write'
-        ]
-    )]
-    private ?string $sk;
-
-    #[ORM\ManyToOne(
-        targetEntity: Eselon::class,
-        inversedBy: 'jabatans'
-    )]
-    #[Assert\Valid]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write'
-        ]
-    )]
-    private ?Eselon $eselon;
+    private ?int $legacyId;
 
     #[ORM\Column(
-        type: Types::STRING,
-        length: 4,
+        type: Types::INTEGER,
         nullable: true
     )]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write'
-        ]
-    )]
-    private ?string $legacyKode;
+    private ?int $legacyKode;
 
-    #[ORM\ManyToOne(inversedBy: 'jabatanLuars')]
-    #[Groups(
-        groups: [
-            'jabatan-luar:read',
-            'jabatan-luar:write'
-        ]
-    )]
-    private ?GroupJabatanLuar $GroupJabatanLuar;
-
-    #[ORM\ManyToMany(
-        targetEntity: UnitLuar::class,
-        mappedBy: 'jabatanLuar'
-    )]
-    #[Assert\Valid]
-    #[Groups(
-        groups: [
-            'jabatan-luar:write'
-        ]
+    #[ORM\OneToMany(
+        mappedBy: 'JenisKantorLuar',
+        targetEntity: UnitLuar::class
     )]
     private Collection $unitLuars;
 
     #[ORM\OneToMany(
-        mappedBy: 'jabatanLuar',
-        targetEntity: JabatanPegawaiLuar::class,
-        orphanRemoval: true
+        mappedBy: 'jenisKantorLuar',
+        targetEntity: KantorLuar::class
     )]
-    #[Groups(
-        groups: [
-            'jabatan-luar:write'
-        ]
-    )]
-    private Collection $jabatanPegawaiLuars;
+    private Collection $kantorLuars;
 
-    #[ORM\ManyToMany(targetEntity: Role::class, mappedBy: 'jabatanLuars')]
+    #[ORM\ManyToMany(
+        targetEntity: Role::class,
+        mappedBy: 'jenisKantors'
+    )]
     private Collection $roles;
-
 
     public function __construct()
     {
         $this->id = Uuid::v4();
         $this->unitLuars = new ArrayCollection();
-        $this->jabatanPegawaiLuars = new ArrayCollection();
+        $this->kantorLuars = new ArrayCollection();
         $this->roles = new ArrayCollection();
     }
 
@@ -340,26 +219,26 @@ class JabatanLuar
         return $this;
     }
 
-    public function getLevel(): ?int
+    public function getTipe(): ?string
     {
-        return $this->level;
+        return $this->tipe;
     }
 
-    public function setLevel(int $level): self
+    public function setTipe(string $tipe): self
     {
-        $this->level = $level;
+        $this->tipe = $tipe;
 
         return $this;
     }
 
-    public function getJenis(): ?string
+    public function getKlasifikasi(): ?int
     {
-        return $this->jenis;
+        return $this->klasifikasi;
     }
 
-    public function setJenis(string $jenis): self
+    public function setKlasifikasi(int $klasifikasi): self
     {
-        $this->jenis = $jenis;
+        $this->klasifikasi = $klasifikasi;
 
         return $this;
     }
@@ -397,50 +276,26 @@ class JabatanLuar
         return $this;
     }
 
-    public function getSk(): ?string
+    public function getLegacyId(): ?int
     {
-        return $this->sk;
+        return $this->legacyId;
     }
 
-    public function setSk(?string $sk): self
+    public function setLegacyId(?int $legacyId): self
     {
-        $this->sk = $sk;
+        $this->legacyId = $legacyId;
 
         return $this;
     }
 
-    public function getEselon(): ?Eselon
-    {
-        return $this->eselon;
-    }
-
-    public function setEselon(?Eselon $eselon): self
-    {
-        $this->eselon = $eselon;
-
-        return $this;
-    }
-
-    public function getLegacyKode(): ?string
+    public function getLegacyKode(): ?int
     {
         return $this->legacyKode;
     }
 
-    public function setLegacyKode(?string $legacyKode): self
+    public function setLegacyKode(?int $legacyKode): self
     {
         $this->legacyKode = $legacyKode;
-
-        return $this;
-    }
-
-    public function getGroupJabatanLuar(): ?GroupJabatanLuar
-    {
-        return $this->GroupJabatanLuar;
-    }
-
-    public function setGroupJabatanLuar(?GroupJabatanLuar $GroupJabatanLuar): self
-    {
-        $this->GroupJabatanLuar = $GroupJabatanLuar;
 
         return $this;
     }
@@ -457,7 +312,7 @@ class JabatanLuar
     {
         if (!$this->unitLuars->contains($unitLuar)) {
             $this->unitLuars->add($unitLuar);
-            $unitLuar->addJabatanLuar($this);
+            $unitLuar->setJenisKantorLuar($this);
         }
 
         return $this;
@@ -466,36 +321,39 @@ class JabatanLuar
     public function removeUnitLuar(UnitLuar $unitLuar): static
     {
         if ($this->unitLuars->removeElement($unitLuar)) {
-            $unitLuar->removeJabatanLuar($this);
+            // set the owning side to null (unless already changed)
+            if ($unitLuar->getJenisKantorLuar() === $this) {
+                $unitLuar->setJenisKantorLuar(null);
+            }
         }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, JabatanPegawaiLuar>
+     * @return Collection<int, KantorLuar>
      */
-    public function getJabatanPegawaiLuars(): Collection
+    public function getKantorLuars(): Collection
     {
-        return $this->jabatanPegawaiLuars;
+        return $this->kantorLuars;
     }
 
-    public function addJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): static
+    public function addKantorLuar(KantorLuar $kantorLuar): static
     {
-        if (!$this->jabatanPegawaiLuars->contains($jabatanPegawaiLuar)) {
-            $this->jabatanPegawaiLuars->add($jabatanPegawaiLuar);
-            $jabatanPegawaiLuar->setJabatanLuar($this);
+        if (!$this->kantorLuars->contains($kantorLuar)) {
+            $this->kantorLuars->add($kantorLuar);
+            $kantorLuar->setJenisKantorLuar($this);
         }
 
         return $this;
     }
 
-    public function removeJabatanPegawaiLuar(JabatanPegawaiLuar $jabatanPegawaiLuar): static
+    public function removeKantorLuar(KantorLuar $kantorLuar): static
     {
-        if ($this->jabatanPegawaiLuars->removeElement($jabatanPegawaiLuar)) {
+        if ($this->kantorLuars->removeElement($kantorLuar)) {
             // set the owning side to null (unless already changed)
-            if ($jabatanPegawaiLuar->getJabatanLuar() === $this) {
-                $jabatanPegawaiLuar->setJabatanLuar(null);
+            if ($kantorLuar->getJenisKantorLuar() === $this) {
+                $kantorLuar->setJenisKantorLuar(null);
             }
         }
 

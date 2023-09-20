@@ -8,6 +8,7 @@ use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
+use App\Entity\Pegawai\JabatanPegawaiLuar;
 use App\Helper\AplikasiHelper;
 use App\Helper\RoleHelper;
 use Doctrine\DBAL\Exception;
@@ -591,5 +592,74 @@ class CommonController extends AbstractController
             'unique_permissions' => $uniquePermissions,
             'list_per_role' => $listPermissionsOnRoles
         ]);
+    }
+
+
+    /**
+     * @param mixed $idJabatanLuar
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     * @throws NonUniqueResultException|Exception
+     */
+    private function findRoleFromIdJabatanPegawaiLuar(mixed                 $idJabatanLuar,
+                                                  IriConverterInterface $iriConverter): JsonResponse
+    {
+        /** @var JabatanPegawaiLuar $jabatanPegawaiLuar */
+        $jabatanPegawaiLuar = $this->doctrine
+            ->getRepository(JabatanPegawaiLuar::class)
+            ->findOneBy(['id' => $idJabatanLuar]);
+
+        if (null === $jabatanPegawaiLuar) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No jabatan record found'
+            ], 204);
+        }
+
+        $roles = RoleHelper::getRolesFromJabatanPegawaiLuar($this->doctrine, $jabatanPegawaiLuar);
+
+        $listRoles = [];
+        foreach ($roles as $role) {
+            $getRole = $this->doctrine
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $role]);
+
+            $listRoles[] = [
+                'iri' => $iriConverter->getIriFromResource($getRole),
+                'id' => $getRole->getId(),
+                'nama' => $getRole->getNama(),
+                'deskripsi' => $getRole->getDeskripsi(),
+                'level' => $getRole->getLevel()
+            ];
+        }
+
+        if (empty($roles)) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this Jabatan Pegawai'
+            ], 204);
+        }
+
+        return $this->json([
+            'roles_count' => count($roles),
+            'roles' => $listRoles
+        ]);
+    }
+
+    /**
+     * @param string $id
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     * @throws NonUniqueResultException
+     * @throws Exception
+     */
+    #[Route('/api/jabatan_pegawai_luars/{id}/roles', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function showRolesByJabatanPegawaiLuars(string                $id,
+                                               IriConverterInterface $iriConverter): JsonResponse
+    {
+        $this->ensureUserLoggedIn();
+
+        return $this->findRoleFromIdJabatanPegawaiLuar($id, $iriConverter);
     }
 }

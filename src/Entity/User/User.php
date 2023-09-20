@@ -16,7 +16,9 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
+use App\Entity\Pegawai\JabatanPegawaiLuar;
 use App\Entity\Pegawai\Pegawai;
+use App\Entity\Pegawai\PegawaiLuar;
 use App\Helper\RoleHelper;
 use App\Repository\User\UserRepository;
 use DateTimeImmutable;
@@ -121,7 +123,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     filterClass: SearchFilter::class,
     properties: [
         'id' => 'exact',
-        'username' => 'ipartial',
+        'username' => 'exact',
         'pegawai.nama' => 'ipartial',
         'pegawai.nip9' => 'partial',
         'pegawai.nip18' => 'partial'
@@ -285,6 +287,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?Pegawai $pegawai;
 
+    #[ORM\OneToOne(
+        mappedBy: 'userLuar',
+        cascade: ['persist', 'remove'])]
+    #[Groups(
+        groups: [
+            'user:read',
+            'user:write'
+        ]
+    )]
+    private ?PegawaiLuar $pegawaiLuar;
+
     #[ORM\OneToMany(
         mappedBy: 'owner',
         targetEntity: Group::class
@@ -388,9 +401,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // Jenis Relasi Role: 1 => user, 2 => jabatan, 3 => unit, 4 => kantor, 5 => eselon,
         // 6 => jenis kantor, 7 => group, 8 => jabatan + unit, 9 => jabatan + kantor,
         // 10 => jabatan + unit + kantor, 11 => jabatan + unit + jenis kantor"
+        $arrayOfRoles = [];
+        $arrayOfRolesLuar = [];
         if (null !== $this->getPegawai()) {
-            $arrayOfRoles = [];
-
             // If on leave, assign ROLE_ON_LEAVE
             if ($this->getPegawai()->getOnLeave()) {
                 $arrayOfRoles[] = ['ROLE_ON_LEAVE'];
@@ -414,8 +427,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             } else {
                 return ['ROLE_RETIRED'];
             }
-            $plainRoles = array_values(array_merge($plainRoles, ...$arrayOfRoles));
         }
+        if (null !== $this->getPegawaiLuar()) {
+            // make sure that retired person doesn't get role
+            if (!$this->getPegawaiLuar()->getPensiun()) {
+                /** @var JabatanPegawaiLuar $jabatanPegawaiLuar */
+                foreach ($this->getPegawaiLuar()->getJabatanPegawaiLuars() as $jabatanPegawaiLuar) {
+                    // Only process active jabatans
+                    if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
+                        && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
+                            || null === $jabatanPegawaiLuar->getTanggalSelesai())
+                    ) {
+                        $arrayOfRolesLuar[] = array_values(
+                            RoleHelper::getRolesFromJabatanPegawaiLuar($objectManager, $jabatanPegawaiLuar)
+                        );
+                        $arrayOfRolesLuar[] = array_values($this->roles);
+                    }
+                }
+            } else {
+                return ['ROLE_LUAR_RETIRED'];
+            }
+        }
+        $plainRoles = array_values(array_merge($plainRoles, ...$arrayOfRoles, ...$arrayOfRolesLuar));
 
         return array_values(array_unique($plainRoles));
     }
@@ -602,6 +635,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // set the owning side of the relation if necessary
         if ($pegawai->getUser() !== $this) {
             $pegawai->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getPegawaiLuar(): ?PegawaiLuar
+    {
+        return $this->pegawaiLuar;
+    }
+
+    public function setPegawaiLuar(?PegawaiLuar $pegawaiLuar): self
+    {
+        // unset the owning side of the relation if necessary
+//        if ($pegawaiLuar === null && $this->pegawaiLuar !== null) {
+//            $this->pegawaiLuar->setUserLuar(null);
+//        }
+//
+//        // set the owning side of the relation if necessary
+//        if ($pegawaiLuar !== null && $pegawaiLuar->getUserLuar() !== $this) {
+//            $pegawaiLuar->setUserLuar($this);
+//        }
+//
+//        $this->pegawaiLuar = $pegawaiLuar;
+
+        $this->pegawaiLuar = $pegawaiLuar;
+
+        // set the owning side of the relation if necessary
+        if ($pegawaiLuar->getUserLuar() !== $this) {
+            $pegawaiLuar->setUserLuar($this);
         }
 
         return $this;
