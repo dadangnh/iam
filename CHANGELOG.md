@@ -1,6 +1,16 @@
 # IAM Changelog
 
-## Version 2.5.4 (current stable)
+## Version 2.5.5 (current stable)
+* create request endpoint for rfc sikka-ref 5 (#136)
+* add new endpoint kantor luar
+* add new endpoint unit luar
+* add new endpoint jabatan luar
+* add new endpoint jenis jabatan luar
+* add new endpoint pegawai luar
+* add new relation from role to new endpoint
+* add new relation from user to pegawai luar
+
+## Version 2.5.4
   * Fix pipeline to generate image on docker hub (#134)
 
 ## Version 2.5.3
