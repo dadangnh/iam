@@ -175,7 +175,7 @@ deploy_package:
     paths:
       - node_modules/
 
-deploy_to_registries:
+deploy_backend_to_registries:
   image: docker:20.10.21-dind
   stage: deploy
   variables:
@@ -187,56 +187,49 @@ deploy_to_registries:
       command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
       alias: dockercompose
   before_script:
-    - apk add --no-cache docker-compose
-    - docker-compose up -d database redis php caddy
+    - docker build --no-cache --target php_prod -t app-php:latest .
   script:
     - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
-    - docker image ls
     - docker tag app-php:latest dadang/iam_backend:$CI_COMMIT_TAG
     - docker tag app-php:latest dadang/iam_backend:latest
     - docker tag app-php:latest dadang/iam_php:$CI_COMMIT_TAG
     - docker tag app-php:latest dadang/iam_php:latest
-    - docker tag app-caddy:latest dadang/iam_caddy:$CI_COMMIT_TAG
-    - docker tag app-caddy:latest dadang/iam_caddy:latest
-    - docker tag redis:latest dadang/iam_redis:$CI_COMMIT_TAG
-    - docker tag redis:latest dadang/iam_redis:latest
-    - docker tag postgres:15-alpine dadang/iam_database:$CI_COMMIT_TAG
-    - docker tag postgres:15-alpine dadang/iam_database:latest
-    - docker push dadang/iam_caddy:$CI_COMMIT_TAG
-    - docker push dadang/iam_caddy:latest
     - docker push dadang/iam_backend:$CI_COMMIT_TAG
     - docker push dadang/iam_backend:latest
     - docker push dadang/iam_php:$CI_COMMIT_TAG
     - docker push dadang/iam_php:latest
-    - docker push dadang/iam_redis:$CI_COMMIT_TAG
-    - docker push dadang/iam_redis:latest
-    - docker push dadang/iam_database:$CI_COMMIT_TAG
-    - docker push dadang/iam_database:latest
     - docker logout
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker tag app-php:latest $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_TAG
     - docker tag app-php:latest $CI_REGISTRY_IMAGE/backend:latest
     - docker tag app-php:latest $CI_REGISTRY_IMAGE/php:$CI_COMMIT_TAG
     - docker tag app-php:latest $CI_REGISTRY_IMAGE/php:latest
-    - docker tag app-caddy:latest $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
-    - docker tag app-caddy:latest $CI_REGISTRY_IMAGE/caddy:latest
-    - docker tag redis:latest $CI_REGISTRY_IMAGE/redis:$CI_COMMIT_TAG
-    - docker tag redis:latest $CI_REGISTRY_IMAGE/redis:latest
-    - docker tag postgres:15-alpine $CI_REGISTRY_IMAGE/database:$CI_COMMIT_TAG
-    - docker tag postgres:15-alpine $CI_REGISTRY_IMAGE/database:latest
-    - docker push $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
-    - docker push $CI_REGISTRY_IMAGE/caddy:latest
     - docker push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_TAG
     - docker push $CI_REGISTRY_IMAGE/backend:latest
     - docker push $CI_REGISTRY_IMAGE/php:$CI_COMMIT_TAG
     - docker push $CI_REGISTRY_IMAGE/php:latest
-    - docker push $CI_REGISTRY_IMAGE/redis:$CI_COMMIT_TAG
-    - docker push $CI_REGISTRY_IMAGE/redis:latest
-    - docker push $CI_REGISTRY_IMAGE/database:$CI_COMMIT_TAG
-    - docker push $CI_REGISTRY_IMAGE/database:latest
-    - docker-compose stop caddy
-    - docker-compose up -d nginx
-    - docker logout
+  rules:
+    - if: $CI_COMMIT_TAG
+      allow_failure: true
+  cache:
+    key: cacheBuildDocker
+    paths:
+      - node_modules/
+
+deploy_nginx_to_registries:
+  image: docker:20.10.21-dind
+  stage: deploy
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: 1
+  services:
+    - name: 'docker:20.10.21-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+      alias: dockercompose
+  before_script:
+    - docker build --no-cache --target nginx_prod -t app-nginx:latest .
+  script:
     - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
     - docker tag app-nginx:latest dadang/iam_nginx:$CI_COMMIT_TAG
     - docker tag app-nginx:latest dadang/iam_nginx:latest
@@ -248,6 +241,105 @@ deploy_to_registries:
     - docker tag app-nginx:latest $CI_REGISTRY_IMAGE/nginx:latest
     - docker push $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_TAG
     - docker push $CI_REGISTRY_IMAGE/nginx:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+      allow_failure: true
+  cache:
+    key: cacheBuildDocker
+    paths:
+      - node_modules/
+
+deploy_caddy_to_registries:
+  image: docker:20.10.21-dind
+  stage: deploy
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: 1
+  services:
+    - name: 'docker:20.10.21-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+      alias: dockercompose
+  before_script:
+    - docker build --no-cache --target caddy_prod -t app-caddy:latest .
+  script:
+    - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
+    - docker tag app-caddy:latest dadang/iam_caddy:$CI_COMMIT_TAG
+    - docker tag app-caddy:latest dadang/iam_caddy:latest
+    - docker push dadang/iam_caddy:$CI_COMMIT_TAG
+    - docker push dadang/iam_caddy:latest
+    - docker logout
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker tag app-caddy:latest $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
+    - docker tag app-caddy:latest $CI_REGISTRY_IMAGE/caddy:latest
+    - docker push $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
+    - docker push $CI_REGISTRY_IMAGE/caddy:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+      allow_failure: true
+  cache:
+    key: cacheBuildDocker
+    paths:
+      - node_modules/
+
+deploy_redis_to_registries:
+  image: docker:20.10.21-dind
+  stage: deploy
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: 1
+  services:
+    - name: 'docker:20.10.21-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+      alias: dockercompose
+  before_script:
+    - docker pull redis:latest
+  script:
+    - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
+    - docker tag redis:latest dadang/iam_redis:$CI_COMMIT_TAG
+    - docker tag redis:latest dadang/iam_redis:latest
+    - docker push dadang/iam_redis:$CI_COMMIT_TAG
+    - docker push dadang/iam_redis:latest
+    - docker logout
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker tag redis:latest $CI_REGISTRY_IMAGE/redis:$CI_COMMIT_TAG
+    - docker tag redis:latest $CI_REGISTRY_IMAGE/redis:latest
+    - docker push $CI_REGISTRY_IMAGE/redis:$CI_COMMIT_TAG
+    - docker push $CI_REGISTRY_IMAGE/redis:latest
+  rules:
+    - if: $CI_COMMIT_TAG
+      allow_failure: true
+  cache:
+    key: cacheBuildDocker
+    paths:
+      - node_modules/
+
+deploy_postgres_to_registries:
+  image: docker:20.10.21-dind
+  stage: deploy
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: 1
+  services:
+    - name: 'docker:20.10.21-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+      alias: dockercompose
+  before_script:
+    - docker pull postgres:15-alpine
+  script:
+    - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
+    - docker tag postgres:15-alpine dadang/iam_database:$CI_COMMIT_TAG
+    - docker tag postgres:15-alpine dadang/iam_database:latest
+    - docker push dadang/iam_database:$CI_COMMIT_TAG
+    - docker push dadang/iam_database:latest
+    - docker logout
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker tag postgres:15-alpine $CI_REGISTRY_IMAGE/database:$CI_COMMIT_TAG
+    - docker tag postgres:15-alpine $CI_REGISTRY_IMAGE/database:latest
+    - docker push $CI_REGISTRY_IMAGE/database:$CI_COMMIT_TAG
+    - docker push $CI_REGISTRY_IMAGE/database:latest
   rules:
     - if: $CI_COMMIT_TAG
       allow_failure: true
