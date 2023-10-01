@@ -172,7 +172,7 @@ class JenisKantorLuar
     private ?int $legacyKode;
 
     #[ORM\OneToMany(
-        mappedBy: 'JenisKantorLuar',
+        mappedBy: 'jenisKantorLuar',
         targetEntity: UnitLuar::class
     )]
     private Collection $unitLuars;
