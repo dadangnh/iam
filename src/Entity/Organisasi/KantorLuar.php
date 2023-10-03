@@ -270,6 +270,7 @@ class KantorLuar
     #[Assert\Valid]
     #[Groups(
         groups: [
+            'kantor-luar:read',
             'kantor-luar:write'
         ]
     )]
