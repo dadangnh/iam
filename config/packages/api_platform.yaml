@@ -32,8 +32,14 @@ api_platform:
             apiKey:
                 name: Authorization
                 type: header
+    # Good defaults for REST APIs
     defaults:
         pagination_client_items_per_page: true
+        stateless: true
+        cache_headers:
+            vary: [ 'Content-Type', 'Authorization', 'Origin' ]
+        extra_properties:
+            standard_put: true
     collection:
         pagination:
             items_per_page_parameter_name: itemsPerPage

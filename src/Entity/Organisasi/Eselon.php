@@ -116,7 +116,8 @@ class Eselon
     #[Assert\NotBlank]
     #[Groups(
         groups: [
-            'jabatan:read'
+            'jabatan:read',
+            'jabatan-luar:read'
         ]
     )]
     private ?string $nama;
