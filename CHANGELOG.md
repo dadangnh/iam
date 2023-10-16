@@ -2,7 +2,7 @@
 
 ## Version 2.5.7 (current stable)
 * update dependencies
-* add new variable keteranngan Jabatan in entity jabatanPegawai
+* add new variable keteranganJabatan in entity JabatanPegawai
 
 ## Version 2.5.6
 * update symfony to v.6.3.5

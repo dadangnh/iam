@@ -248,6 +248,9 @@ class JabatanPegawai
     )]
     private ?JabatanAtribut $atribut;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $keteranganJabatan = null;
+
     public function __construct()
     {
         // if id is not set by client, create the id here
@@ -371,6 +374,18 @@ class JabatanPegawai
     public function setAtribut(?JabatanAtribut $atribut): self
     {
         $this->atribut = $atribut;
+
+        return $this;
+    }
+
+    public function getKeteranganJabatan(): ?string
+    {
+        return $this->keteranganJabatan;
+    }
+
+    public function setKeteranganJabatan(?string $keteranganJabatan): static
+    {
+        $this->keteranganJabatan = $keteranganJabatan;
 
         return $this;
     }
