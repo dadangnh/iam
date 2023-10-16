@@ -1,5 +1,10 @@
 # IAM Changelog
 
+## Version 2.5.7 (current stable)
+* update symfony to v.6.3.5
+* update dependencies
+* create new variable in entity JabatanPegawai
+
 ## Version 2.5.6 (current stable)
 * update symfony to v.6.3.5
 * bug fix in entity kantor luar
