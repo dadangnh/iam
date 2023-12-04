@@ -41,7 +41,8 @@ class JwtUserProvider implements UserProviderInterface
             $payload['username'],
             $payload['roles'],
             $payload['expired'],
-            $payload['pegawai']
+            $payload['pegawai'],
+            $payload['pegawaiLuar']
         );
     }
 

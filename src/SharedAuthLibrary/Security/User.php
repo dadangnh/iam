@@ -34,12 +34,18 @@ class User implements UserInterface
     private ?array $pegawai;
 
     /**
+     * @var array|null
+     */
+    private ?array $pegawaiLuar;
+
+    /**
      * User constructor.
      * @param string $id
      * @param string $username
      * @param array $roles
      * @param int $expiredTime
      * @param array|null $pegawai
+     * @param array|null $pegawaiLuar
      */
     public function __construct(
         string $id,
@@ -47,6 +53,7 @@ class User implements UserInterface
         array  $roles,
         int    $expiredTime,
         ?array $pegawai,
+        ?array $pegawaiLuar,
     )
     {
         $this->id = $id;
@@ -54,6 +61,7 @@ class User implements UserInterface
         $this->username = $username;
         $this->expiredTime = $expiredTime;
         $this->pegawai = $pegawai;
+        $this->pegawaiLuar = $pegawaiLuar;
     }
 
     /**
@@ -104,6 +112,14 @@ class User implements UserInterface
     public function getPegawai(): ?array
     {
         return $this->pegawai;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getPegawaiLuar(): ?array
+    {
+        return $this->pegawaiLuar;
     }
 
     public function eraseCredentials(): void

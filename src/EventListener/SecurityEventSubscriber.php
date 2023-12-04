@@ -6,10 +6,14 @@ namespace App\EventListener;
 
 use ApiPlatform\Api\IriConverterInterface;
 use App\Entity\Organisasi\Jabatan;
+use App\Entity\Organisasi\JabatanLuar;
 use App\Entity\Organisasi\Kantor;
+use App\Entity\Organisasi\KantorLuar;
 use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
+use App\Entity\Organisasi\UnitLuar;
 use App\Entity\Pegawai\JabatanPegawai;
+use App\Entity\Pegawai\JabatanPegawaiLuar;
 use App\Entity\User\User;
 use App\Helper\RoleHelper;
 use DateTimeImmutable;
@@ -52,6 +56,7 @@ class SecurityEventSubscriber implements EventSubscriberInterface
 
         // define pegawai data
         $jabatanPegawais = [];
+        $jabatanPegawaiLuars = [];
         // Check whether user have jabatan pegawai
         if (null !== $user->getPegawai() && null !== $user->getPegawai()->getJabatanPegawais()) {
             /** @var JabatanPegawai $jabatanPegawai */
@@ -98,6 +103,51 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                     ];
                 }
             }
+        } elseif (null !== $user->getPegawaiLuar() && null !== $user->getPegawaiLuar()->getJabatanPegawaiLuars()){
+            /** @var JabatanPegawaiLuar $jabatanPegawaiLuar */
+            foreach ($user->getPegawaiLuar()->getJabatanPegawaiLuars() as $jabatanPegawaiLuar) {
+                // Only add jabatan pegawai that is active and not expired
+                if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
+                    && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
+                        || null === $jabatanPegawaiLuar->getTanggalSelesai())
+                ) {
+                    /** @var JabatanLuar $jabatanLuar */
+                    $jabatanLuar = $jabatanPegawaiLuar->getJabatanLuar();
+                    /** @var KantorLuar $kantorLuar */
+                    $kantorLuar = $jabatanPegawaiLuar->getKantorLuar();
+                    /** @var UnitLuar $unitLuar */
+                    $unitLuar = $jabatanPegawaiLuar->getUnitLuar();
+                    /** @var TipeJabatan $tipe */
+                    $tipe = $jabatanPegawaiLuar->getTipe();
+
+                    // Get the name from related entity
+                    $namaJabatanLuar = $jabatanLuar?->getNama();
+                    $namaKantorLuar = $kantorLuar?->getNama();
+                    $namaUnitLuar = $unitLuar?->getNama();
+                    $namaTipe = $tipe?->getNama();
+                    $legacyKodeKpp = $kantorLuar?->getLegacyKodeKpp();
+                    $legacyKodeKanwil = $kantorLuar?->getLegacyKodeKanwil();
+                    $unitLuarId = $unitLuar?->getId();
+                    $kantorLuarId = $kantorLuar?->getId();
+
+                    // Assign to jabatanPegawais array
+                    $jabatanPegawaiLuars[] = [
+                        'jabatanPegawai_iri' => $this->iriConverter->getIriFromResource($jabatanPegawaiLuar),
+                        'jabatan_name' => $namaJabatanLuar,
+                        'kantor_name' => $namaKantorLuar,
+                        'unit_name' => $namaUnitLuar,
+                        'tipeJabatan_name' => $namaTipe,
+                        'legacyKodeKpp' => $legacyKodeKpp,
+                        'legacyKodeKanwil' => $legacyKodeKanwil,
+                        'kantorId' => $kantorLuarId,
+                        'unitId' => $unitLuarId,
+                        'roles' => RoleHelper::getPlainRolesNameFromJabatanPegawaiLuar(
+                            $this->entityManager,
+                            $jabatanPegawaiLuar
+                        ),
+                    ];
+                }
+            }
         }
 
         $payload = $event->getData();
@@ -116,6 +166,15 @@ class SecurityEventSubscriber implements EventSubscriberInterface
                 'pangkat' => $user->getPegawai()->getPangkat(),
                 'onLeave' => $user->getPegawai()->getOnLeave(),
                 'jabatanPegawais' => $jabatanPegawais
+            ] : null;
+        $payload['pegawaiLuar'] = null !== $user->getPegawaiLuar()
+            ? [
+                'pegawaiId' => $user->getPegawaiLuar()->getId(),
+                'nama' => $user->getPegawaiLuar()->getNama(),
+                'nip18' => $user->getPegawaiLuar()->getNip18(),
+                'pensiun' => $user->getPegawaiLuar()->getPensiun(),
+                'pangkat' => $user->getPegawaiLuar()->getPangkat(),
+                'jabatanPegawais' => $jabatanPegawaiLuars
             ] : null;
 
         $event->setData($payload);
