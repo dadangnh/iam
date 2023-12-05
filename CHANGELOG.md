@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 2.5.7 (current stable)
+## Version 2.5.8 (current stable)
+* update dependencies
+* add feature to cover pegawai luar in endpoint whoami
+
+## Version 2.5.7
 * update dependencies
 * add new variable keteranganJabatan in entity JabatanPegawai
 
