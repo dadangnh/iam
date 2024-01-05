@@ -182,7 +182,6 @@ class UnitLuar
     #[Assert\NotBlank]
     #[Groups(
         groups: [
-            'pegawai:read',
             'unit-luar:read',
             'unit-luar:write'
         ]
@@ -212,7 +211,6 @@ class UnitLuar
     #[Assert\NotNull]
     #[Groups(
         groups: [
-            'pegawai:read',
             'unit-luar:read',
             'unit-luar:write'
         ]

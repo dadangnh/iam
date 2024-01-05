@@ -226,7 +226,6 @@ class KantorLuar
     #[Assert\NotBlank]
     #[Groups(
         groups: [
-            'pegawai:read',
             'user:read',
             'kantor-luar:read',
             'kantor-luar:write'
