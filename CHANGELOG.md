@@ -1,6 +1,12 @@
 # IAM Changelog
 
-## Version 2.5.8 (current stable)
+## Version 3.0.0 (current stable)
+* Upgrade Major Symfony Components to v7 (v7.0.2)
+* Updated Symfony Recipes
+* update dependencies
+* bug fix in entity kantor luar and unit luar
+
+## Version 2.5.8
 * update dependencies
 * add feature to cover pegawai luar in endpoint whoami
 
