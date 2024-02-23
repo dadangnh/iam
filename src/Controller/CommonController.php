@@ -9,8 +9,10 @@ use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\JabatanPegawaiLuar;
+use App\Entity\Pegawai\Pegawai;
 use App\Helper\AplikasiHelper;
 use App\Helper\RoleHelper;
+use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
@@ -661,5 +663,150 @@ class CommonController extends AbstractController
         $this->ensureUserLoggedIn();
 
         return $this->findRoleFromIdJabatanPegawaiLuar($id, $iriConverter);
+    }
+
+    /**
+     * @param string $roleName
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/roles/{roleName}/role_aplikasi', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function aplikasisFromRoleName(string                $roleName,
+                                              IriConverterInterface $iriConverter): JsonResponse
+    {
+        $this->ensureUserLoggedIn();
+
+        $role = $this->doctrine
+            ->getRepository(Role::class)
+            ->findOneBy(['nama' => $roleName]);
+
+        if (null === $role) {
+            return $this->json([
+                'code' => 404,
+                'error' => 'No roles associated with this name'
+            ], 204);
+        }
+
+        $listAplikasi = [];
+        foreach (RoleHelper::getAplikasiByRole1($role) as $aplikasi) {
+            $listAplikasi[] = $aplikasi;
+        }
+
+        return $this->json([
+            'aplikasi' => $listAplikasi,
+        ]);
+    }
+
+    /**
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    #[Route('/api/token/all_aplikasi_by_token', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function showAllAplikasisByToken(IriConverterInterface $iriConverter): JsonResponse
+    {
+        return $this->findAllAplikasiByToken($iriConverter);
+    }
+
+    /**
+     * @param IriConverterInterface $iriConverter
+     * @return JsonResponse
+     */
+    private function findAllAplikasiByToken(IriConverterInterface $iriConverter): JsonResponse
+    {
+        $listAplikasi = [];
+        $listRoles = $this->findRolesFromCurrentUser();
+
+        foreach ($listRoles as $roles) {
+            foreach ($this->getAllAplikasiByRole($roles) as $aplikasis){
+                $listAplikasi[] = $aplikasis;
+            }
+        }
+
+        $user = $this->getUser();
+
+        if($user->getPegawai() !== null){
+            $obPegawai= $this->doctrine
+                ->getRepository(Pegawai::class)
+                ->findOneBy(['id' => $user->getPegawai()['pegawaiId']]);
+
+            if (null !== $obPegawai && null !== $obPegawai->getJabatanPegawais()) {
+                /** @var JabatanPegawai $jabatanPegawai */
+                foreach ($obPegawai->getJabatanPegawais() as $jabatanPegawai) {
+                    // Only add jabatan pegawai that is active and not expired
+                    if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
+                        && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
+                            || null === $jabatanPegawai->getTanggalSelesai())
+                    ) {
+                        foreach(array_values(RoleHelper::getAplikasiFromJabatanPegawai($this->doctrine, $jabatanPegawai)) as $aplikasi)
+                        {
+                            $listAplikasi[] = $aplikasi;
+                        }
+                    }
+                }
+            }
+        }
+        $obPegawaiLuar= $this->doctrine
+            ->getRepository(Pegawai::class)
+            ->findOneBy(['id' => $user->getPegawaiLuar()['pegawaiId']]);
+        if (null !== $obPegawaiLuar && null !== $obPegawaiLuar->getJabatanPegawais()) {
+            foreach ($obPegawaiLuar->getJabatanPegawais() as $jabatanPegawaiLuar) {
+                // Only process active jabatans
+                if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
+                    && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
+                        || null === $jabatanPegawaiLuar->getTanggalSelesai())
+                ) {
+                    foreach(array_values(RoleHelper::getAplikasiFromJabatanPegawaiLuar($this->doctrine, $jabatanPegawaiLuar)) as $aplikasi)
+                    {
+                        $listAplikasi[] = $aplikasi;
+                    }
+                }
+            }
+
+        }
+
+        return $this->json([
+            'aplikasi_count' => count($listAplikasi),
+            'aplikasi' => array_unique($listAplikasi),
+        ]);
+    }
+
+    /**
+     * @param Role $role
+     * @return array
+     */
+    public static function getAllAplikasiByRole(Role $role): array
+    {
+        $listAplikasi = [];
+        $aplikasis = $role?->getAplikasis();
+        if (null !== $aplikasis) {
+            foreach ($aplikasis as $aplikasi) {
+                $listAplikasi[] = $aplikasi->getNama();
+            }
+        }
+
+        return $listAplikasi;
+    }
+
+    /**
+     * @return array
+     */
+    private function findRolesFromJabatanPegawai(): array
+    {
+        $this->ensureUserLoggedIn();
+
+        $listOfPlainRoles = $this->getUser()?->getRoles();
+        $listRoles = [];
+        foreach ($listOfPlainRoles as $plainRole) {
+            $role = $this->doctrine
+                ->getRepository(Role::class)
+                ->findOneBy(['nama' => $plainRole]);
+            if (null !== $role) {
+                $listRoles[] = $role;
+            }
+        }
+
+        return $listRoles;
     }
 }
