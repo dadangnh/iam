@@ -16,6 +16,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
+use App\Entity\Aplikasi\Aplikasi;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JabatanLuar;
@@ -598,6 +599,15 @@ class Role
     )]
     private ?bool $Operator = false;
 
+    #[ORM\ManyToMany(targetEntity: Aplikasi::class)]
+    #[Groups(
+        groups: [
+            'role:read',
+            'role:write'
+        ]
+    )]
+    private Collection $Aplikasis;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -613,6 +623,7 @@ class Role
         $this->jabatanLuars = new ArrayCollection();
         $this->kantorLuars = new ArrayCollection();
         $this->unitLuars = new ArrayCollection();
+        $this->Aplikasis = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -1079,6 +1090,34 @@ class Role
     public function setOperator(?bool $Operator): self
     {
         $this->Operator = $Operator;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Aplikasi[]
+     */
+    public function getAplikasis(): Collection|array
+    {
+        return $this->Aplikasis;
+    }
+
+    public function addAplikasi(Aplikasi $aplikasi): self
+    {
+        if (!$this->Aplikasis->contains($aplikasi)) {
+            $this->Aplikasis[] = $aplikasi;
+//            $aplikasi->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAplikasi(Aplikasi $aplikasi): self
+    {
+        if ($this->Aplikasis->contains($aplikasi)) {
+            $this->Aplikasis->removeElement($aplikasi);
+//            $aplikasi->removeRole($this);
+        }
 
         return $this;
     }

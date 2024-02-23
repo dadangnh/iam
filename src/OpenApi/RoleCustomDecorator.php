@@ -306,6 +306,26 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
                 summary: 'Get All Aplikasi from Token Including the Inactive/On Development One.',
             ),
         );
+        $allAplikasiPegawaiByTokenItem = new PathItem(
+            ref: 'Aplikasi',
+            post: new Operation(
+                operationId: 'postTokenToGetAllAplikasiPegawais',
+                tags: ['Token'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get Aplikasi Pegawai data from Token, including unreleased application',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetAplikasiByTokenResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get All Aplikasi from Token Including the Inactive/On Development One.',
+            ),
+        );
 
         $allAplikasiByRoleName = new PathItem(
             ref: 'Aplikasi',
@@ -486,6 +506,7 @@ class RoleCustomDecorator implements OpenApiFactoryInterface
         $openApi->getPaths()->addPath('/api/token/aplikasis', $aplikasiByTokenItem);
         $openApi->getPaths()->addPath('/api/token/all_aplikasis', $allAplikasiByTokenItem);
         $openApi->getPaths()->addPath('/api/token/permissions', $permissionsByTokenItem);
+        $openApi->getPaths()->addPath('/api/token/all_aplikasi_by_token', $allAplikasiPegawaiByTokenItem);
 
         return $openApi;
     }
