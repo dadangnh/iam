@@ -10,6 +10,7 @@ use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\JabatanPegawaiLuar;
 use App\Entity\Pegawai\Pegawai;
+use App\Entity\Pegawai\PegawaiLuar;
 use App\Helper\AplikasiHelper;
 use App\Helper\RoleHelper;
 use DateTimeImmutable;
@@ -719,58 +720,62 @@ class CommonController extends AbstractController
         $listRoles = $this->findRolesFromCurrentUser();
 
         foreach ($listRoles as $roles) {
-            foreach ($this->getAllAplikasiByRole($roles) as $aplikasis){
-                $listAplikasi[] = $aplikasis;
-            }
+            $listAplikasi = array_merge($listAplikasi, $this->getAllAplikasiByRole($roles));
         }
 
         $user = $this->getUser();
-
-        if($user->getPegawai() !== null){
-            $obPegawai= $this->doctrine
-                ->getRepository(Pegawai::class)
-                ->findOneBy(['id' => $user->getPegawai()['pegawaiId']]);
-
-            if (null !== $obPegawai && null !== $obPegawai->getJabatanPegawais()) {
-                /** @var JabatanPegawai $jabatanPegawai */
-                foreach ($obPegawai->getJabatanPegawais() as $jabatanPegawai) {
-                    // Only add jabatan pegawai that is active and not expired
-                    if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
-                        && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
-                            || null === $jabatanPegawai->getTanggalSelesai())
-                    ) {
-                        foreach(array_values(RoleHelper::getAplikasiFromJabatanPegawai($this->doctrine, $jabatanPegawai)) as $aplikasi)
-                        {
-                            $listAplikasi[] = $aplikasi;
-                        }
-                    }
-                }
-            }
+        if ($user === null) {
+            return $this->json(['aplikasi_count' => 0, 'aplikasi' => []]);
         }
-        $obPegawaiLuar= $this->doctrine
-            ->getRepository(Pegawai::class)
-            ->findOneBy(['id' => $user->getPegawaiLuar()['pegawaiId']]);
-        if (null !== $obPegawaiLuar && null !== $obPegawaiLuar->getJabatanPegawais()) {
-            foreach ($obPegawaiLuar->getJabatanPegawais() as $jabatanPegawaiLuar) {
-                // Only process active jabatans
-                if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
-                    && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
-                        || null === $jabatanPegawaiLuar->getTanggalSelesai())
-                ) {
-                    foreach(array_values(RoleHelper::getAplikasiFromJabatanPegawaiLuar($this->doctrine, $jabatanPegawaiLuar)) as $aplikasi)
-                    {
-                        $listAplikasi[] = $aplikasi;
-                    }
-                }
-            }
 
+        $pegawai = $user->getPegawai();
+        $pegawaiId = $pegawai['pegawaiId'] ?? null;
+        if ($pegawaiId !== null) {
+            $this->processPegawai($pegawaiId, $listAplikasi);
+        }
+
+        $pegawaiLuar = $user->getPegawaiLuar();
+        $pegawaiLuarId = $pegawaiLuar['pegawaiId'] ?? null;
+        if ($pegawaiLuarId !== null) {
+            $this->processPegawaiLuar($pegawaiLuarId, $listAplikasi);
         }
 
         return $this->json([
-            'aplikasi_count' => count($listAplikasi),
+            'aplikasi_count' => count(array_unique($listAplikasi)),
             'aplikasi' => array_unique($listAplikasi),
         ]);
     }
+
+    private function processPegawai($pegawaiId, &$listAplikasi)
+    {
+        $pegawai = $this->doctrine->getRepository(Pegawai::class)->findOneBy(['id' => $pegawaiId]);
+        if ($pegawai !== null && $pegawai->getJabatanPegawais() !== null) {
+            foreach ($pegawai->getJabatanPegawais() as $jabatanPegawai) {
+                if ($this->isValidJabatanPegawai($jabatanPegawai)) {
+                    $listAplikasi = array_merge($listAplikasi, RoleHelper::getAplikasiFromJabatanPegawai($this->doctrine, $jabatanPegawai));
+                }
+            }
+        }
+    }
+
+    private function processPegawaiLuar($pegawaiLuarId, &$listAplikasi)
+    {
+        $pegawaiLuar = $this->doctrine->getRepository(PegawaiLuar::class)->findOneBy(['id' => $pegawaiLuarId]);
+        if ($pegawaiLuar !== null && $pegawaiLuar->getJabatanPegawaiLuars() !== null) {
+            foreach ($pegawaiLuar->getJabatanPegawaiLuars() as $jabatanPegawai) {
+                if ($this->isValidJabatanPegawai($jabatanPegawai)) {
+                    $listAplikasi = array_merge($listAplikasi, RoleHelper::getAplikasiFromJabatanPegawaiLuar($this->doctrine, $jabatanPegawai));
+                }
+            }
+        }
+    }
+
+    private function isValidJabatanPegawai($jabatanPegawai) {
+        $now = new DateTimeImmutable();
+        return $jabatanPegawai->getTanggalMulai() <= $now &&
+            ($jabatanPegawai->getTanggalSelesai() >= $now || $jabatanPegawai->getTanggalSelesai() === null);
+    }
+
 
     /**
      * @param Role $role
