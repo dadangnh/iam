@@ -123,7 +123,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     filterClass: SearchFilter::class,
     properties: [
         'id' => 'exact',
-        'username' => 'exact',
+        'username' => 'ipartial',
         'pegawai.nama' => 'ipartial',
         'pegawai.nip9' => 'partial',
         'pegawai.nip18' => 'partial'
@@ -392,6 +392,61 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @throws Exception
      */
+    public function getAplikasi(ObjectManager $objectManager): array
+    {
+        $arrayOfPlainAplikasi = $this->getDirectAplikasis();
+
+        $arrayOfAplikasi = [];
+        $arrayOfAplikasiLuar = [];
+
+        if (null !== $this->getPegawai()) {
+            // make sure that retired person doesn't get role
+            if (!$this->getPegawai()->getPensiun()) {
+                /** @var JabatanPegawai $jabatanPegawai */
+                foreach ($this->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
+                    // Only process active jabatans
+                    if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
+                        && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
+                            || null === $jabatanPegawai->getTanggalSelesai())
+                    ) {
+                        $arrayOfAplikasi[] = array_values(
+                            RoleHelper::getAplikasiFromJabatanPegawai($objectManager, $jabatanPegawai)
+                        );
+//                        $arrayOfAplikasi[] = array_values($this->roles);
+                    }
+                }
+            } else {
+                return ['ROLE_RETIRED'];
+            }
+        }
+        if (null !== $this->getPegawaiLuar()) {
+            // make sure that retired person doesn't get role
+            if (!$this->getPegawaiLuar()->getPensiun()) {
+                /** @var JabatanPegawaiLuar $jabatanPegawaiLuar */
+                foreach ($this->getPegawaiLuar()->getJabatanPegawaiLuars() as $jabatanPegawaiLuar) {
+                    // Only process active jabatans
+                    if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
+                        && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
+                            || null === $jabatanPegawaiLuar->getTanggalSelesai())
+                    ) {
+                        $arrayOfAplikasiLuar[] = array_values(
+                            RoleHelper::getAplikasiFromJabatanPegawaiLuar($objectManager, $jabatanPegawaiLuar)
+                        );
+//                        $arrayOfAplikasiLuar[] = array_values($this->roles);
+                    }
+                }
+            } else {
+                return ['ROLE_LUAR_RETIRED'];
+            }
+        }
+        $plainAplikasis = array_values(array_merge($arrayOfPlainAplikasi, ...$arrayOfAplikasi, ...$arrayOfAplikasiLuar));
+
+        return array_values(array_unique($plainAplikasis));
+    }
+
+    /**
+     * @throws Exception
+     */
     public function getCustomRoles(ObjectManager $objectManager): array
     {
         // Get Direct Role Relation
@@ -441,7 +496,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                         $arrayOfRolesLuar[] = array_values(
                             RoleHelper::getRolesFromJabatanPegawaiLuar($objectManager, $jabatanPegawaiLuar)
                         );
-                        $arrayOfRolesLuar[] = array_values($this->roles);
+//                        $arrayOfRolesLuar[] = array_values($this->roles);
                     }
                 }
             } else {
@@ -765,5 +820,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function generateRoles(LifecycleEventArgs $event): array
     {
         return $this->roles = $this->getCustomRoles($event->getObjectManager());
+    }
+
+    /**
+     * Method to get the direct relation of role and user
+     * @return array
+     */
+    public function getDirectAplikasis(): array
+    {
+        // check whether user is still active or not
+        $listAplikasi = [];
+        if ($this->isActive()) {
+            $roles = $this->getRole();
+            foreach ($roles as $role) {
+                // make sure only direct Role <=> User relation are considered here (only type 1)
+                if ((1 === $role->getJenis())
+                    && $role->getStartDate() <= new DateTimeImmutable('now')
+                    && ($role->getEndDate() >= new DateTimeImmutable('now')
+                        || null === $role->getEndDate())
+                ) {
+                    $aplikasis = $role?->getAplikasis();
+                    if (null !== $aplikasis) {
+                        foreach ($aplikasis as $aplikasi) {
+                            $listAplikasi[] = $aplikasi->getNama();
+                        }
+                    }
+                }
+            }
+            // return in unique array
+            return array_unique($listAplikasi);
+        }
+        // for inactive user, give inactive role
+        return $listAplikasi;
     }
 }
