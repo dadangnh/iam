@@ -1,6 +1,15 @@
 # IAM Changelog
 
-## Version 3.0.0 (current stable)
+## Version 3.0.2 (current stable)
+* Bug fix in Endpoint get All Aplikasi by Token
+* Optimize Code in Endpoint get All Aplikasi By Token
+
+## Version 3.0.1
+* Create New Endpoint Get Aplikasi by Role
+* Add new combination aplikasi in endpoint Role
+* Bug fix in entity User
+
+## Version 3.0.0 
 * Upgrade Major Symfony Components to v7 (v7.0.2)
 * Updated Symfony Recipes
 * update dependencies
