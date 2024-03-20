@@ -16,6 +16,7 @@ use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\JabatanPegawaiLuar;
 use App\Entity\User\User;
 use App\Helper\RoleHelper;
+use App\Kernel;
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,10 +33,13 @@ class SecurityEventSubscriber implements EventSubscriberInterface
 
     private EntityManagerInterface $entityManager;
 
-    public function __construct(IriConverterInterface $iriConverter, EntityManagerInterface $entityManager)
+    private $jwt_ttl;
+
+    public function __construct(IriConverterInterface $iriConverter, EntityManagerInterface $entityManager, $jwt_ttl)
     {
         $this->iriConverter = $iriConverter;
         $this->entityManager = $entityManager;
+        $this->jwt_ttl = $jwt_ttl;
     }
 
     #[ArrayShape([Events::JWT_CREATED => "string"])]
@@ -157,8 +161,8 @@ class SecurityEventSubscriber implements EventSubscriberInterface
 //        $payload['aplikasi'] = $user->getAplikasi($this->entityManager);
         $payload['username'] = $user->getUserIdentifier();
         // Assuming JWT_TTL is defined in your .env file
-        $payload['exp'] = (new DateTimeImmutable())->getTimestamp() + (int)$_ENV['JWT_TTL'];
-        $payload['expired'] = (new DateTimeImmutable())->getTimestamp() + (int)$_ENV['JWT_TTL'];
+        $payload['exp'] = (new DateTimeImmutable())->getTimestamp() + $this->jwt_ttl;
+        $payload['expired'] = (new DateTimeImmutable())->getTimestamp() + $this->jwt_ttl;
         $payload['pegawai'] = null !== $user->getPegawai()
             ? [
                 'pegawaiId' => $user->getPegawai()->getId(),
