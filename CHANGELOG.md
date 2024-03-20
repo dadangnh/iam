@@ -1,6 +1,10 @@
 # IAM Changelog
 
-## Version 3.0.2 (current stable)
+## Version 3.0.3 (current stable)
+* Bug fix in SecurityEventSubscriber in token ttl
+* Add new Response in endpoint Create User
+
+## Version 3.0.2
 * Bug fix in Endpoint get All Aplikasi by Token
 * Optimize Code in Endpoint get All Aplikasi By Token
 
