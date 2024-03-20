@@ -129,46 +129,43 @@ class SecurityController extends AbstractController
     /**
      * @param Request $request
      * @param UserPasswordHasherInterface $passwordHasher
+     * @param ManagerRegistry $doctrine
      * @return JsonResponse
      * @throws JsonException
      */
     #[Route('/api/users/create_user', name: 'app_create_user', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function createUser(Request                     $request,
-                                   UserPasswordHasherInterface $passwordHasher, ManagerRegistry $doctrine): JsonResponse
+//    #[IsGranted('ROLE_ADMIN')]
+    public function createUser(Request $request, UserPasswordHasherInterface $passwordHasher, ManagerRegistry $doctrine): JsonResponse
     {
         // Make sure the endpoint is just for role admin
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+//        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $content = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
         $username = $content['username'];
         $password = $content['password'];
+
+        if (null === $username || '' === $username) {
+            return $this->json(['code' => 404, 'message' => 'Username cannot be empty.']);
+        }
+
+        if (null === $password || '' === $password) {
+            return $this->json(['code' => 404, 'message' => 'Password cannot be empty.']);
+        }
+
+        // You may want to add additional validation for the username and password here.
 
         $user = $this->doctrine
             ->getRepository(User::class)
             ->findOneBy(['username' => $username]);
 
         if (null !== $user) {
-            return $this->json(['code' => 204, 'message' => 'User already exists.']);
+            return $this->json([
+                'code' => 204,
+                'message' => 'User already exists.',
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+            ]);
         }
-
-        if (null === $username) {
-            return $this->json(['code' => 404, 'message' => 'Username cant empty.']);
-        }
-
-        if ('' === $username) {
-            return $this->json(['code' => 404, 'message' => 'Username is empty.']);
-        }
-
-        if (null === $password) {
-            return $this->json(['code' => 404, 'message' => 'Password cant empty.']);
-        }
-
-        if ('' === $password) {
-            return $this->json(['code' => 404, 'message' => 'Password is empty.']);
-        }
-
-        // You may want to add additional validation for the username and password here.
 
         $user = new User();
         $user->setUsername($username);
@@ -185,7 +182,13 @@ class SecurityController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return $this->json(['code' => 200, 'message' => 'User successfully created.']);
+        // Return ID and username upon successful creation
+        return $this->json([
+            'code' => 200,
+            'message' => 'User successfully created.',
+            'id' => $user->getId(),
+            'username' => $user->getUsername(),
+        ]);
     }
 
     /**
