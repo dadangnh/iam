@@ -23,6 +23,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 
 class SecurityEventSubscriber implements EventSubscriberInterface
 {
@@ -155,8 +156,9 @@ class SecurityEventSubscriber implements EventSubscriberInterface
         $payload['roles'] = $user->getCustomRoles($this->entityManager);
 //        $payload['aplikasi'] = $user->getAplikasi($this->entityManager);
         $payload['username'] = $user->getUserIdentifier();
-        $payload['exp'] = (new DateTimeImmutable())->getTimestamp() + 3600;
-        $payload['expired'] = (new DateTimeImmutable())->getTimestamp() + 3600;
+        // Assuming JWT_TTL is defined in your .env file
+        $payload['exp'] = (new DateTimeImmutable())->getTimestamp() + (int)$_ENV['JWT_TTL'];
+        $payload['expired'] = (new DateTimeImmutable())->getTimestamp() + (int)$_ENV['JWT_TTL'];
         $payload['pegawai'] = null !== $user->getPegawai()
             ? [
                 'pegawaiId' => $user->getPegawai()->getId(),
