@@ -58,6 +58,8 @@ services:
     App\EventListener\SecurityEventSubscriber:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated}
+        arguments:
+            $jwt_ttl: '%env(int:JWT_TTL)%'
 
     App\SharedAuthLibrary\Listener\JwtPayloadListener:
         tags:
