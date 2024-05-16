@@ -655,7 +655,7 @@ class Role
 
     public function setSystemName(string $systemName): self
     {
-        $this->systemName = $systemName;
+        $this->systemName = strtoupper($systemName);
 
         return $this;
     }
