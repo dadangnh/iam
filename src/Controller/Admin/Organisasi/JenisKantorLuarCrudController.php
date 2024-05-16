@@ -19,6 +19,7 @@ class JenisKantorLuarCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $_pageName = $pageName;
         return [
             TextField::new('nama', 'Nama')
                 ->setMaxLength(255)

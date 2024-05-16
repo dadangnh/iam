@@ -59,29 +59,28 @@ class KantorRepository extends ServiceEntityRepository
     public function findAllActiveKantorData(): mixed
     {
         // Fetch parent entities with necessary fields
-        $qb = $this->createQueryBuilder('k')
+        $kantorAll = $this->createQueryBuilder('kantor')
             ->select([
-                'k.id', 'k.nama', 'k.level', 'k.tanggalAktif', 'k.tanggalNonaktif',
-                'k.sk', 'k.alamat', 'k.telp', 'k.fax', 'k.zonaWaktu', 'k.latitude',
-                'k.longitude', 'k.legacyKode', 'k.legacyKodeKpp', 'k.legacyKodeKanwil',
-                'k.provinsi', 'k.kabupatenKota', 'k.kecamatan', 'k.kelurahan',
-                'k.provinsiName', 'k.kabupatenKotaName', 'k.kecamatanName',
-                'k.kelurahanName', 'k.ministryOfficeCode',
+                'kantor.id', 'kantor.nama', 'kantor.level', 'kantor.tanggalAktif', 'kantor.tanggalNonaktif',
+                'kantor.sk', 'kantor.alamat', 'kantor.telp', 'kantor.fax', 'kantor.zonaWaktu', 'kantor.latitude',
+                'kantor.longitude', 'kantor.legacyKode', 'kantor.legacyKodeKpp', 'kantor.legacyKodeKanwil',
+                'kantor.provinsi', 'kantor.kabupatenKota', 'kantor.kecamatan', 'kantor.kelurahan',
+                'kantor.provinsiName', 'kantor.kabupatenKotaName', 'kantor.kecamatanName',
+                'kantor.kelurahanName', 'kantor.ministryOfficeCode',
                 'jenisKantor.id AS jenisKantorId', 'parent.id AS parentId', 'pembina.id AS pembinaId'
             ])
-            ->leftJoin('k.jenisKantor', 'jenisKantor')
-            ->leftJoin('k.parent', 'parent')
-            ->leftJoin('k.pembina', 'pembina')
-            ->andWhere('k.tanggalAktif < :now')
-            ->andWhere('k.tanggalNonaktif IS NULL OR k.tanggalNonaktif > :now')
+            ->leftJoin('kantor.jenisKantor', 'jenisKantor')
+            ->leftJoin('kantor.parent', 'parent')
+            ->leftJoin('kantor.pembina', 'pembina')
+            ->andWhere('kantor.tanggalAktif < :now')
+            ->andWhere('kantor.tanggalNonaktif IS NULL OR kantor.tanggalNonaktif > :now')
             ->setParameter('now', new DateTime('now'))
-            ->addOrderBy('k.level', 'ASC')
-            ->addOrderBy('k.nama', 'ASC');
+            ->addOrderBy('kantor.level', 'ASC')
+            ->addOrderBy('kantor.nama', 'ASC');
 
-        $parentKantors = $qb->getQuery()->getArrayResult();
+        $parentKantors = $kantorAll->getQuery()->getArrayResult();
 
-        // Fetch children and membina separately in batch
-        $parentIds = array_map(fn($k) => (string) $k['id'], $parentKantors);  // Ensure IDs are strings
+        $parentIds = array_map(fn($kantor) => (string) $kantor['id'], $parentKantors);
 
         $childEntities = $this->createQueryBuilder('c')
             ->select('c.id, parent.id AS parentId')
@@ -99,26 +98,24 @@ class KantorRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
 
-        // Index children and membina by parentId and pembinaId for faster lookup
         $childrenByParent = [];
         foreach ($childEntities as $child) {
-            $parentId = (string) $child['parentId'];  // Ensure parentId is a string
+            $parentId = (string) $child['parentId'];
             if (!isset($childrenByParent[$parentId])) {
                 $childrenByParent[$parentId] = [];
             }
-            $childrenByParent[$parentId][] = (string) $child['id'];  // Ensure child ID is a string
+            $childrenByParent[$parentId][] = (string) $child['id'];
         }
 
         $membinaByPembina = [];
         foreach ($membinaEntities as $membina) {
-            $pembinaId = (string) $membina['pembinaId'];  // Ensure pembinaId is a string
+            $pembinaId = (string) $membina['pembinaId'];
             if (!isset($membinaByPembina[$pembinaId])) {
                 $membinaByPembina[$pembinaId] = [];
             }
-            $membinaByPembina[$pembinaId][] = (string) $membina['id'];  // Ensure membina ID is a string
+            $membinaByPembina[$pembinaId][] = (string) $membina['id'];
         }
 
-        // Transform the results to the desired format
         $result = [];
         foreach ($parentKantors as $parent) {
             $parentId = (string) $parent['id'];  // Ensure parent ID is a string
@@ -152,14 +149,10 @@ class KantorRepository extends ServiceEntityRepository
                 'ministryOfficeCode' => $parent['ministryOfficeCode'],
                 'pembina' => $parent['pembinaId'] ?? null,
                 'membina' => $membinaByPembina[$parentId] ?? [],
-                // Include other properties you need from the parent entity
             ];
         }
-
         return $result;
     }
-
-
 
     /**
      * @param $keyword
