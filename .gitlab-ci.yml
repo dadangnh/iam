@@ -169,7 +169,7 @@ test:
     - docker-compose -f docker-compose.yml run --rm php sh -c "symfony server:ca:install && symfony serve -d"
   script:
     - docker-compose -f docker-compose.yml run --rm php php bin/console cache:clear
-    - docker-compose -f docker-compose.yml run --rm php php bin/phpunit --coverage-text --colors=never --log-junit test-report.xml
+    - docker-compose -f docker-compose.yml run --rm php php bin/phpunit --coverage-text --colors=never --log-junit /builds/dadangnh/iam/test-report.xml
   cache:
     key: cacheTest
     paths:
@@ -177,7 +177,8 @@ test:
   artifacts:
     when: always
     reports:
-      junit: test-report.xml
+      junit: /builds/dadangnh/iam/test-report.xml
+
 
 
 sast:
