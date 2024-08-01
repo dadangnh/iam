@@ -3,7 +3,7 @@
 # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-image: php:8.2
+image: docker:20.10.21-dind
 
 stages:
   - build
@@ -50,48 +50,107 @@ build_backend:
       alias: docker
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --no-cache --target php_prod -t backend .
+    - docker build --no-cache --target frankenphp_prod -t backend .
     - docker tag backend $IMAGE_TAG_BACKEND
     - docker tag backend $IMAGE_TAG_PHP
     - docker push $IMAGE_TAG_BACKEND
     - docker push $IMAGE_TAG_PHP
 
-build_caddy:
-  image: docker:20.10.21-dind
-  stage: build
-  variables:
-    IMAGE_TAG: $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_REF_SLUG
-    DOCKER_TLS_CERTDIR: ''
-    DOCKER_BUILDKIT: 1
-  services:
-    - name: 'docker:20.10.21-dind'
-      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
-      alias: docker
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --no-cache --target caddy_prod -t caddy .
-    - docker tag caddy $IMAGE_TAG
-    - docker push $IMAGE_TAG
 
-build_nginx:
-  image: docker:20.10.21-dind
-  stage: build
-  variables:
-    IMAGE_TAG: $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_REF_SLUG
-    DOCKER_TLS_CERTDIR: ''
-    DOCKER_BUILDKIT: 1
-  services:
-    - name: 'docker:20.10.21-dind'
-      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
-      alias: docker
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --no-cache --target nginx_prod -t nginx .
-    - docker tag nginx $IMAGE_TAG
-    - docker push $IMAGE_TAG
+#build_caddy:
+#  image: docker:20.10.21-dind
+#  stage: build
+#  variables:
+#    IMAGE_TAG: $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_REF_SLUG
+#    DOCKER_TLS_CERTDIR: ''
+#    DOCKER_BUILDKIT: 1
+#  services:
+#    - name: 'docker:20.10.21-dind'
+#      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+#      alias: docker
+#  script:
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - docker build --no-cache --target caddy_prod -t caddy .
+#    - docker tag caddy $IMAGE_TAG
+#    - docker push $IMAGE_TAG
+#
+#build_nginx:
+#  image: docker:20.10.21-dind
+#  stage: build
+#  variables:
+#    IMAGE_TAG: $CI_REGISTRY_IMAGE/nginx:$CI_COMMIT_REF_SLUG
+#    DOCKER_TLS_CERTDIR: ''
+#    DOCKER_BUILDKIT: 1
+#  services:
+#    - name: 'docker:20.10.21-dind'
+#      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+#      alias: docker
+#  script:
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - docker build --no-cache --target nginx_prod -t nginx .
+#    - docker tag nginx $IMAGE_TAG
+#    - docker push $IMAGE_TAG
+
+#test:
+#  image: php:8.2
+#  variables:
+#    POSTGRES_USER: db_user
+#    POSTGRES_PASSWORD: db_pass
+#    POSTGRES_DB: db_name
+#    POSTGRES_HOST_AUTH_METHOD: trust
+#    DOCKER_DRIVER: overlay2
+#    DOCKER_TLS_CERTDIR: ""
+#  services:
+#    - name: postgres:15-alpine
+#      alias: database
+#    - name: redis:latest
+#      alias: redis
+#  before_script:
+#    - apt-get update -yqq
+#    - apt-get install gnupg openssl acl -yqq
+#    - mkdir -p config/jwt
+#    - export jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut
+#      -f 2 -d ''='')}
+#    - echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -aes256 -algorithm
+#      rsa -pkeyopt rsa_keygen_bits:4096 --pass stdin
+#    - echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem
+#      -pubout --passin stdin
+#    - setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+#    - setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+#    - curl -sL https://deb.nodesource.com/setup_14.x | bash -
+#    - apt-get install git unzip libcurl4-gnutls-dev libicu-dev libonig-dev libzip-dev
+#      libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev
+#      libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev
+#      libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
+#    - docker-php-ext-install pdo_pgsql zip
+#    - pecl install xdebug
+#    - docker-php-ext-enable xdebug
+#    - curl -sS https://getcomposer.org/installer | php
+#    - curl -sS https://get.symfony.com/cli/installer | bash
+#    - export PATH="$HOME/.symfony5/bin:$PATH"
+#    - echo "xdebug.mode=develop,coverage,debug" >> /usr/local/etc/php/php.ini
+#    - echo "memory_limit = -1;" >> /usr/local/etc/php/php.ini
+#    - symfony composer install
+#    - php bin/console doctrine:database:drop --force
+#    - php bin/console doctrine:database:create
+#    - php bin/console doctrine:migrations:migrate --no-interaction
+#    - php bin/console doctrine:fixtures:load --no-interaction
+#    - symfony server:ca:install
+#    - symfony serve -d
+#  script:
+#    - php bin/console cache:clear
+#    - php bin/phpunit --coverage-text --colors=never --log-junit test-report.xml
+#  cache:
+#    key: cacheTest
+#    paths:
+#      - node_modules/
+#  artifacts:
+#    when: always
+#    reports:
+#      junit: test-report.xml
 
 test:
-  image: php:8.2
+  image: docker:20.10.21-dind
   variables:
     POSTGRES_USER: db_user
     POSTGRES_PASSWORD: db_pass
@@ -105,40 +164,12 @@ test:
     - name: redis:latest
       alias: redis
   before_script:
-    - apt-get update -yqq
-    - apt-get install gnupg openssl acl -yqq
-    - mkdir -p config/jwt
-    - export jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut
-      -f 2 -d ''='')}
-    - echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -aes256 -algorithm
-      rsa -pkeyopt rsa_keygen_bits:4096 --pass stdin
-    - echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem
-      -pubout --passin stdin
-    - setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
-    - setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
-    - curl -sL https://deb.nodesource.com/setup_14.x | bash -
-    - apt-get install git unzip libcurl4-gnutls-dev libicu-dev libonig-dev libzip-dev
-      libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev
-      libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev
-      libsqlite3-dev libaspell-dev libsnmp-dev libpcre3-dev libtidy-dev -yqq
-    - docker-php-ext-install pdo_pgsql zip
-    - pecl install xdebug
-    - docker-php-ext-enable xdebug
-    - curl -sS https://getcomposer.org/installer | php
-    - curl -sS https://get.symfony.com/cli/installer | bash
-    - export PATH="$HOME/.symfony5/bin:$PATH"
-    - echo "xdebug.mode=develop,coverage,debug" >> /usr/local/etc/php/php.ini
-    - echo "memory_limit = -1;" >> /usr/local/etc/php/php.ini
-    - symfony composer install
-    - php bin/console doctrine:database:drop --force
-    - php bin/console doctrine:database:create
-    - php bin/console doctrine:migrations:migrate --no-interaction
-    - php bin/console doctrine:fixtures:load --no-interaction
-    - symfony server:ca:install
-    - symfony serve -d
+    - docker-compose -f docker-compose.yml up -d
+    - docker-compose -f docker-compose.yml run --rm php sh -c "composer install && php bin/console doctrine:database:drop --force && php bin/console doctrine:database:create && php bin/console doctrine:migrations:migrate --no-interaction && php bin/console doctrine:fixtures:load --no-interaction"
+    - docker-compose -f docker-compose.yml run --rm php sh -c "symfony server:ca:install && symfony serve -d"
   script:
-    - php bin/console cache:clear
-    - php bin/phpunit --coverage-text --colors=never --log-junit test-report.xml
+    - docker-compose -f docker-compose.yml run --rm php php bin/console cache:clear
+    - docker-compose -f docker-compose.yml run --rm php php bin/phpunit --coverage-text --colors=never --log-junit test-report.xml
   cache:
     key: cacheTest
     paths:
@@ -147,6 +178,7 @@ test:
     when: always
     reports:
       junit: test-report.xml
+
 
 sast:
   stage: test
