@@ -8,12 +8,17 @@ use App\Entity\Core\Permission;
 use App\Entity\Core\Role;
 use App\Entity\Organisasi\Eselon;
 use App\Entity\Organisasi\GroupJabatan;
+use App\Entity\Organisasi\GroupJabatanLuar;
 use App\Entity\Organisasi\Jabatan;
 use App\Entity\Organisasi\JabatanAtribut;
+use App\Entity\Organisasi\JabatanLuar;
 use App\Entity\Organisasi\JenisKantor;
+use App\Entity\Organisasi\JenisKantorLuar;
 use App\Entity\Organisasi\Kantor;
+use App\Entity\Organisasi\KantorLuar;
 use App\Entity\Organisasi\TipeJabatan;
 use App\Entity\Organisasi\Unit;
+use App\Entity\Organisasi\UnitLuar;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\Pegawai;
 use App\Entity\User\User;
@@ -55,13 +60,18 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Modul', 'fa fa-code', Modul::class);
         yield MenuItem::section('Organisasi');
         yield MenuItem::linkToCrud('Jenis Kantor', 'fa fa-university', JenisKantor::class);
+        yield MenuItem::linkToCrud('Jenis Kantor Luar', 'fa fa-university', JenisKantorLuar::class);
         yield MenuItem::linkToCrud('Eselon', 'fa fa-signal', Eselon::class);
         yield MenuItem::linkToCrud('Tipe Jabatan', 'fa fa-ticket', TipeJabatan::class);
         yield MenuItem::linkToCrud('Group Jabatan', 'fa fa-users', GroupJabatan::class);
+        yield MenuItem::linkToCrud('Group Jabatan Luar', 'fa fa-users', GroupJabatanLuar::class);
         yield MenuItem::linkToCrud('Jabatan Atribut', 'fa fa-vcard', JabatanAtribut::class);
         yield MenuItem::linkToCrud('Kantor', 'fa fa-building', Kantor::class);
+        yield MenuItem::linkToCrud('Kantor Luar', 'fa fa-building', KantorLuar::class);
         yield MenuItem::linkToCrud('Unit Organisasi', 'fa fa-building-o', Unit::class);
+        yield MenuItem::linkToCrud('Unit Organisasi Luar', 'fa fa-building-o', UnitLuar::class);
         yield MenuItem::linkToCrud('Jabatan', 'fa fa-id-card', Jabatan::class);
+        yield MenuItem::linkToCrud('Jabatan Luar', 'fa fa-id-card', JabatanLuar::class);
         yield MenuItem::section('Pegawai');
         yield MenuItem::linkToCrud('Pegawai', 'far fa-address-book', Pegawai::class);
         yield MenuItem::linkToCrud('Jabatan Pegawai', 'far fa-id-card', JabatanPegawai::class);
@@ -72,3 +82,4 @@ class AdminDashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Permissions', 'fa fa-terminal', Permission::class);
     }
 }
+

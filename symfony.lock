@@ -31,9 +31,6 @@
     "doctrine/collections": {
         "version": "1.6.7"
     },
-    "doctrine/common": {
-        "version": "2.13.3"
-    },
     "doctrine/data-fixtures": {
         "version": "1.4.4"
     },
@@ -158,9 +155,6 @@
     },
     "myclabs/deep-copy": {
         "version": "1.10.2"
-    },
-    "namshi/jose": {
-        "version": "7.2.3"
     },
     "nelmio/cors-bundle": {
         "version": "1.5",
