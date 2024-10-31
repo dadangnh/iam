@@ -97,6 +97,27 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $allActiveKantorDataItem = new PathItem(
+            ref: 'Kantor',
+            get: new Operation(
+                operationId: 'getAllActiveKantorData',
+                tags: ['Kantor'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get List of All Active Kantor Data',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetActiveKantorByKantorNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get list of All Active Kantor',
+            ),
+        );
+
         $schemas['GetActiveUnitByUnitNameRequest'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
@@ -794,6 +815,7 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
         );
 
         $openApi->getPaths()->addPath('/api/kantors/active/show_all', $allActiveKantorItem);
+        $openApi->getPaths()->addPath('/api/kantors/active/get_all', $allActiveKantorDataItem);
         $openApi->getPaths()->addPath('/api/kantors/active/{name}', $activeKantorByKantorNameItem);
         $openApi->getPaths()->addPath('/api/kantors/kepala_kantor', $fetchKepalaKantorFromKantorIdItem);
         $openApi->getPaths()->addPath('/api/units/active/show_all', $allActiveUnitItem);
