@@ -36,6 +36,20 @@ class KantorController extends AbstractController
 
     /**
      * @param ManagerRegistry $doctrine
+     * @return JsonResponse
+     */
+    #[Route('/api/kantors/active/get_all', methods: ['GET'])]
+    public function getAllActiveKantorData(ManagerRegistry $doctrine): JsonResponse
+    {
+        $kantors = $doctrine
+            ->getRepository(Kantor::class)
+            ->findAllActiveKantorData();
+
+        return $this->formatReturnData($kantors);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
      * @param string $name
      * @return JsonResponse
      */

@@ -26,7 +26,6 @@ RUN apk add --no-cache \
 		gettext \
 		git \
 		jq \
-		redis \
 		openrc \
 		busybox-extras \
 	;
@@ -40,7 +39,7 @@ RUN set -eux; \
 		intl \
 		opcache \
 		zip \
-		redis \
+		redis-5.3.7 \
     ;
 
 ###> recipes ###

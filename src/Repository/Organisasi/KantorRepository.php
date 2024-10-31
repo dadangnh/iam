@@ -54,6 +54,107 @@ class KantorRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return mixed
+     */
+    public function findAllActiveKantorData(): mixed
+    {
+        // Fetch parent entities with necessary fields
+        $kantorAll = $this->createQueryBuilder('kantor')
+            ->select([
+                'kantor.id', 'kantor.nama', 'kantor.level', 'kantor.tanggalAktif', 'kantor.tanggalNonaktif',
+                'kantor.sk', 'kantor.alamat', 'kantor.telp', 'kantor.fax', 'kantor.zonaWaktu', 'kantor.latitude',
+                'kantor.longitude', 'kantor.legacyKode', 'kantor.legacyKodeKpp', 'kantor.legacyKodeKanwil',
+                'kantor.provinsi', 'kantor.kabupatenKota', 'kantor.kecamatan', 'kantor.kelurahan',
+                'kantor.provinsiName', 'kantor.kabupatenKotaName', 'kantor.kecamatanName',
+                'kantor.kelurahanName', 'kantor.ministryOfficeCode',
+                'jenisKantor.id AS jenisKantorId', 'parent.id AS parentId', 'pembina.id AS pembinaId'
+            ])
+            ->leftJoin('kantor.jenisKantor', 'jenisKantor')
+            ->leftJoin('kantor.parent', 'parent')
+            ->leftJoin('kantor.pembina', 'pembina')
+            ->andWhere('kantor.tanggalAktif < :now')
+            ->andWhere('kantor.tanggalNonaktif IS NULL OR kantor.tanggalNonaktif > :now')
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('kantor.level', 'ASC')
+            ->addOrderBy('kantor.nama', 'ASC');
+
+        $parentKantors = $kantorAll->getQuery()->getArrayResult();
+
+        $parentIds = array_map(fn($kantor) => (string) $kantor['id'], $parentKantors);
+
+        $childEntities = $this->createQueryBuilder('c')
+            ->select('c.id, parent.id AS parentId')
+            ->leftJoin('c.parent', 'parent')
+            ->where('parent.id IN (:parentIds)')
+            ->setParameter('parentIds', $parentIds)
+            ->getQuery()
+            ->getArrayResult();
+
+        $membinaEntities = $this->createQueryBuilder('m')
+            ->select('m.id, pembina.id AS pembinaId')
+            ->leftJoin('m.pembina', 'pembina')
+            ->where('pembina.id IN (:parentIds)')
+            ->setParameter('parentIds', $parentIds)
+            ->getQuery()
+            ->getArrayResult();
+
+        $childrenByParent = [];
+        foreach ($childEntities as $child) {
+            $parentId = (string) $child['parentId'];
+            if (!isset($childrenByParent[$parentId])) {
+                $childrenByParent[$parentId] = [];
+            }
+            $childrenByParent[$parentId][] = (string) $child['id'];
+        }
+
+        $membinaByPembina = [];
+        foreach ($membinaEntities as $membina) {
+            $pembinaId = (string) $membina['pembinaId'];
+            if (!isset($membinaByPembina[$pembinaId])) {
+                $membinaByPembina[$pembinaId] = [];
+            }
+            $membinaByPembina[$pembinaId][] = (string) $membina['id'];
+        }
+
+        $result = [];
+        foreach ($parentKantors as $parent) {
+            $parentId = (string) $parent['id'];  // Ensure parent ID is a string
+            $result[] = [
+                'id' => $parentId,
+                'nama' => $parent['nama'],
+                'level' => $parent['level'],
+                'jenisKantor' => $parent['jenisKantorId'] ?? null,
+                'parent' => $parent['parentId'] ?? null,
+                'childs' => $childrenByParent[$parentId] ?? [],
+                'tanggalAktif' => $parent['tanggalAktif'],
+                'tanggalNonaktif' => $parent['tanggalNonaktif'],
+                'sk' => $parent['sk'],
+                'alamat' => $parent['alamat'],
+                'telp' => $parent['telp'],
+                'fax' => $parent['fax'],
+                'zonaWaktu' => $parent['zonaWaktu'],
+                'latitude' => $parent['latitude'],
+                'longitude' => $parent['longitude'],
+                'legacyKode' => $parent['legacyKode'],
+                'legacyKodeKpp' => $parent['legacyKodeKpp'],
+                'legacyKodeKanwil' => $parent['legacyKodeKanwil'],
+                'provinsi' => $parent['provinsi'],
+                'kabupatenKota' => $parent['kabupatenKota'],
+                'kecamatan' => $parent['kecamatan'],
+                'kelurahan' => $parent['kelurahan'],
+                'provinsiName' => $parent['provinsiName'],
+                'KabupatenKotaName' => $parent['kabupatenKotaName'],
+                'kecamatanName' => $parent['kecamatanName'],
+                'kelurahanName' => $parent['kelurahanName'],
+                'ministryOfficeCode' => $parent['ministryOfficeCode'],
+                'pembina' => $parent['pembinaId'] ?? null,
+                'membina' => $membinaByPembina[$parentId] ?? [],
+            ];
+        }
+        return $result;
+    }
+
+    /**
      * @param $keyword
      * @return mixed
      */
