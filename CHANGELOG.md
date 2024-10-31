@@ -1,6 +1,12 @@
 # IAM Changelog
 
-## Version 3.0.3 (current stable)
+## Version 3.1.0 (current stable)
+* Upgrade Major Symfony Components to v7.1 (v7.1.6)
+* Updated Symfony Recipes
+* update dependencies
+* update Api Platform to v4
+
+## Version 3.0.3
 * Bug fix in SecurityEventSubscriber in token ttl
 * Add new Response in endpoint Create User
 
