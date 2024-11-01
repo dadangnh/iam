@@ -21,7 +21,7 @@ use App\Entity\Pegawai\Pegawai;
 use App\Entity\Pegawai\PegawaiLuar;
 use App\Helper\RoleHelper;
 use App\Repository\User\UserRepository;
-use DateTimeImmutable;
+use DateTime;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -405,8 +405,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 /** @var JabatanPegawai $jabatanPegawai */
                 foreach ($this->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
                     // Only process active jabatans
-                    if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
-                        && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
+                    if ($jabatanPegawai->getTanggalMulai() <= new DateTime('now')
+                        && ($jabatanPegawai->getTanggalSelesai() >= new DateTime('now')
                             || null === $jabatanPegawai->getTanggalSelesai())
                     ) {
                         $arrayOfAplikasi[] = array_values(
@@ -425,8 +425,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 /** @var JabatanPegawaiLuar $jabatanPegawaiLuar */
                 foreach ($this->getPegawaiLuar()->getJabatanPegawaiLuars() as $jabatanPegawaiLuar) {
                     // Only process active jabatans
-                    if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
-                        && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
+                    if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTime('now')
+                        && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTime('now')
                             || null === $jabatanPegawaiLuar->getTanggalSelesai())
                     ) {
                         $arrayOfAplikasiLuar[] = array_values(
@@ -469,8 +469,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 /** @var JabatanPegawai $jabatanPegawai */
                 foreach ($this->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
                     // Only process active jabatans
-                    if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
-                        && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
+                    if ($jabatanPegawai->getTanggalMulai() <= new DateTime('now')
+                        && ($jabatanPegawai->getTanggalSelesai() >= new DateTime('now')
                             || null === $jabatanPegawai->getTanggalSelesai())
                     ) {
                         $arrayOfRoles[] = array_values(
@@ -489,8 +489,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 /** @var JabatanPegawaiLuar $jabatanPegawaiLuar */
                 foreach ($this->getPegawaiLuar()->getJabatanPegawaiLuars() as $jabatanPegawaiLuar) {
                     // Only process active jabatans
-                    if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
-                        && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
+                    if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTime('now')
+                        && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTime('now')
                             || null === $jabatanPegawaiLuar->getTanggalSelesai())
                     ) {
                         $arrayOfRolesLuar[] = array_values(
@@ -537,8 +537,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             foreach ($roles as $role) {
                 // make sure only direct Role <=> User relation are considered here (only type 1)
                 if ((1 === $role->getJenis())
-                    && $role->getStartDate() <= new DateTimeImmutable('now')
-                    && ($role->getEndDate() >= new DateTimeImmutable('now')
+                    && $role->getStartDate() <= new DateTime('now')
+                    && ($role->getEndDate() >= new DateTime('now')
                         || null === $role->getEndDate())
                 ) {
                     $plainRoles[] = $role->getNama();
@@ -644,7 +644,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PreUpdate]
     public function setLastChangeValue(): void
     {
-        $this->lastChange = new DateTimeImmutable('now');
+        $this->lastChange = new DateTime('now');
     }
 
     /**
@@ -835,8 +835,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             foreach ($roles as $role) {
                 // make sure only direct Role <=> User relation are considered here (only type 1)
                 if ((1 === $role->getJenis())
-                    && $role->getStartDate() <= new DateTimeImmutable('now')
-                    && ($role->getEndDate() >= new DateTimeImmutable('now')
+                    && $role->getStartDate() <= new DateTime('now')
+                    && ($role->getEndDate() >= new DateTime('now')
                         || null === $role->getEndDate())
                 ) {
                     $aplikasis = $role?->getAplikasis();
