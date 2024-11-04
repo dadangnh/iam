@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 3.1.0 (current stable)
+## Version 3.2.0 (current stable)
+* Updated Symfony Recipes
+* update dependencies
+* bug fix in refresh token
+
+## Version 3.1.0 
 * Upgrade Major Symfony Components to v7.1 (v7.1.6)
 * Updated Symfony Recipes
 * update dependencies
