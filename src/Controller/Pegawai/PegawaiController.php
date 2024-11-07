@@ -2,7 +2,7 @@
 
 namespace App\Controller\Pegawai;
 
-use ApiPlatform\Api\IriConverterInterface;
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Pegawai\Pegawai;
 use App\Helper\PosisiHelper;
 use DateTimeImmutable;
