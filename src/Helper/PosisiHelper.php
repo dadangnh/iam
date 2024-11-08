@@ -2,7 +2,7 @@
 
 namespace App\Helper;
 
-use ApiPlatform\Api\IriConverterInterface;
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Organisasi\Kantor;
 use App\Entity\Pegawai\JabatanPegawai;
 use Doctrine\ORM\EntityManagerInterface;

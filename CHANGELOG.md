@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 3.2.1 (current stable)
+## Version 3.2.2 (current stable)
+* Updated Symfony Recipes
+* update dependencies
+* bug fix in Helper
+
+## Version 3.2.1
 * Updated Symfony Recipes
 * update dependencies
 * bug fix in iriConverter
