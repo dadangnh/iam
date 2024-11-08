@@ -4,7 +4,7 @@
 namespace App\Helper;
 
 
-use ApiPlatform\Api\IriConverterInterface;
+use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Aplikasi\Aplikasi;
 use JetBrains\PhpStorm\ArrayShape;
 
