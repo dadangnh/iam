@@ -66,7 +66,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'swagger_definition_name' => 'write'
     ],
     order: [
-        'nama' => 'ASC'
+        'nama_atribut' => 'ASC'
     ],
     security: 'is_granted("ROLE_USER")',
     securityMessage: 'Only a valid user can access this.'
@@ -80,7 +80,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(
     columns: [
         'id',
-        'nama'
+        'nama_atribut'
     ],
     name: 'idx_jabatan_atribut_nama'
 )]
@@ -88,7 +88,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     filterClass: SearchFilter::class,
     properties: [
         'id' => 'exact',
-        'nama' => 'ipartial'
+        'nama_atribut' => 'ipartial'
     ]
 )]
 #[ApiFilter(
@@ -120,7 +120,22 @@ class JabatanAtribut
         ]
     )]
     #[Assert\NotBlank]
-    private ?string $nama;
+    private ?string $namaAtribut = null;
+
+
+    #[ORM\Column(
+        type: Types::STRING,
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan-atribut:read',
+            'jabatan-atribut:write'
+        ]
+    )]
+    #[Assert\NotBlank]
+    private ?string $parentAtributId = null;
 
     #[ORM\OneToMany(
         mappedBy: 'atribut',
@@ -136,24 +151,12 @@ class JabatanAtribut
 
     public function __toString(): string
     {
-        return $this->nama;
+        return $this->namaAtribut;
     }
 
     public function getId(): Uuid
     {
         return $this->id;
-    }
-
-    public function getNama(): ?string
-    {
-        return $this->nama;
-    }
-
-    public function setNama(string $nama): self
-    {
-        $this->nama = $nama;
-
-        return $this;
     }
 
     /**
@@ -183,6 +186,30 @@ class JabatanAtribut
                 $jabatanPegawai->setAtribut(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNamaAtribut(): ?string
+    {
+        return $this->namaAtribut;
+    }
+
+    public function setNamaAtribut(string $namaAtribut): static
+    {
+        $this->namaAtribut = $namaAtribut;
+
+        return $this;
+    }
+
+    public function getParentAtributId(): ?string
+    {
+        return $this->parentAtributId;
+    }
+
+    public function setParentAtributId(?string $parentAtributId): static
+    {
+        $this->parentAtributId = $parentAtributId;
 
         return $this;
     }
