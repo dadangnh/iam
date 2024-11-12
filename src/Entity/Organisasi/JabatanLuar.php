@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Serializer\Filter\PropertyFilter;
+use App\Doctrine\Filter\NullFilter;
 use App\Entity\Core\Role;
 use App\Entity\Pegawai\JabatanPegawaiLuar;
 use App\Repository\Organisasi\JabatanLuarRepository;
@@ -152,6 +153,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ApiFilter(
     filterClass: PropertyFilter::class
+)]
+#[ApiFilter(
+    filterClass: NullFilter::class
 )]
 class JabatanLuar
 {
