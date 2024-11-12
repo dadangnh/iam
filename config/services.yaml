@@ -65,6 +65,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded}
 
+  
+    App\Doctrine\Filter\NullFilter:
+        tags:
+            - { name: 'api_platform.filter', id: 'tanggalNonaktif_null' }
+
     Redis:
         # you can also use \RedisArray, \RedisCluster or \Predis\Client classes
         class: Redis
