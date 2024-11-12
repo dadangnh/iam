@@ -79,19 +79,19 @@ class OrganisasiFixtures extends Fixture
 
         for ($i = 1; $i <= 100; $i++) {
             $pelaksana = new JabatanAtribut();
-            $pelaksana->setNama('Pelaksana ' . $i);
+            $pelaksana->setNamaAtribut('Pelaksana ' . $i);
             $manager->persist($pelaksana);
 
             $ar = new JabatanAtribut();
-            $ar->setNama('Account Representative ' . $i);
+            $ar->setNamaAtribut('Account Representative ' . $i);
             $manager->persist($ar);
 
             $pk = new JabatanAtribut();
-            $pk->setNama('Penelaah Keberatan ' . $i);
+            $pk->setNamaAtribut('Penelaah Keberatan ' . $i);
             $manager->persist($pk);
 
             $js = new JabatanAtribut();
-            $js->setNama('Juru Sita Pajak ' . $i);
+            $js->setNamaAtribut('Juru Sita Pajak ' . $i);
             $manager->persist($js);
         }
 
