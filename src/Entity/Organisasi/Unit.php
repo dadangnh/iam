@@ -320,6 +320,19 @@ class Unit
     )]
     private Collection $membina;
 
+    #[ORM\Column(
+        type: Types::STRING,
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'unit:read',
+            'unit:write'
+        ]
+    )]
+    private ?string $namaEng = null;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -598,6 +611,18 @@ class Unit
                 $membina->setPembina(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNamaEng(): ?string
+    {
+        return $this->namaEng;
+    }
+
+    public function setNamaEng(?string $namaEng): static
+    {
+        $this->namaEng = $namaEng;
 
         return $this;
     }
