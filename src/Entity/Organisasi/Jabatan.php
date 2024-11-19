@@ -352,6 +352,19 @@ class Jabatan
     )]
     private ?GroupJabatan $groupJabatan;
 
+    #[ORM\Column(
+        type: Types::STRING,
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'jabatan:read',
+            'jabatan:write'
+        ]
+    )]
+    private ?string $namaEng = null;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -590,6 +603,18 @@ class Jabatan
     public function setGroupJabatan(?GroupJabatan $groupJabatan): self
     {
         $this->groupJabatan = $groupJabatan;
+
+        return $this;
+    }
+
+    public function getNamaEng(): ?string
+    {
+        return $this->namaEng;
+    }
+
+    public function setNamaEng(?string $namaEng): static
+    {
+        $this->namaEng = $namaEng;
 
         return $this;
     }

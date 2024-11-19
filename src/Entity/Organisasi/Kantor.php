@@ -594,6 +594,19 @@ class Kantor
     )]
     private ?string $ministryOfficeCode = null;
 
+    #[ORM\Column(
+        type: Types::STRING,
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
+    private ?string $namaEng = null;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -1067,6 +1080,18 @@ class Kantor
     public function setMinistryOfficeCode(?string $ministryOfficeCode): self
     {
         $this->ministryOfficeCode = $ministryOfficeCode;
+
+        return $this;
+    }
+
+    public function getNamaEng(): ?string
+    {
+        return $this->namaEng;
+    }
+
+    public function setNamaEng(?string $namaEng): static
+    {
+        $this->namaEng = $namaEng;
 
         return $this;
     }
