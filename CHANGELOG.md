@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 3.2.3 (current stable)
+## Version 3.2.4 (current stable)
+* Updated Symfony Recipes
+* update dependencies
+* add attribute namaEng in Entity Jabatan, Unit, Kantor
+
+## Version 3.2.3
 * Updated Symfony Recipes
 * update dependencies
 * add filter tanggalnonaktif to get active data
