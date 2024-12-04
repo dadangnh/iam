@@ -303,7 +303,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
         $whoAmIOldItem = new PathItem(
             ref: 'Who Am I?',
             post: new Operation(
-                operationId: 'postCredentialsItem',
+                operationId: 'postWhoAmIItem',
                 tags: ['Authentication - Get User Data From Token'],
                 responses: [
                     '200' => [
