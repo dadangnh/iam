@@ -1,6 +1,12 @@
 # IAM Changelog
 
-## Version 3.2.4 (current stable)
+## Version 3.2.5 (current stable)
+* Updated Symfony Recipes
+* update dependencies
+* update config api platform 4 for using hydra
+* bug fix in endpoint whoami
+
+## Version 3.2.4
 * Updated Symfony Recipes
 * update dependencies
 * add attribute namaEng in Entity Jabatan, Unit, Kantor

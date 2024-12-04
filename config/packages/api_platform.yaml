@@ -1,6 +1,6 @@
 api_platform:
     title: IAM API Docs
-    version: 3.2.4
+    version: 3.2.5
     description: |
         Bug report and feature request are welcome, please report [here](https://gitlab.com/dadangnh/iam/-/issues).
         Newest production version are always available at [https://iam.pajak.or.id/api](https://iam.pajak.or.id/api)
@@ -46,3 +46,5 @@ api_platform:
     graphql:
         graphql_playground:
             enabled: false
+    serializer:
+        hydra_prefix: true
