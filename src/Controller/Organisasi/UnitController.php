@@ -25,7 +25,21 @@ class UnitController extends AbstractController
     {
         $units = $doctrine
             ->getRepository(Unit::class)
-            ->findAllActiveUnit();
+            ->findAllActiveUnitData();
+
+        return $this->formatReturnData($units);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @return JsonResponse
+     */
+    #[Route('/api/units/active/get_all', methods: ['GET'])]
+    public function getAllActiveUnitData(ManagerRegistry $doctrine): JsonResponse
+    {
+        $units = $doctrine
+            ->getRepository(Unit::class)
+            ->findAllActiveUnitData();
 
         return $this->formatReturnData($units);
     }

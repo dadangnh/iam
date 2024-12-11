@@ -190,6 +190,27 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $allActiveUnitDataItem = new PathItem(
+            ref: 'Unit',
+            get: new Operation(
+                operationId: 'getAllActiveUnitData',
+                tags: ['Unit'],
+                responses: [
+                    '200' => [
+                        'description' => 'Get List of All Active Unit Data',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/GetActiveUnitByUnitNameResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get list of All Active Unit',
+            ),
+        );
+
         $schemas['GetActiveJenisKantorByJenisKantorNameRequest'] = new ArrayObject([
             'type' => 'object',
             'properties' => [
@@ -815,10 +836,11 @@ class OrganisasiCustomDecorator implements OpenApiFactoryInterface
         );
 
         $openApi->getPaths()->addPath('/api/kantors/active/show_all', $allActiveKantorItem);
-        $openApi->getPaths()->addPath('/api/kantors/active/get_all', $allActiveKantorDataItem);
+//        $openApi->getPaths()->addPath('/api/kantors/active/get_all', $allActiveKantorDataItem);
         $openApi->getPaths()->addPath('/api/kantors/active/{name}', $activeKantorByKantorNameItem);
         $openApi->getPaths()->addPath('/api/kantors/kepala_kantor', $fetchKepalaKantorFromKantorIdItem);
         $openApi->getPaths()->addPath('/api/units/active/show_all', $allActiveUnitItem);
+//        $openApi->getPaths()->addPath('/api/units/active/get_all', $allActiveUnitDataItem);
         $openApi->getPaths()->addPath('/api/units/active/{name}', $activeUnitByUnitNameItem);
         $openApi->getPaths()->addPath('/api/jenis_kantors/active/show_all', $allActiveJenisKantorItem);
         $openApi->getPaths()->addPath('/api/jenis_kantors/active/{name}', $activeJenisKantorByJenisKantorNameItem);
