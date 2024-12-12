@@ -104,7 +104,7 @@ class KantorRepository extends ServiceEntityRepository
             if (!isset($childrenByParent[$parentId])) {
                 $childrenByParent[$parentId] = [];
             }
-            $childrenByParent[$parentId][] = (string) $child['id'];
+            $childrenByParent[$parentId][] = (string) ('/api/kantors/' . $child['id']);
         }
 
         $membinaByPembina = [];
@@ -113,7 +113,7 @@ class KantorRepository extends ServiceEntityRepository
             if (!isset($membinaByPembina[$pembinaId])) {
                 $membinaByPembina[$pembinaId] = [];
             }
-            $membinaByPembina[$pembinaId][] = (string) $membina['id'];
+            $membinaByPembina[$pembinaId][] = (string) ('/api/kantors/' . $membina['id']);
         }
 
         $result = [];
@@ -123,8 +123,8 @@ class KantorRepository extends ServiceEntityRepository
                 'id' => $parentId,
                 'nama' => $parent['nama'],
                 'level' => $parent['level'],
-                'jenisKantor' => $parent['jenisKantorId'] ?? null,
-                'parent' => $parent['parentId'] ?? null,
+                'jenisKantor' => !empty($parent['jenisKantorId']) ? ('/api/jenis_kantors/' . $parent['jenisKantorId']) : null,
+                'parent' => !empty($parent['parentId']) ? ('/api/kantors/' . $parent['parentId']) : null,
                 'childs' => $childrenByParent[$parentId] ?? [],
                 'tanggalAktif' => $parent['tanggalAktif'],
                 'tanggalNonaktif' => $parent['tanggalNonaktif'],
@@ -147,7 +147,7 @@ class KantorRepository extends ServiceEntityRepository
                 'kecamatanName' => $parent['kecamatanName'],
                 'kelurahanName' => $parent['kelurahanName'],
                 'ministryOfficeCode' => $parent['ministryOfficeCode'],
-                'pembina' => $parent['pembinaId'] ?? null,
+                'pembina' => !empty($parent['pembinaId'])? ('/api/kantors/' . $parent['pembinaId']) : null,
                 'membina' => $membinaByPembina[$parentId] ?? [],
             ];
         }

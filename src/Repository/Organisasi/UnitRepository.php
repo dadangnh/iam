@@ -53,6 +53,85 @@ class UnitRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findAllActiveUnitData(): mixed
+    {
+        // Fetch parent entities with necessary fields
+        $unitAll = $this->createQueryBuilder('unit')
+            ->select([
+                'unit.id', 'unit.nama', 'unit.level', 'unit.tanggalAktif', 'unit.tanggalNonaktif',
+                'unit.legacyKode', 'unit.namaEng',
+                'jenisKantor.id AS jenisKantorId', 'parent.id AS parentId', 'eselon.id AS eselonId', 'pembina.id AS pembinaId',
+            ])
+            ->leftJoin('unit.jenisKantor', 'jenisKantor')
+            ->leftJoin('unit.parent', 'parent')
+            ->leftJoin('unit.eselon', 'eselon')
+            ->leftJoin('unit.pembina', 'pembina')
+            ->andWhere('unit.tanggalAktif < :now')
+            ->andWhere('unit.tanggalNonaktif IS NULL OR unit.tanggalNonaktif > :now')
+            ->setParameter('now', new DateTime('now'))
+            ->addOrderBy('unit.level', 'ASC')
+            ->addOrderBy('unit.nama', 'ASC');
+
+        $parentUnits = $unitAll->getQuery()->getArrayResult();
+
+        $parentIds = array_map(fn($unit) => (string) $unit['id'], $parentUnits);
+
+        $childEntities = $this->createQueryBuilder('c')
+            ->select('c.id, parent.id AS parentId')
+            ->leftJoin('c.parent', 'parent')
+            ->where('parent.id IN (:parentIds)')
+            ->setParameter('parentIds', $parentIds)
+            ->getQuery()
+            ->getArrayResult();
+
+        $membinaEntities = $this->createQueryBuilder('m')
+            ->select('m.id, pembina.id AS pembinaId')
+            ->leftJoin('m.pembina', 'pembina')
+            ->where('pembina.id IN (:parentIds)')
+            ->setParameter('parentIds', $parentIds)
+            ->getQuery()
+            ->getArrayResult();
+
+        $childrenByParent = [];
+        foreach ($childEntities as $child) {
+            $parentId = (string) $child['parentId'];
+            if (!isset($childrenByParent[$parentId])) {
+                $childrenByParent[$parentId] = [];
+            }
+            $childrenByParent[$parentId][] = (string) ('/api/units/' . $child['id']);
+
+        }
+
+        $membinaByPembina = [];
+        foreach ($membinaEntities as $membina) {
+            $pembinaId = (string) $membina['pembinaId'];
+            if (!isset($membinaByPembina[$pembinaId])) {
+                $membinaByPembina[$pembinaId] = [];
+            }
+            $membinaByPembina[$pembinaId][] = (string) ('/api/units/' . $membina['id']);
+        }
+
+        $result = [];
+        foreach ($parentUnits as $parent) {
+            $parentId = (string) $parent['id'];  // Ensure parent ID is a string
+            $result[] = [
+                'id' => $parentId,
+                'nama' => $parent['nama'],
+                'level' => $parent['level'],
+                'jenisKantor' => !empty($parent['jenisKantorId']) ? ('/api/jenis_kantors/' . $parent['jenisKantorId']) : null,
+                'parent' => !empty($parent['parentId']) ? ('/api/units/' . $parent['parentId']) : null,
+                'childs' => $childrenByParent[$parentId] ?? [],
+                'tanggalAktif' => $parent['tanggalAktif'],
+                'tanggalNonaktif' => $parent['tanggalNonaktif'],
+                'legacyKode' => $parent['legacyKode'],
+                'pembina' => !empty($parent['pembinaId']) ? ('/api/units/' . $parent['pembinaId']) : null,
+                'membina' => $membinaByPembina[$parentId] ?? [],
+                'namaEng' => $parent['namaEng'] ?? null
+            ];
+        }
+        return $result;
+    }
+
     /**
      * @param $keyword
      * @return mixed

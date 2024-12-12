@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 3.2.5 (current stable)
+## Version 3.2.6 (current stable)
+* Updated Symfony Recipes
+* update dependencies
+* bug fix in endpoint unit and kantor show all
+
+## Version 3.2.5
 * Updated Symfony Recipes
 * update dependencies
 * update config api platform 4 for using hydra

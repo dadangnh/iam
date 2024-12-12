@@ -29,7 +29,7 @@ class KantorController extends AbstractController
     {
         $kantors = $doctrine
             ->getRepository(Kantor::class)
-            ->findAllActiveKantor();
+            ->findAllActiveKantorData();
 
         return $this->formatReturnData($kantors);
     }
