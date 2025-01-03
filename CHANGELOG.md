@@ -1,6 +1,11 @@
 # IAM Changelog
 
-## Version 3.2.6 (current stable)
+## Version 3.2.7 (current stable)
+* Updated Symfony Recipes
+* update dependencies
+* bug fix in endpoint change password by sikka
+
+## Version 3.2.6
 * Updated Symfony Recipes
 * update dependencies
 * bug fix in endpoint unit and kantor show all

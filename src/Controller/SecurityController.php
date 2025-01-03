@@ -291,9 +291,21 @@ class SecurityController extends AbstractController
 
         // TODO: check password strength and implement password blacklist
         $newPasswordEncoded = $passwordHasher->hashPassword($user, $newPassword);
+        $dateTime = new \DateTime('now', new \DateTimeZone('Asia/Bangkok'));
+        $formattedDate = $dateTime->format('Y-m-d H:i:s');
+        // Update the user's password
         $user->setPassword($newPasswordEncoded);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        // Direct SQL update to set the lastchange field in GMT+7
+        $this->entityManager->getConnection()->executeStatement(
+            'UPDATE "user" SET last_change = :lastchange WHERE username = :username',
+            [
+                'lastchange' => $formattedDate, // Use the formatted date for lastchange
+                'username' => $username,        // Use the username for the WHERE condition
+            ]
+        );
         return $this->json([
             'code' => 200,
             'message' => 'password successfully changed.'
