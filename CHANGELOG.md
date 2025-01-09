@@ -1,6 +1,12 @@
 # IAM Changelog
 
-## Version 3.2.7 (current stable)
+## Version 3.2.8 (current stable)
+* Updated Symfony Recipes
+* update dependencies
+* bug fix in endpoint create user
+
+
+## Version 3.2.7 
 * Updated Symfony Recipes
 * update dependencies
 * bug fix in endpoint change password by sikka
