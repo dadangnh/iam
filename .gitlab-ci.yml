@@ -3,7 +3,7 @@
 # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-image: php:8.2
+image: php:8.4
 
 stages:
   - build
@@ -91,7 +91,7 @@ build_nginx:
     - docker push $IMAGE_TAG
 
 test:
-  image: php:8.2
+  image: php:8.4
   variables:
     POSTGRES_USER: db_user
     POSTGRES_PASSWORD: db_pass
