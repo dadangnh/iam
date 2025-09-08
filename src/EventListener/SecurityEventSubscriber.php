@@ -166,13 +166,15 @@ class SecurityEventSubscriber implements EventSubscriberInterface
         $payload['expired'] = (new DateTimeImmutable())->getTimestamp() + $this->jwt_ttl;
         $payload['pegawai'] = null !== $user->getPegawai()
             ? [
-                'pegawaiId' => $user->getPegawai()->getId(),
-                'nama' => $user->getPegawai()->getNama(),
-                'nip9' => $user->getPegawai()->getNip9(),
-                'nip18' => $user->getPegawai()->getNip18(),
-                'pensiun' => $user->getPegawai()->getPensiun(),
-                'pangkat' => $user->getPegawai()->getPangkat(),
-                'onLeave' => $user->getPegawai()->getOnLeave(),
+                'pegawaiId'     => $user->getPegawai()->getId(),
+                'nama'          => $user->getPegawai()->getNama(),
+                'nip9'          => $user->getPegawai()->getNip9(),
+                'nip18'         => $user->getPegawai()->getNip18(),
+                'pensiun'       => $user->getPegawai()->getPensiun(),
+                'pangkat'       => $user->getPegawai()->getPangkat(),
+                'onLeave'       => $user->getPegawai()->getOnLeave(),
+                'onFreeze'      => $user->getPegawai()->getOnFreeze(),
+                'userLocked'    => $user->getLocked(),
                 'jabatanPegawais' => $jabatanPegawais
             ] : null;
         $payload['pegawaiLuar'] = null !== $user->getPegawaiLuar()
