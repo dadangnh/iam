@@ -1,10 +1,14 @@
 # IAM Changelog
 
-## Version 3.2.8 (current stable)
+## Version 3.2.9 (current stable)
+* update dependencies
+* add atribut onFreeze in Pegawais Entity
+* modify structure jwt token (add attribut onFreeze, userLocked in pegawai bracket)
+
+## Version 3.2.8
 * Updated Symfony Recipes
 * update dependencies
 * bug fix in endpoint create user
-
 
 ## Version 3.2.7 
 * Updated Symfony Recipes
