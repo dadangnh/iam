@@ -44,7 +44,6 @@ api_platform:
         pagination:
             items_per_page_parameter_name: itemsPerPage
     graphql:
-        graphql_playground:
-            enabled: false
+        enabled: true
     serializer:
         hydra_prefix: true

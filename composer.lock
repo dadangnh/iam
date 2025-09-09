@@ -8,20 +8,20 @@
     "packages": [
         {
             "name": "api-platform/core",
-            "version": "v4.1.8",
+            "version": "v4.1.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "4ddce1f534a8b5cee198e593b456664fe4c04bab"
+                "reference": "d6b06da27bf87e5fadd8bb34efc02e5095b28bf6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/4ddce1f534a8b5cee198e593b456664fe4c04bab",
-                "reference": "4ddce1f534a8b5cee198e593b456664fe4c04bab",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/d6b06da27bf87e5fadd8bb34efc02e5095b28bf6",
+                "reference": "d6b06da27bf87e5fadd8bb34efc02e5095b28bf6",
                 "shasum": ""
             },
             "require": {
-                "doctrine/inflector": "^1.0 || ^2.0",
+                "doctrine/inflector": "^2.0",
                 "php": ">=8.2",
                 "psr/cache": "^1.0 || ^2.0 || ^3.0",
                 "psr/container": "^1.0 || ^2.0",
@@ -32,6 +32,8 @@
                 "symfony/property-info": "^6.4 || ^7.1",
                 "symfony/serializer": "^6.4 || ^7.0",
                 "symfony/translation-contracts": "^3.3",
+                "symfony/type-info": "^7.2",
+                "symfony/validator": "^6.4 || ^7.1",
                 "symfony/web-link": "^6.4 || ^7.1",
                 "willdurand/negotiation": "^3.1"
             },
@@ -79,7 +81,7 @@
                 "doctrine/mongodb-odm": "^2.10",
                 "doctrine/mongodb-odm-bundle": "^5.0",
                 "doctrine/orm": "^2.17 || ^3.0",
-                "elasticsearch/elasticsearch": "^7.17 || ^8.4",
+                "elasticsearch/elasticsearch": "^7.17 || ^8.4 || ^9.0",
                 "friends-of-behat/mink-browserkit-driver": "^1.3.1",
                 "friends-of-behat/mink-extension": "^2.2",
                 "friends-of-behat/symfony-extension": "^2.1",
@@ -107,7 +109,7 @@
                 "ramsey/uuid": "^4.7",
                 "ramsey/uuid-doctrine": "^2.0",
                 "soyuka/contexts": "^3.3.10",
-                "soyuka/pmu": "^0.1.0",
+                "soyuka/pmu": "^0.2.0",
                 "soyuka/stubs-mongodb": "^1.0",
                 "symfony/asset": "^6.4 || ^7.0",
                 "symfony/browser-kit": "^6.4 || ^7.0",
@@ -177,7 +179,8 @@
                 },
                 "branch-alias": {
                     "dev-3.4": "3.4.x-dev",
-                    "dev-main": "4.0.x-dev"
+                    "dev-4.1": "4.1.x-dev",
+                    "dev-main": "4.2.x-dev"
                 }
             },
             "autoload": {
@@ -216,9 +219,9 @@
             ],
             "support": {
                 "issues": "https://github.com/api-platform/core/issues",
-                "source": "https://github.com/api-platform/core/tree/v4.1.8"
+                "source": "https://github.com/api-platform/core/tree/v4.1.23"
             },
-            "time": "2025-05-09T06:04:56+00:00"
+            "time": "2025-09-05T09:06:52+00:00"
         },
         {
             "name": "composer/package-versions-deprecated",
