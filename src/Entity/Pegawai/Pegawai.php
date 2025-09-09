@@ -319,6 +319,18 @@ class Pegawai
     )]
     private ?bool $onLeave;
 
+    #[ORM\Column(
+        type: Types::BOOLEAN
+    )]
+    #[Assert\NotNull]
+    #[Groups(
+        groups: [
+            'pegawai:read',
+            'pegawai:write'
+        ]
+    )]
+    private ?bool $onFreeze;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -455,6 +467,12 @@ class Pegawai
         $this->onLeave = false;
     }
 
+    #[ORM\PrePersist]
+    public function setOnFreezeValue(): void
+    {
+        $this->onFreeze = false;
+    }
+
     /**
      * @return Collection|JabatanPegawai[]
      */
@@ -526,5 +544,17 @@ class Pegawai
         }
 
         return $activePositions;
+    }
+
+    public function getOnFreeze(): ?bool
+    {
+        return $this->onFreeze;
+    }
+
+    public function setOnFreeze(bool $onFreeze): static
+    {
+        $this->onFreeze = $onFreeze;
+
+        return $this;
     }
 }
