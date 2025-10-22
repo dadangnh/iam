@@ -19,7 +19,7 @@ class PosisiHelper
     ];
 
     private const SETDITJEN = [
-        'Sekretariat Direktorat Jenderal Pajak'
+        'Sekretariat Direktorat Jenderal'
     ];
 
     private IriConverterInterface $iriConverter;
@@ -39,23 +39,24 @@ class PosisiHelper
      */
     public function getAtasanFromJabatanPegawai(JabatanPegawai $jabatanPegawai, ?string $keyword): array
     {
-        $jabatan = $jabatanPegawai->getJabatan();
-        $kantor = $jabatanPegawai->getKantor();
-        $unit = $jabatanPegawai->getUnit();
-        $pegawai = $jabatanPegawai->getPegawai();
-        $jenisJabatan = $jabatan?->getJenis();
-        $levelJabatan = $jabatan?->getLevel();
-        $tipeKantor = $kantor?->getJenisKantor()?->getTipe();
-        $pangkat = $pegawai?->getPangkat();
+        $jabatan        = $jabatanPegawai->getJabatan();
+        $kantor         = $jabatanPegawai->getKantor();
+        $unit           = $jabatanPegawai->getUnit();
+        $pegawai        = $jabatanPegawai->getPegawai();
+        $jenisJabatan   = $jabatan?->getJenis();
+        $levelJabatan   = $jabatan?->getLevel();
+        $tipeKantor     = $kantor?->getJenisKantor()?->getTipe();
+        $jenisKantor    = $kantor?->getJenisKantor()?->getNama();
+        $pangkat        = $pegawai?->getPangkat();
 
         $jabatanPegawaiAtasan = null;
 
         // Get the parent Unit & Kantor data
-        $parentUnit = $unit?->getParent();
-        $parentKantor = $kantor?->getParent();
-        $kantorPembina = $kantor?->getPembina();
-        $unitPembina = $unit?->getPembina();
-        $parentNama = $parentKantor?->getNama();
+        $parentUnit     = $unit?->getParent();
+        $parentKantor   = $kantor?->getParent();
+        $kantorPembina  = $kantor?->getPembina();
+        $unitPembina    = $unit?->getPembina();
+        $parentNama     = $parentKantor?->getNama();
 
         if (isset($kantorPembina)) {
             $parentKantor = $kantorPembina;
@@ -107,13 +108,27 @@ class PosisiHelper
                         );
                 }
             } elseif (4 === $levelJabatan) {
-                $jabatanPegawaiAtasan = $this->entityManager
-                    ->getRepository(JabatanPegawai::class)
-                    ->findJabatanPegawaiActiveFromKantorUnitEselon(
-                        $kantor?->getId(),
-                        $parentUnit?->getId(),
-                        $tingkatEselonAtasan
-                    );
+                if (in_array(
+                    $jenisKantor,
+                    self::TIPE_KANTOR_KP2KP,
+                    true
+                )) {
+                    $jabatanPegawaiAtasan = $this->entityManager
+                        ->getRepository(JabatanPegawai::class)
+                        ->findJabatanPegawaiActiveFromKantorUnitEselon(
+                            $parentKantor?->getId(),
+                            $parentUnit?->getId(),
+                            $tingkatEselonAtasan
+                        );
+                }else{
+                    $jabatanPegawaiAtasan = $this->entityManager
+                        ->getRepository(JabatanPegawai::class)
+                        ->findJabatanPegawaiActiveFromKantorUnitEselon(
+                            $kantor?->getId(),
+                            $parentUnit?->getId(),
+                            $tingkatEselonAtasan
+                        );
+                }
             } else {
                 $jabatanPegawaiAtasan = $this->entityManager
                     ->getRepository(JabatanPegawai::class)
@@ -167,23 +182,24 @@ class PosisiHelper
      */
     public function getPybFromJabatanPegawai(JabatanPegawai $jabatanPegawai, ?string $keyword): array
     {
-        $jabatan = $jabatanPegawai->getJabatan();
-        $kantor = $jabatanPegawai->getKantor();
-        $unit = $jabatanPegawai->getUnit();
-        $pegawai = $jabatanPegawai->getPegawai();
-        $jenisJabatan = $jabatan?->getJenis();
-        $levelJabatan = $jabatan?->getLevel();
-        $tipeKantor = $kantor?->getJenisKantor()?->getTipe();
-        $pangkat = $pegawai?->getPangkat();
+        $jabatan        = $jabatanPegawai->getJabatan();
+        $kantor         = $jabatanPegawai->getKantor();
+        $unit           = $jabatanPegawai->getUnit();
+        $pegawai        = $jabatanPegawai->getPegawai();
+        $jenisJabatan   = $jabatan?->getJenis();
+        $levelJabatan   = $jabatan?->getLevel();
+        $tipeKantor     = $kantor?->getJenisKantor()?->getTipe();
+        $jenisKantor    = $kantor?->getJenisKantor()?->getNama();
+        $pangkat        = $pegawai?->getPangkat();
 
         $jabatanPegawaiPyb = null;
 
         // Get the parent Unit & Kantor data
-        $parentUnit = $unit?->getParent();
-        $parentKantor = $kantor?->getParent();
-        $kantorPembina = $kantor?->getPembina();
-        $unitPembina = $unit?->getPembina();
-        $parentNama = $parentKantor?->getNama();
+        $parentUnit     = $unit?->getParent();
+        $parentKantor   = $kantor?->getParent();
+        $kantorPembina  = $kantor?->getPembina();
+        $unitPembina    = $unit?->getPembina();
+        $parentNama     = $parentKantor?->getNama();
 
         if (isset($kantorPembina)) {
             $parentKantor = $kantorPembina;
@@ -241,7 +257,7 @@ class PosisiHelper
                 //Pyb Izin, BA
                 if ('pybIzin' === $keyword) {
                     if (!in_array(
-                        $tipeKantor,
+                        $jenisKantor,
                         self::TIPE_KANTOR_KP2KP,
                         true
                     )) {
@@ -264,7 +280,7 @@ class PosisiHelper
                             self::SETDITJEN,
                             true)
                         && !in_array(
-                            $tipeKantor,
+                            $jenisKantor,
                             self::TIPE_KANTOR_KP2KP,
                             true)
                     ) {
@@ -285,7 +301,7 @@ class PosisiHelper
                     );
             // Pelaksana non izin
             } elseif (!in_array(
-                $tipeKantor,
+                $jenisKantor,
                 self::TIPE_KANTOR_KP2KP,
                 true
             )) {
@@ -308,6 +324,10 @@ class PosisiHelper
                             $tingkatEselonPyb
                         );
                 }
+                return [$parentKantor?->getId(),
+                    $parentUnit?->getId(),
+                    $tipeKantor,
+                    $tingkatEselonPyb];
             } else {
                 $jabatanPegawaiPyb = $this->entityManager
                     ->getRepository(JabatanPegawai::class)
@@ -321,7 +341,7 @@ class PosisiHelper
         } elseif ('FUNGSIONAL' === $jenisJabatan) {
             // For fungsional on Setditjen
             if (self::SETDITJEN === $parentNama
-                || self::TIPE_KANTOR_KP2KP === $tipeKantor
+                || self::TIPE_KANTOR_KP2KP === $jenisKantor
             ) {
                 return $this->getKepalaKantorFromKantor($parentKantor);
             }
