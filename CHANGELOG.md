@@ -1,6 +1,15 @@
 # IAM Changelog
 
-## Version 3.2.9 (current stable)
+## Version 3.3.0 (current stable)
+* fix bugs on endpoint api/pegawais/atasan
+* add new endpoint api/pegawais/info
+* update dependency `api-platform/core` → `v4.2.2`
+* update dependency `doctrine/doctrine-migrations-bundle` → `v3.5.0`
+* update dependency `doctrine/doctrine-bundle` → `v2.18.0`
+* update dependency `webonyx/graphql-php` → `v15.25.1`
+* update dependency `symfony/symfony` → `v7.3.3 => v7.3.4`
+
+## Version 3.2.9
 * update dependencies
 * add atribut onFreeze in Pegawais Entity
 * modify structure jwt token (add attribut onFreeze, userLocked in pegawai bracket)
