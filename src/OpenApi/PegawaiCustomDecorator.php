@@ -66,6 +66,27 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
+        $schemas['PostInfoFromJabatanPegawaiUidRequest'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'jabatanPegawaiId' => [
+                    'type' => 'string',
+                    'example' => "uuid_1",
+                ],
+            ],
+        ]);
+
+        $schemas['PostInfoFromJabatanPegawaiUidResponse'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'jabatanPegawaiId' => [
+                    'type' => 'array',
+                    'example' => [],
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
         $bulkPegawaiDataFromIdsItem = new PathItem(
             ref: 'Pegawai',
             post: new Operation(
@@ -128,8 +149,40 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $fetchInfoFromJabatanPegawaiIdItem = new PathItem(
+            ref: 'Pegawai',
+            post: new Operation(
+                operationId: 'postInformasiFromJabatanPegawaiIdItem',
+                tags: ['Pegawai'],
+                responses: [
+                    '200' => [
+                        'description' => 'Successful response',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/PostInfoFromJabatanPegawaiUidResponse',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Get Pegawai data of Jabatan Pegawai Uid',
+                requestBody: new RequestBody(
+                    description: 'Get Pegawai data from jabatan pegawai uuid',
+                    content: new ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                '$ref' => '#/components/schemas/PostInfoFromJabatanPegawaiUidRequest',
+                            ],
+                        ],
+                    ]),
+                ),
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/pegawais/mass_fetch', $bulkPegawaiDataFromIdsItem);
         $openApi->getPaths()->addPath('/api/pegawais/atasan', $fetchAtasanFromPegawaiIdItem);
+        $openApi->getPaths()->addPath('/api/pegawais/info', $fetchInfoFromJabatanPegawaiIdItem);
 
         return $openApi;
     }
