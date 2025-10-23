@@ -203,15 +203,13 @@ class PegawaiController extends AbstractController
     /**
      * @param ManagerRegistry $doctrine
      * @param Request $request
-     * @param PosisiHelper $posisiUtils
      * @param IriConverterInterface $iriConverter
      * @return JsonResponse
      * @throws JsonException
      */
     #[Route('/api/pegawais/info', methods: ['POST'])]
     public function getPegawaiInfoFromJabatanPegawaiId(ManagerRegistry       $doctrine,
-                                                  Request               $request,
-                                                  PosisiHelper          $posisiUtils,
+                                                  Request                   $request,
                                                   IriConverterInterface $iriConverter): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
@@ -294,7 +292,7 @@ class PegawaiController extends AbstractController
             'potitionInformation'   => $jabatanPegawai->getKeteranganJabatan(),
         ];
 
-        if(2 == $levelUnit){
+        /*if(2 == $levelUnit){
             $output['unitEs4Id']            = null;
             $output['unitEs4Name']          = null;
             $output['unitEs4LegacyCode']    = null;
@@ -345,10 +343,66 @@ class PegawaiController extends AbstractController
                 $output['unitEs2Name']          = $jabatanPegawai->getUnit()->getParent()->getNama();
                 $output['unitEs2LegacyCode']    = $jabatanPegawai->getUnit()->getParent()->getLegacyKode();
             }
+        }*/
+
+        switch ($levelUnit) {
+            case 2:
+                $output += [
+                    'unitEs4Id'         => null,
+                    'unitEs4Name'       => null,
+                    'unitEs4LegacyCode' => null,
+                    'unitEs3Id'         => null,
+                    'unitEs3Name'       => null,
+                    'unitEs3LegacyCode' => null,
+                ];
+                $output += $this->getUnitEsArray($jabatanPegawai->getUnit(),2);
+                break;
+
+            case 3:
+                $output += [
+                    'unitEs4Id'         => null,
+                    'unitEs4Name'       => null,
+                    'unitEs4LegacyCode' => null,
+                ];
+                $output += $this->getUnitEsArray($jabatanPegawai->getUnit(),3);
+                $parent = $jabatanPegawai->getUnit()->getParent();
+                $output += ($parent && $parent->getLevel() == 2)
+                    ? $this->getUnitEsArray($parent,2)
+                    : ['unitEs2Id' => null, 'unitEs2Name' => null, 'unitEs2LegacyCode' => null];
+                break;
+
+            case 4:
+                $unit   = $jabatanPegawai->getUnit();
+                $parent = $unit->getParent();
+                $output += $this->getUnitEsArray($unit,4);
+
+                if ($parent && $parent->getLevel() == 3) {
+                    $output += $this->getUnitEsArray($parent,3);
+                    $grandParent = $parent->getParent();
+                    $output += ($grandParent && $grandParent->getLevel() == 2)
+                        ? $this->getUnitEsArray($grandParent,2)
+                        : ['unitEs2Id' => null, 'unitEs2Name' => null, 'unitEs2LegacyCode' => null];
+                } else {
+                    $output += [
+                        'unitEs3Id' => null,
+                        'unitEs3Name' => null,
+                        'unitEs3LegacyCode' => null,
+                    ];
+                    $output += $this->getUnitEsArray($parent,2);
+                }
+                break;
         }
 
         $output['roles'] = $rolesNya;
 
         return $this->json($output);
+    }
+
+    private function getUnitEsArray($unit, $level): array {
+        return [
+            'unitEs'.$level.'Id'        => $unit->getId(),
+            'unitEs'.$level.'Name'      => $unit->getNama(),
+            'unitEs'.$level.'LegacyCode'=> $unit->getLegacyKode(),
+        ];
     }
 }
