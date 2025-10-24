@@ -324,10 +324,6 @@ class PosisiHelper
                             $tingkatEselonPyb
                         );
                 }
-                return [$parentKantor?->getId(),
-                    $parentUnit?->getId(),
-                    $tipeKantor,
-                    $tingkatEselonPyb];
             } else {
                 $jabatanPegawaiPyb = $this->entityManager
                     ->getRepository(JabatanPegawai::class)
