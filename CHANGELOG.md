@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 3.3.0 (current stable)
+## Version 3.3.1 (current stable)
+* fix bugs on endpoint api/pegawais/atasan (atribute pyb)
+
+## Version 3.3.0
 * fix bugs on endpoint api/pegawais/atasan
 * add new endpoint api/pegawais/info
 * update dependency `api-platform/core` → `v4.2.2`
