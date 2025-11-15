@@ -28,6 +28,9 @@ api_platform:
         html: ['text/html']
     swagger:
         versions: [3]
+        swagger_ui_extra_configuration:
+            operationsSorter: alpha
+            tagsSorter: alpha
         api_keys:
             apiKey:
                 name: Authorization

@@ -126,6 +126,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'legacyKode' => 'partial',
         'legacyKodeJabKeu' => 'partial',
         'legacyKodeGradeKeu' => 'partial',
+        'groupJabatan.nama' => 'ipartial',
         'eselon.id' => 'exact',
         'eselon.nama' => 'ipartial',
         'eselon.kode' => 'ipartial',
