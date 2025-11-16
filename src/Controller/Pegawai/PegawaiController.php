@@ -5,6 +5,7 @@ namespace App\Controller\Pegawai;
 use ApiPlatform\Metadata\IriConverterInterface;
 use App\Entity\Pegawai\JabatanPegawai;
 use App\Entity\Pegawai\Pegawai;
+use App\Entity\User\User;
 use App\Helper\PosisiHelper;
 use App\Helper\RoleHelper;
 use DateTimeImmutable;
@@ -597,6 +598,182 @@ class PegawaiController extends AbstractController
         }
 
         $output['roles'] = $rolesNya;
+
+        return $this->json([
+            'status' => 'success',
+            'code'   => 'DATA_FOUND',
+            'message'=> 'Data ditemukan',
+            'data'   => $output
+        ]);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param Request $request
+     * @return JsonResponse
+     * @throws JsonException
+     */
+    #[Route('/api/pegawais/v1/info/from-user', methods: ['POST'])]
+    public function getPegawaiInfoV2FromUserId(ManagerRegistry $doctrine, Request $request): JsonResponse
+    {
+        $requestData = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        // Make sure the pegawaiId parameter exists
+        if (!array_key_exists('userId', $requestData)) {
+            return $this->json([
+                'status' => 'error',
+                'code'   => 'BAD_REQUEST',
+                'message'=> 'Please provide the uuid of User Entity inside userId parameter.',
+                'data'   => [
+                    'additionalInfo' => ['userId' => '5a3770f2-e461-4f79-93e9-801a0986725f']
+                ]
+            ], 400);
+        }
+        // Make sure the provided data is valid
+        $userId = $requestData['userId'];
+        if (empty($userId) || is_array($userId) || is_bool($userId) || !Uuid::isValid($userId)) {
+            return $this->json([
+                'status' => 'error',
+                'code'   => 'BAD_REQUEST',
+                'message'=> 'Please provide the valid uuid of User Entity.',
+                'data'   => [
+                    'additionalInfo' => ['$userId' => '5a3770f2-e461-4f79-93e9-801a0986725f']
+                ]
+            ], 400);
+        }
+
+        // Fetch the pegawai data
+        $userNya = $doctrine
+            ->getRepository(User::class)
+            ->findOneBy(['id' => $userId]);
+
+        // If no data found, return
+        if (null === $userNya) {
+            return $this->json([
+                'status' => 'fail',
+                'code'   => 'DATA_NOT_FOUND',
+                'message'=> 'There is no User found with the associated id.',
+                'data'   => [
+                    'additionalInfo' => $requestData
+                ]
+            ], 200);
+        }
+
+        $output = [
+            'pegawaiId'             => $userNya->getPegawai()->getId(),
+            'nip9'                  => $userNya->getPegawai()->getNip9(),
+            'nip18'                 => $userNya->getPegawai()->getNip18(),
+            'nama'                  => $userNya->getPegawai()->getNama(),
+            'pangkat'               => $userNya->getPegawai()->getPangkat(),
+            'username'              => $userNya->getUsername()
+        ];
+
+        $getJabatanPegawai = $userNya->getPegawai()->getJabatanPegawais();
+
+        // If no data found, return
+        if (null === $getJabatanPegawai) {
+            return $this->json([
+                'status' => 'fail',
+                'code'   => 'DATA_NOT_FOUND',
+                'message'=> 'There is no Pegawai found with the associated id.',
+                'data'   => [
+                    'additionalInfo' => $requestData
+                ]
+            ], 200);
+        }
+        foreach ($getJabatanPegawai as $jabatanPegawai) {
+            $levelUnit = $jabatanPegawai->getUnit()->getLevel();
+
+            //get role by jabatan pegawai object
+            $rolesJabatan   = RoleHelper::getPlainRolesNameFromJabatanPegawai(
+                $doctrine->getManager(),
+                $jabatanPegawai
+            );
+
+            //get role by user id
+            $rolesUser      = $jabatanPegawai->getPegawai()->getUser()->getDirectRoles();
+            // merge role
+            $rolesNya       = array_merge($rolesJabatan, $rolesUser);
+
+            // Set the default template
+            $jp = [
+                'jabatanId'             => $jabatanPegawai->getJabatan()->getId(),
+                'jabatanName'           => $jabatanPegawai->getJabatan()->getNama(),
+                'jenisJabatan'          => $jabatanPegawai->getJabatan()->getJenis(),
+                'jabatanLegacyCode'     => $jabatanPegawai->getJabatan()->getLegacyKode(),
+                'jabatanType'           => $jabatanPegawai->getTipe()->getNama(),
+                'levelJabatan'          => $jabatanPegawai->getJabatan()->getLevel(),
+                'kantorId'              => $jabatanPegawai->getKantor()->getId(),
+                'kantorName'            => $jabatanPegawai->getKantor()->getNama(),
+                'kantorLegacyCode'      => $jabatanPegawai->getKantor()->getLegacyKode(),
+                'levelKantor'           => $jabatanPegawai->getKantor()->getLevel(),
+                'kantorParentId'        => $jabatanPegawai->getKantor()->getParent()->getId(),
+                'kantorParentName'      => $jabatanPegawai->getKantor()->getParent()->getNama(),
+                'kantorParentLegacyCode'=> $jabatanPegawai->getKantor()->getParent()->getLegacyKode(),
+                'levelKantorParent'     => $jabatanPegawai->getKantor()->getParent()->getLevel(),
+                'legacyKodeKpp'         => $jabatanPegawai->getKantor()->getLegacyKodeKpp(),
+                'legacyKodeKanwil'      => $jabatanPegawai->getKantor()->getLegacyKodeKanwil(),
+                'jenisKantorId'         => $jabatanPegawai->getKantor()->getJenisKantor()->getId(),
+                'jenisKantorName'       => $jabatanPegawai->getKantor()->getJenisKantor()->getNama(),
+                'jenisKantorType'       => $jabatanPegawai->getKantor()->getJenisKantor()->getTipe(),
+                'klasifikasiKantor'     => $jabatanPegawai->getKantor()->getJenisKantor()->getKlasifikasi(),
+                'unitId'                => $jabatanPegawai->getUnit()->getId(),
+                'unitName'              => $jabatanPegawai->getUnit()->getNama(),
+                'unitLegacyCode'        => $jabatanPegawai->getUnit()->getLegacyKode(),
+                'levelUnit'             => $levelUnit,
+                'potitionInformation'   => $jabatanPegawai->getKeteranganJabatan(),
+            ];
+
+            switch ($levelUnit) {
+                case 2:
+                    $jp += [
+                        'unitEs4Id'         => null,
+                        'unitEs4Name'       => null,
+                        'unitEs4LegacyCode' => null,
+                        'unitEs3Id'         => null,
+                        'unitEs3Name'       => null,
+                        'unitEs3LegacyCode' => null,
+                    ];
+                    $jp += $this->getUnitEsArray($jabatanPegawai->getUnit(),2);
+                    break;
+
+                case 3:
+                    $jp += [
+                        'unitEs4Id'         => null,
+                        'unitEs4Name'       => null,
+                        'unitEs4LegacyCode' => null,
+                    ];
+                    $jp += $this->getUnitEsArray($jabatanPegawai->getUnit(),3);
+                    $parent = $jabatanPegawai->getUnit()->getParent();
+                    $jp += ($parent && $parent->getLevel() == 2)
+                        ? $this->getUnitEsArray($parent,2)
+                        : ['unitEs2Id' => null, 'unitEs2Name' => null, 'unitEs2LegacyCode' => null];
+                    break;
+
+                case 4:
+                    $unit   = $jabatanPegawai->getUnit();
+                    $parent = $unit->getParent();
+                    $jp += $this->getUnitEsArray($unit,4);
+
+                    if ($parent && $parent->getLevel() == 3) {
+                        $jp += $this->getUnitEsArray($parent,3);
+                        $grandParent = $parent->getParent();
+                        $jp += ($grandParent && $grandParent->getLevel() == 2)
+                            ? $this->getUnitEsArray($grandParent,2)
+                            : ['unitEs2Id' => null, 'unitEs2Name' => null, 'unitEs2LegacyCode' => null];
+                    } else {
+                        $jp += [
+                            'unitEs3Id' => null,
+                            'unitEs3Name' => null,
+                            'unitEs3LegacyCode' => null,
+                        ];
+                        $jp += $this->getUnitEsArray($parent,2);
+                    }
+                    break;
+            }
+
+            $jp['roles'] = $rolesNya;
+            $output['jabatanPegawai'][] = $jp;
+        }
 
         return $this->json([
             'status' => 'success',
