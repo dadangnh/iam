@@ -1,6 +1,19 @@
 # IAM Changelog
 
-## Version 3.3.1 (current stable)
+## Version 3.4.0 (current stable)
+* fix bugs on endpoint api/pegawais/atasan
+* add new endpoint api/pegawais/v2/atasan
+* add new endpoint api/pegawais/v2/info
+* add new endpoint api-ext/pegawais/v1/info/from-token
+* update dependency `api-platform/core` → `v4.2.2 => v4.2.4`
+* update dependency `doctrine/doctrine-migrations-bundle` → `v3.5.0 => v3.6.0`
+* update dependency `doctrine/doctrine-bundle` → `v2.18.0 => v2.18.1`
+* update dependency `webonyx/graphql-php` → `v15.25.1 => v15.25.2`
+* update dependency `symfony/symfony` → `v7.3.4 => v7.3.6`
+* update dependency `symfony/flex` → `v2.9.0 => v2.10.0`
+* update dependency `nelmio/cors-bundle` → `v2.5.0 => v2.6.0`
+
+## Version 3.3.1
 * fix bugs on endpoint api/pegawais/atasan (atribute pyb)
 
 ## Version 3.3.0
