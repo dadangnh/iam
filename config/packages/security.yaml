@@ -9,7 +9,7 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         users_in_memory: { memory: null }
-        service:
+        shared_service_provider: # Lexik JWT internal
             id: shared_auth_library_jwt_user_provider
         # used to reload user from session & other features (e.g. switch_user)
         # Primary user provider
@@ -17,6 +17,13 @@ security:
             entity:
                 class: App\Entity\User\User
                 property: username
+        external_user_provider:
+            entity:
+                class: App\Entity\User\User
+                property: id
+        chain_provider:
+            chain:
+                providers: [ app_user_provider, external_user_provider ]        
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -37,7 +44,7 @@ security:
             pattern: ^/api/
             stateless: true
             # for the api endpoint, we use the shared user provider
-            provider: service
+            provider: shared_service_provider
             entry_point: jwt
             jwt: ~
             refresh_jwt:
@@ -46,7 +53,14 @@ security:
                 # for the refresh token, we must use the primary user provider, so it can look the correct user
                 provider: app_user_provider
             logout:
-                path: api_token_invalidate
+                path: api_token_invalidate 
+        api-ext:
+            pattern: ^/api-ext/
+            stateless: true
+            provider: chain_provider
+            custom_authenticator:
+                - App\SharedAuthLibrary\Security\ExternalJwtAuthenticator        
+            entry_point: App\SharedAuthLibrary\Security\ExternalApiEntryPoint
         main:
             lazy: true
             provider: app_user_provider

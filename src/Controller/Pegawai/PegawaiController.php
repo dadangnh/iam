@@ -10,6 +10,8 @@ use App\Helper\PosisiHelper;
 use App\Helper\RoleHelper;
 use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -613,39 +615,10 @@ class PegawaiController extends AbstractController
      * @return JsonResponse
      * @throws JsonException
      */
-    #[Route('/api/pegawais/v1/info/from-user', methods: ['POST'])]
+    #[Route('/api-ext/pegawais/v1/info/from-token', methods: ['POST'])]
     public function getPegawaiInfoV2FromUserId(ManagerRegistry $doctrine, Request $request): JsonResponse
     {
-        $requestData = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        // Make sure the pegawaiId parameter exists
-        if (!array_key_exists('userId', $requestData)) {
-            return $this->json([
-                'status' => 'error',
-                'code'   => 'BAD_REQUEST',
-                'message'=> 'Please provide the uuid of User Entity inside userId parameter.',
-                'data'   => [
-                    'additionalInfo' => ['userId' => '5a3770f2-e461-4f79-93e9-801a0986725f']
-                ]
-            ], 400);
-        }
-        // Make sure the provided data is valid
-        $userId = $requestData['userId'];
-        if (empty($userId) || is_array($userId) || is_bool($userId) || !Uuid::isValid($userId)) {
-            return $this->json([
-                'status' => 'error',
-                'code'   => 'BAD_REQUEST',
-                'message'=> 'Please provide the valid uuid of User Entity.',
-                'data'   => [
-                    'additionalInfo' => ['$userId' => '5a3770f2-e461-4f79-93e9-801a0986725f']
-                ]
-            ], 400);
-        }
-
-        // Fetch the pegawai data
-        $userNya = $doctrine
-            ->getRepository(User::class)
-            ->findOneBy(['id' => $userId]);
-
+        $userNya = $this->getUser();
         // If no data found, return
         if (null === $userNya) {
             return $this->json([
@@ -653,7 +626,7 @@ class PegawaiController extends AbstractController
                 'code'   => 'DATA_NOT_FOUND',
                 'message'=> 'There is no User found with the associated id.',
                 'data'   => [
-                    'additionalInfo' => $requestData
+                    'additionalInfo' => $userNya
                 ]
             ], 200);
         }
@@ -676,7 +649,7 @@ class PegawaiController extends AbstractController
                 'code'   => 'DATA_NOT_FOUND',
                 'message'=> 'There is no Pegawai found with the associated id.',
                 'data'   => [
-                    'additionalInfo' => $requestData
+                    'additionalInfo' => $userNya
                 ]
             ], 200);
         }
