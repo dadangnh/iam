@@ -28,10 +28,13 @@ api_platform:
         html: ['text/html']
     swagger:
         versions: [3]
+        swagger_ui_extra_configuration:
+            operationsSorter: alpha
+            tagsSorter: alpha
         api_keys:
             apiKey:
                 name: Authorization
-                type: header
+                type: header   
     # Good defaults for REST APIs
     defaults:
         pagination_client_items_per_page: true

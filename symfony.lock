@@ -634,6 +634,9 @@
     "twig/twig": {
         "version": "v3.0.5"
     },
+    "web-token/jwt-framework": {
+        "version": "4.1.0"
+    },
     "webmozart/assert": {
         "version": "1.9.1"
     },
