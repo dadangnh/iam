@@ -11,6 +11,7 @@
 *.iml
 ###> lexik/jwt-authentication-bundle ###
 /config/jwt/*.pem
+/config/jwt/*.json
 ###< lexik/jwt-authentication-bundle ###
 
 ###> symfony/phpunit-bridge ###
