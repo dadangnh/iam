@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class PosisiHelper
 {
     private const TIPE_KANTOR_WITH_SAME_ATASAN_KANTOR_FOR_ECHELON_THREE = [
-        'KANWIL',
+        'Kanwil',
         'KPDJP',
     ];
 
