@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 3.4.0 (current stable)
+## Version 3.4.1 (current stable)
+* fix bugs class PosisiHelper
+
+## Version 3.4.0
 * fix bugs on endpoint api/pegawais/atasan
 * add new endpoint api/pegawais/v2/atasan
 * add new endpoint api/pegawais/v2/info
