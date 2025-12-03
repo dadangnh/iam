@@ -7,27 +7,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 class JabatanPegawaiCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
         return JabatanPegawai::class;
-    }
-
-    public function configureCrud(Crud $crud): Crud
-    {
-        return $crud
-            ->setSearchFields([
-                'referensi',
-                'pegawai.nama',
-                'pegawai.nip9',
-                'jabatan.nama',
-                'tipe.nama',
-                'kantor.nama',
-                'unit.nama'
-            ]);
     }
 
     public function configureFields(string $pageName): iterable

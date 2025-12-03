@@ -39,7 +39,7 @@ RUN set -eux; \
 		intl \
 		opcache \
 		zip \
-		redis \
+		redis-5.3.7 \
     ;
 
 ###> recipes ###

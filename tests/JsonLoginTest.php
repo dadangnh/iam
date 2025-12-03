@@ -12,11 +12,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 class JsonLoginTest extends ApiTestCase
 {
     /**
-     * ⚠️ Fix deprecation: boot kernel otomatis saat createClient()
-     */
-    protected static ?bool $alwaysBootKernel = true;
-
-    /**
      * Mock the response of the aplikasis endpoint.
      * @return void
      */
@@ -46,7 +41,7 @@ class JsonLoginTest extends ApiTestCase
                 ],
                 'body' => json_encode([
                     'username' => $defaultCredential,
-                    'password' => $defaultCredentialpassword,
+                    'password' => $defaultCredential,
                 ], JSON_THROW_ON_ERROR)
             ]);
         } catch (TransportExceptionInterface | JsonException $e) {
