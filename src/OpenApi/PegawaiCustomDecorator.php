@@ -139,6 +139,16 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
+        $schemas['infoFromToken'] = new ArrayObject([
+            'type' => 'object',
+            'properties' => [
+                'data' => [
+                    'type' => 'string',
+                    'readOnly' => true,
+                ],
+            ],
+        ]);
+
         $bulkPegawaiDataFromIdsItem = new PathItem(
             ref: 'Pegawai',
             post: new Operation(
@@ -316,11 +326,34 @@ class PegawaiCustomDecorator implements OpenApiFactoryInterface
             ),
         );
 
+        $userInfoFromToken = new PathItem(
+            ref: 'Token',
+            post: new Operation(
+                operationId: 'postInfoFromToken',
+                tags: ['Token'],
+                responses: [
+                    '200' => [
+                        'description' => 'Who Am I? This endpoint provide the user information from a token with custom payload, different from /whoami.',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    '$ref' => '#/components/schemas/infoFromToken',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                summary: 'Who Am I? This endpoint provide the user information from a token.',
+                requestBody: null,
+            ),
+        );
+
         $openApi->getPaths()->addPath('/api/pegawais/mass_fetch', $bulkPegawaiDataFromIdsItem);
         $openApi->getPaths()->addPath('/api/pegawais/atasan', $fetchAtasanFromPegawaiIdItem);
         $openApi->getPaths()->addPath('/api/pegawais/v2/atasan', $fetchAtasanV2FromPegawaiIdItem);
         $openApi->getPaths()->addPath('/api/pegawais/info', $fetchInfoFromJabatanPegawaiIdItem);
         $openApi->getPaths()->addPath('/api/pegawais/v2/info', $fetchInfoFromJabatanPegawaiIdItemV2);
+        $openApi->getPaths()->addPath('/api/pegawais/v3/info/from-iam-token', $userInfoFromToken);
         $openApi->getPaths()->addPath('/api-ext/pegawais/v1/info/from-token', $infoFromUserItem);
 
         return $openApi;
