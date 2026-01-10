@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 3.4.2 (current stable)
+## Version 3.4.3(current stable)
+* adjust payload endpoint api/pegawais/v3/info/from-iam-token
+
+## Version 3.4.2
 * add new endpoint api/pegawais/v3/info/from-iam-token
 
 ## Version 3.4.1

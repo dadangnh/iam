@@ -654,7 +654,7 @@ class PegawaiController extends AbstractController
             ], 200);
         }
 
-        $output = $this->getArrayPegawaiInfo($doctrine, $getJabatanPegawai);
+        $output['jabatanPegawai'] = $this->getArrayPegawaiInfo($doctrine, $getJabatanPegawai);
 
         return $this->json([
             'status' => 'success',
@@ -713,7 +713,7 @@ class PegawaiController extends AbstractController
             ], 200);
         }
 
-        $output = $this->getArrayPegawaiInfo($doctrine, $getJabatanPegawai);
+        $output['jabatanPegawai'] = $this->getArrayPegawaiInfo($doctrine, $getJabatanPegawai);
 
         return $this->json([
             'status' => 'success',
@@ -816,8 +816,8 @@ class PegawaiController extends AbstractController
                     break;
             }
 
-            $jp['roles'] = $rolesNya;
-            $output['jabatanPegawai'][] = $jp;
+            $jp['roles']    = $rolesNya;
+            $output[]       = $jp;
         }
 
         return $output;
