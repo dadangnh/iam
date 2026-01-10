@@ -653,9 +653,81 @@ class PegawaiController extends AbstractController
                 ]
             ], 200);
         }
-        foreach ($getJabatanPegawai as $jabatanPegawai) {
-            $levelUnit = $jabatanPegawai->getUnit()->getLevel();
 
+        $output = $this->getArrayPegawaiInfo($doctrine, $getJabatanPegawai);
+
+        return $this->json([
+            'status' => 'success',
+            'code'   => 'DATA_FOUND',
+            'message'=> 'Data ditemukan',
+            'data'   => $output
+        ]);
+    }
+
+    /**
+     * @param ManagerRegistry $doctrine
+     * @param Request $request
+     * @return JsonResponse
+     * @throws JsonException
+     */
+    #[Route('/api/pegawais/v3/info/from-iam-token', methods: ['POST'])]
+    public function getPegawaiInfoV3FromUserId(ManagerRegistry $doctrine, Request $request): JsonResponse
+    {
+        $user       = $this->getUser();
+        $userNya    = $doctrine
+                    ->getRepository(User::class)
+                    ->findOneBy(['id' => $user->getId()]);
+
+        // If no data found, return
+        if (null === $userNya) {
+            return $this->json([
+                'status' => 'fail',
+                'code'   => 'DATA_NOT_FOUND',
+                'message'=> 'There is no User found with the associated id.',
+                'data'   => [
+                    'additionalInfo' => $userNya
+                ]
+            ], 200);
+        }
+
+        $output = [
+            'pegawaiId'             => $userNya->getPegawai()->getId(),
+            'nip9'                  => $userNya->getPegawai()->getNip9(),
+            'nip18'                 => $userNya->getPegawai()->getNip18(),
+            'nama'                  => $userNya->getPegawai()->getNama(),
+            'pangkat'               => $userNya->getPegawai()->getPangkat(),
+            'username'              => $userNya->getUsername()
+        ];
+
+        $getJabatanPegawai = $userNya->getPegawai()->getJabatanPegawais();
+
+        // If no data found, return
+        if (null === $getJabatanPegawai) {
+            return $this->json([
+                'status' => 'fail',
+                'code'   => 'DATA_NOT_FOUND',
+                'message'=> 'There is no Pegawai found with the associated id.',
+                'data'   => [
+                    'additionalInfo' => $userNya
+                ]
+            ], 200);
+        }
+
+        $output = $this->getArrayPegawaiInfo($doctrine, $getJabatanPegawai);
+
+        return $this->json([
+            'status' => 'success',
+            'code'   => 'DATA_FOUND',
+            'message'=> 'Data ditemukan',
+            'data'   => $output
+        ]);
+    }
+
+    private function getArrayPegawaiInfo($doctrine, $jabatanPegawais): array
+    {
+        foreach ($jabatanPegawais as $jabatanPegawai) {
+            //get level unit
+            $levelUnit      = $jabatanPegawai->getUnit()->getLevel();
             //get role by jabatan pegawai object
             $rolesJabatan   = RoleHelper::getPlainRolesNameFromJabatanPegawai(
                 $doctrine->getManager(),
@@ -748,12 +820,7 @@ class PegawaiController extends AbstractController
             $output['jabatanPegawai'][] = $jp;
         }
 
-        return $this->json([
-            'status' => 'success',
-            'code'   => 'DATA_FOUND',
-            'message'=> 'Data ditemukan',
-            'data'   => $output
-        ]);
+        return $output;
     }
 
     private function getUnitEsArray($unit, $level): array {
