@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 3.4.3(current stable)
+## Version 3.4.4 (current stable)
+* bug fix in endpoint whoami when get jabatanPegawai
+
+## Version 3.4.3
 * adjust payload endpoint api/pegawais/v3/info/from-iam-token
 
 ## Version 3.4.2
