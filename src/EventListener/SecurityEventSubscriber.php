@@ -68,8 +68,8 @@ class SecurityEventSubscriber implements EventSubscriberInterface
             /** @var JabatanPegawai $jabatanPegawai */
             foreach ($user->getPegawai()->getJabatanPegawais() as $jabatanPegawai) {
                 // Only add jabatan pegawai that is active and not expired
-                if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
-                    && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
+                if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('today')
+                    && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('today')
                         || null === $jabatanPegawai->getTanggalSelesai())
                 ) {
                     /** @var Jabatan $jabatan */
@@ -113,8 +113,8 @@ class SecurityEventSubscriber implements EventSubscriberInterface
             /** @var JabatanPegawaiLuar $jabatanPegawaiLuar */
             foreach ($user->getPegawaiLuar()->getJabatanPegawaiLuars() as $jabatanPegawaiLuar) {
                 // Only add jabatan pegawai that is active and not expired
-                if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('now')
-                    && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('now')
+                if ($jabatanPegawaiLuar->getTanggalMulai() <= new DateTimeImmutable('today')
+                    && ($jabatanPegawaiLuar->getTanggalSelesai() >= new DateTimeImmutable('today')
                         || null === $jabatanPegawaiLuar->getTanggalSelesai())
                 ) {
                     /** @var JabatanLuar $jabatanLuar */
