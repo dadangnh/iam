@@ -141,14 +141,30 @@ class PosisiHelper
 
         // For the fungsional
         } elseif ('FUNGSIONAL' === $jenisJabatan) {
-            // Method to fetch atasan from jabatan pegawai (Cuti)
+
+            // Jika pegawai fungsional ditempatkan di unit eselon 4
+            if ($unit?->getLevel() === 4) {
+
+                $atasanUnit = $this->entityManager
+                    ->getRepository(JabatanPegawai::class)
+                    ->findJabatanPegawaiActiveFromKantorUnitEselon(
+                        $kantor?->getId(),
+                        $unit?->getId(),
+                        4
+                    );
+
+                if ($atasanUnit instanceof JabatanPegawai) {
+                    return $this->makeOutputSinglePegawaiFromJabatanPegawai($atasanUnit);
+                }
+            }
+
+            // Logic khusus atasan cuti
             if ('atasanCuti' === $keyword) {
-                // Employee not on kanwil
+
                 if (('KANWIL' !== $tipeKantor) && $kantor !== null) {
                     return $this->getKepalaKantorFromKantor($kantor);
                 }
 
-                // For employee with Golongan IV
                 if (false !== stripos($pangkat, 'IV')) {
                     return $this->getKepalaKantorFromKantor($kantor);
                 }
@@ -159,7 +175,7 @@ class PosisiHelper
                         $kantor?->getId(),
                         3
                     );
-            // Generic case
+
             } else {
                 return $this->getKepalaKantorFromKantor($kantor);
             }
@@ -335,21 +351,33 @@ class PosisiHelper
             }
         // For the fungsional
         } elseif ('FUNGSIONAL' === $jenisJabatan) {
+
+            // Jika fungsional di unit eselon 4 → PYB = eselon 3
+            if ($unit?->getLevel() === 4) {
+
+                $jabatanPegawaiPyb = $this->entityManager
+                    ->getRepository(JabatanPegawai::class)
+                    ->findJabatanPegawaiActiveFromKantorUnitEselon(
+                        $kantor?->getId(),
+                        $parentUnit?->getId(),
+                        3
+                    );
+            }
+
             // For fungsional on Setditjen
-            if (self::SETDITJEN === $parentNama
+            elseif (self::SETDITJEN === $parentNama
                 || self::TIPE_KANTOR_KP2KP === $jenisKantor
             ) {
                 return $this->getKepalaKantorFromKantor($parentKantor);
             }
 
-            // Method to fetch pyb from jabatan pegawai (Cuti CS+14, CB, CBS, CAP)
-            if ('pybCutiDiatur' === $keyword) {
-                // For fungsional not in kanwil
+            // pyb cuti
+            elseif ('pybCutiDiatur' === $keyword) {
+
                 if ('KANWIL' !== $tipeKantor) {
                     return $this->getKepalaKantorFromKantor($kantor);
                 }
 
-                // For employee with Golongan IV
                 if (false !== stripos($pangkat, 'IV')) {
                     return $this->getKepalaKantorFromKantor($kantor);
                 }
