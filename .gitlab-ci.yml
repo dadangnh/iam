@@ -56,22 +56,22 @@ build_backend:
     - docker push $IMAGE_TAG_BACKEND
     - docker push $IMAGE_TAG_PHP
 
-build_caddy:
-  image: docker:20.10.21-dind
-  stage: build
-  variables:
-    IMAGE_TAG: $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_REF_SLUG
-    DOCKER_TLS_CERTDIR: ''
-    DOCKER_BUILDKIT: 1
-  services:
-    - name: 'docker:20.10.21-dind'
-      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
-      alias: docker
-  script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --no-cache --target caddy_prod -t caddy .
-    - docker tag caddy $IMAGE_TAG
-    - docker push $IMAGE_TAG
+#build_caddy:
+#  image: docker:20.10.21-dind
+#  stage: build
+#  variables:
+#    IMAGE_TAG: $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_REF_SLUG
+#    DOCKER_TLS_CERTDIR: ''
+#    DOCKER_BUILDKIT: 1
+#  services:
+#    - name: 'docker:20.10.21-dind'
+#      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+#      alias: docker
+#  script:
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - docker build --no-cache --target caddy_prod -t caddy .
+#    - docker tag caddy $IMAGE_TAG
+#    - docker push $IMAGE_TAG
 
 build_nginx:
   image: docker:20.10.21-dind
@@ -249,38 +249,38 @@ deploy_nginx_to_registries:
     paths:
       - node_modules/
 
-deploy_caddy_to_registries:
-  image: docker:20.10.21-dind
-  stage: deploy
-  variables:
-    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-    DOCKER_TLS_CERTDIR: ''
-    DOCKER_BUILDKIT: 1
-  services:
-    - name: 'docker:20.10.21-dind'
-      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
-      alias: dockercompose
-  before_script:
-    - docker build --no-cache --target caddy_prod -t app-caddy:latest .
-  script:
-    - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
-    - docker tag app-caddy:latest dadang/iam_caddy:$CI_COMMIT_TAG
-    - docker tag app-caddy:latest dadang/iam_caddy:latest
-    - docker push dadang/iam_caddy:$CI_COMMIT_TAG
-    - docker push dadang/iam_caddy:latest
-    - docker logout
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker tag app-caddy:latest $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
-    - docker tag app-caddy:latest $CI_REGISTRY_IMAGE/caddy:latest
-    - docker push $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
-    - docker push $CI_REGISTRY_IMAGE/caddy:latest
-  rules:
-    - if: $CI_COMMIT_TAG
-      allow_failure: true
-  cache:
-    key: cacheBuildDocker
-    paths:
-      - node_modules/
+#deploy_caddy_to_registries:
+#  image: docker:20.10.21-dind
+#  stage: deploy
+#  variables:
+#    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+#    DOCKER_TLS_CERTDIR: ''
+#    DOCKER_BUILDKIT: 1
+#  services:
+#    - name: 'docker:20.10.21-dind'
+#      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+#      alias: dockercompose
+#  before_script:
+#    - docker build --no-cache --target caddy_prod -t app-caddy:latest .
+#  script:
+#    - docker login -u "$DOCKER_REGISTRY_USER" -p "$DOCKER_REGISTRY_PASSWORD"
+#    - docker tag app-caddy:latest dadang/iam_caddy:$CI_COMMIT_TAG
+#    - docker tag app-caddy:latest dadang/iam_caddy:latest
+#    - docker push dadang/iam_caddy:$CI_COMMIT_TAG
+#    - docker push dadang/iam_caddy:latest
+#    - docker logout
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - docker tag app-caddy:latest $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
+#    - docker tag app-caddy:latest $CI_REGISTRY_IMAGE/caddy:latest
+#    - docker push $CI_REGISTRY_IMAGE/caddy:$CI_COMMIT_TAG
+#    - docker push $CI_REGISTRY_IMAGE/caddy:latest
+#  rules:
+#    - if: $CI_COMMIT_TAG
+#      allow_failure: true
+#  cache:
+#    key: cacheBuildDocker
+#    paths:
+#      - node_modules/
 
 deploy_redis_to_registries:
   image: docker:20.10.21-dind
