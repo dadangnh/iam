@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 3.4.5 (current stable)
+## Version 3.4.6 (current stable)
+* bug fix nginx config and disable pipeline caddy
+
+## Version 3.4.5 
 * bug fix in endpoint get atasan pegawai fungsional
 
 ## Version 3.4.4 
