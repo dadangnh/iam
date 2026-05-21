@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 3.4.6 (current stable)
+## Version 3.4.7 (current stable)
+* bug fix in endpoint get atasan/pyb kepala kpp madya
+
+## Version 3.4.6
 * bug fix nginx config and disable pipeline caddy
 
 ## Version 3.4.5 
