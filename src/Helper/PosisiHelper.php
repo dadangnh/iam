@@ -101,9 +101,8 @@ class PosisiHelper
                 } else {
                     $jabatanPegawaiAtasan = $this->entityManager
                         ->getRepository(JabatanPegawai::class)
-                        ->findJabatanPegawaiActiveFromKantorUnitEselon(
+                        ->findJabatanPegawaiActiveFromKantorAndEselon(
                             $parentKantor?->getId(),
-                            $parentUnit?->getId(),
                             $tingkatEselonAtasan
                         );
                 }
@@ -263,9 +262,8 @@ class PosisiHelper
                 } else {
                     $jabatanPegawaiPyb = $this->entityManager
                         ->getRepository(JabatanPegawai::class)
-                        ->findJabatanPegawaiActiveFromKantorUnitEselon(
+                        ->findJabatanPegawaiActiveFromKantorAndEselon(
                             $parentKantor?->getId(),
-                            $parentUnit?->getId(),
                             $tingkatEselonPyb
                         );
                 }
