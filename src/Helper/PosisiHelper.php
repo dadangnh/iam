@@ -76,8 +76,31 @@ class PosisiHelper
                 $tingkatEselonAtasan = $levelJabatan - 1;
             }
 
-            // For echelon 3 and above, their boss must be at parent kantor
-            if (3 >= $levelJabatan) {
+            //For echelon 2 and above, their boss must be at parent kantor
+            if (2 >= $levelJabatan) {
+                // For echelon 3 at Kanwil and Directorate, Atasan must be in the same Kantor
+                if (2 === $levelJabatan
+                    && in_array(
+                        $tipeKantor,
+                        self::TIPE_KANTOR_WITH_SAME_ATASAN_KANTOR_FOR_ECHELON_THREE,
+                        true
+                    )
+                ) {
+                    $jabatanPegawaiAtasan = $this->entityManager
+                                        ->getRepository(JabatanPegawai::class)
+                                        ->findJabatanPegawaiActiveFromKantorAndEselon(
+                                            $kantor?->getId(),
+                                            $tingkatEselonAtasan
+                                    );
+                } else {
+                    $jabatanPegawaiAtasan = $this->entityManager
+                        ->getRepository(JabatanPegawai::class)
+                        ->findJabatanPegawaiActiveFromKantorAndEselon(
+                            $parentKantor?->getId(),
+                            $tingkatEselonAtasan
+                    );
+                }
+            } else if (3 === $levelJabatan) { // For echelon 3, their boss must be at parent kantor
                 // For echelon 3 at Kanwil and Directorate, Atasan must be in the same Kantor
                 if (3 === $levelJabatan
                     && in_array(
@@ -140,7 +163,6 @@ class PosisiHelper
 
         // For the fungsional
         } elseif ('FUNGSIONAL' === $jenisJabatan) {
-
             // Jika pegawai fungsional ditempatkan di unit eselon 4
             if ($unit?->getLevel() === 4) {
 
@@ -237,8 +259,31 @@ class PosisiHelper
                 $tingkatEselonPyb = $levelJabatan - 1;
             }
 
-            // For echelon 3 and above, their boss must be at parent kantor
-            if (3 >= $levelJabatan) {
+            //For echelon 2 and above, their boss must be at parent kantor
+            if (2 >= $levelJabatan) {
+                // For echelon 3 at Kanwil and Directorate, Atasan must be in the same Kantor
+                if (2 === $levelJabatan
+                    && in_array(
+                        $tipeKantor,
+                        self::TIPE_KANTOR_WITH_SAME_ATASAN_KANTOR_FOR_ECHELON_THREE,
+                        true
+                    )
+                ) {
+                    $jabatanPegawaiPyb = $this->entityManager
+                                        ->getRepository(JabatanPegawai::class)
+                                        ->findJabatanPegawaiActiveFromKantorAndEselon(
+                                            $kantor?->getId(),
+                                            $tingkatEselonPyb
+                                    );
+                } else {
+                    $jabatanPegawaiPyb = $this->entityManager
+                        ->getRepository(JabatanPegawai::class)
+                        ->findJabatanPegawaiActiveFromKantorAndEselon(
+                            $parentKantor?->getId(),
+                            $tingkatEselonPyb
+                    );
+                }
+            } else if (3 === $levelJabatan) { // For echelon 3, their boss must be at parent kantor
                 // For echelon 3 at Kanwil and Directorate, Atasan must be in the same Kantor
                 if (3 === $levelJabatan
                     && in_array(
@@ -274,7 +319,13 @@ class PosisiHelper
                         $jenisKantor,
                         self::TIPE_KANTOR_KP2KP,
                         true
-                    )) {
+                    )
+                    && !in_array(
+                          $parentNama,
+                          self::SETDITJEN,
+                          true
+                     )
+                    ){
                         $jabatanPegawaiPyb = $this->entityManager
                             ->getRepository(JabatanPegawai::class)
                             ->findJabatanPegawaiActiveFromKantorUnitEselon(
@@ -282,9 +333,45 @@ class PosisiHelper
                                 $parentUnit?->getId(),
                                 $tingkatEselonPyb
                             );
+                    } else if(in_array(
+                           $parentNama,
+                           self::SETDITJEN,
+                           true
+                      )){
+                        return $this->getKepalaKantorFromKantor($kantor);
                     } else {
                         return $this->getKepalaKantorFromKantor($parentKantor);
                     }
+                } else if ('pybCutiDiatur' === $keyword) {
+                    if(!in_array(
+                         $parentNama,
+                         self::SETDITJEN,
+                         true
+                    ) &&
+                   ('Kanwil' != substr($jenisKantor,0,6) && in_array(
+                        $tipeKantor,
+                        self::TIPE_KANTOR_WITH_SAME_ATASAN_KANTOR_FOR_ECHELON_THREE,
+                        true
+                      )
+                   )){
+                        // The others, atasan is at parent kantor
+                        return $this->getKepalaKantorFromKantor($kantor);
+                    } else if(in_array(
+                              $jenisKantor,
+                              self::TIPE_KANTOR_KP2KP,
+                              true)
+                    ){
+                        // The others, atasan is at parent kantor
+                        return $this->getKepalaKantorFromKantor($parentKantor);
+                    }
+
+                    $jabatanPegawaiPyb = $this->entityManager
+                                ->getRepository(JabatanPegawai::class)
+                                ->findJabatanPegawaiActiveFromKantorUnitEselon(
+                                    $kantor?->getId(),
+                                    $parentUnit?->getId(),
+                                    $tingkatEselonPyb
+                                );
                 // untuk pyb non Izin, BA
                 } else {
                     //For Kanwil and Directorate, but not below setditjen
@@ -304,48 +391,51 @@ class PosisiHelper
                     // The others, atasan is at parent kantor
                     return $this->getKepalaKantorFromKantor($parentKantor);
                 }
-            // Pelaksana izin
-            } elseif ('pybIzin' === $keyword) {
-                $jabatanPegawaiPyb = $this->entityManager
-                    ->getRepository(JabatanPegawai::class)
-                    ->findJabatanPegawaiActiveFromKantorUnitEselon(
-                        $kantor?->getId(),
-                        $unit?->getId(),
-                        $tingkatEselonPyb
-                    );
-            // Pelaksana non izin
-            } elseif (!in_array(
-                $jenisKantor,
-                self::TIPE_KANTOR_KP2KP,
-                true
-            )) {
-                if ('pybCutiDiatur' === $keyword &&
-                    in_array(
-                        $parentNama,
-                        self::SETDITJEN,
-                        true
-                    )
-                ) {
-                    $jabatanPegawaiPyb = $this->entityManager
-                        ->getRepository(JabatanPegawai::class)
-                        ->findJabatanPegawaiByKantorAndTingkat('f5c2c27b-5adc-4c1f-bc6d-aaee3cc99d56', 3);
-                } else {
+            // Pelaksana
+            } else if(6 === $levelJabatan){
+                //izin
+                if ('pybIzin' === $keyword) {
                     $jabatanPegawaiPyb = $this->entityManager
                         ->getRepository(JabatanPegawai::class)
                         ->findJabatanPegawaiActiveFromKantorUnitEselon(
                             $kantor?->getId(),
+                            $unit?->getId(),
+                            $tingkatEselonPyb
+                        );
+                // Pelaksana non izin
+                } elseif (!in_array(
+                    $jenisKantor,
+                    self::TIPE_KANTOR_KP2KP,
+                    true
+                )) {
+                    if ('pybCutiDiatur' === $keyword &&
+                        in_array(
+                            $parentNama,
+                            self::SETDITJEN,
+                            true
+                        )
+                    ) {
+                        $jabatanPegawaiPyb = $this->entityManager
+                            ->getRepository(JabatanPegawai::class)
+                            ->findJabatanPegawaiByKantorAndTingkat('f5c2c27b-5adc-4c1f-bc6d-aaee3cc99d56', 3);
+                    } else {
+                        $jabatanPegawaiPyb = $this->entityManager
+                            ->getRepository(JabatanPegawai::class)
+                            ->findJabatanPegawaiActiveFromKantorUnitEselon(
+                                $kantor?->getId(),
+                                $parentUnit?->getId(),
+                                $tingkatEselonPyb
+                            );
+                    }
+                } else {
+                    $jabatanPegawaiPyb = $this->entityManager
+                        ->getRepository(JabatanPegawai::class)
+                        ->findJabatanPegawaiActiveFromKantorUnitEselon(
+                            $parentKantor?->getId(),
                             $parentUnit?->getId(),
                             $tingkatEselonPyb
                         );
                 }
-            } else {
-                $jabatanPegawaiPyb = $this->entityManager
-                    ->getRepository(JabatanPegawai::class)
-                    ->findJabatanPegawaiActiveFromKantorUnitEselon(
-                        $parentKantor?->getId(),
-                        $parentUnit?->getId(),
-                        $tingkatEselonPyb
-                    );
             }
         // For the fungsional
         } elseif ('FUNGSIONAL' === $jenisJabatan) {
