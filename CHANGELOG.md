@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 3.4.8 (current stable)
+## Version 3.4.9 (current stable)
+* bug fix in endpoint get atasan/pyb eselon2 non Tenaga Pengkaji
+
+## Version 3.4.8
 * bug fix in endpoint get atasan/pyb jabatan tenaga pengkaji
 
 ## Version 3.4.7
