@@ -78,13 +78,10 @@ class PosisiHelper
 
             //For echelon 2 and above, their boss must be at parent kantor
             if (2 >= $levelJabatan) {
-                // For echelon 3 at Kanwil and Directorate, Atasan must be in the same Kantor
+                // For echelon 2 at Kanwil and Directorate, Atasan must be in the same Kantor
                 if (2 === $levelJabatan
-                    && in_array(
-                        $tipeKantor,
-                        self::TIPE_KANTOR_WITH_SAME_ATASAN_KANTOR_FOR_ECHELON_THREE,
-                        true
-                    )
+                    &&
+                    'c7baa3e7-514d-4f8a-8d85-ffa4dda0ca98' == $kantor->getId()
                 ) {
                     $jabatanPegawaiAtasan = $this->entityManager
                                         ->getRepository(JabatanPegawai::class)
@@ -263,11 +260,8 @@ class PosisiHelper
             if (2 >= $levelJabatan) {
                 // For echelon 3 at Kanwil and Directorate, Atasan must be in the same Kantor
                 if (2 === $levelJabatan
-                    && in_array(
-                        $tipeKantor,
-                        self::TIPE_KANTOR_WITH_SAME_ATASAN_KANTOR_FOR_ECHELON_THREE,
-                        true
-                    )
+                    &&
+                    'c7baa3e7-514d-4f8a-8d85-ffa4dda0ca98' == $kantor->getId()
                 ) {
                     $jabatanPegawaiPyb = $this->entityManager
                                         ->getRepository(JabatanPegawai::class)
