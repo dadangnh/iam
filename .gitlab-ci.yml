@@ -92,6 +92,11 @@ build_nginx:
 
 test:
   image: php:8.2
+  services:
+    - name: postgres:15-alpine
+      alias: database
+    - name: redis:latest
+      alias: redis
   variables:
     POSTGRES_USER: db_user
     POSTGRES_PASSWORD: db_pass
@@ -99,41 +104,83 @@ test:
     POSTGRES_HOST_AUTH_METHOD: trust
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-  services:
-    - name: postgres:15-alpine
-      alias: database
-    - name: redis:latest
-      alias: redis
+    DATABASE_URL: "postgresql://db_user:db_pass@database:5432/db_name?serverVersion=15&charset=utf8"
   before_script:
     - apt-get update -yqq
-    - apt-get install gnupg openssl acl -yqq
+    # Install required packages + tools untuk cek service
+    - apt-get install -yqq gnupg openssl acl curl git unzip netcat-openbsd dnsutils libcurl4-gnutls-dev libicu-dev libonig-dev libzip-dev libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev libsqlite3-dev libaspell-dev libsnmp-dev libpcre2-dev libtidy-dev
+    # =========================================================
+    # DEBUG GITLAB SERVICE
+    # =========================================================
+    - echo "======================================"
+    - echo "Checking GitLab service containers"
+    - echo "======================================"
+    - echo "=== /etc/hosts ==="
+    - cat /etc/hosts
+    - echo "=== DNS database ==="
+    - getent hosts database || true
+    - echo "=== DNS redis ==="
+    - getent hosts redis || true
+    - echo "=== PostgreSQL port ==="
+    - nc -vz database 5432 || true
+    # =========================================================
+    # JWT
+    # =========================================================
     - mkdir -p config/jwt
-    - export jwt_passphrase=${JWT_PASSPHRASE:-$(grep ''^JWT_PASSPHRASE='' .env | cut
-      -f 2 -d ''='')}
-    - echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -aes256 -algorithm
-      rsa -pkeyopt rsa_keygen_bits:4096 --pass stdin
-    - echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem
-      -pubout --passin stdin
+    - export jwt_passphrase=${JWT_PASSPHRASE:-$(grep '^JWT_PASSPHRASE=' .env | cut -f 2 -d '=')}
+    - echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 --pass stdin
+    - echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout --passin stdin
     - setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
     - setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+    # =========================================================
+    # NODE
+    # =========================================================
     - curl -sL https://deb.nodesource.com/setup_18.x | bash -
-    - apt-get install git unzip libcurl4-gnutls-dev libicu-dev libonig-dev libzip-dev
-      libmcrypt-dev libvpx-dev libjpeg-dev libpng-dev libxpm-dev zlib1g-dev libfreetype6-dev
-      libxml2-dev libexpat1-dev libbz2-dev libgmp3-dev libldap2-dev unixodbc-dev libpq-dev
-      libsqlite3-dev libaspell-dev libsnmp-dev libpcre2-dev libtidy-dev -yqq
+    - apt-get install -yqq nodejs
+    # =========================================================
+    # PHP EXTENSIONS
+    # =========================================================
     - docker-php-ext-install pdo_pgsql zip
+    # =========================================================
+    # XDEBUG
+    # =========================================================
     - pecl install xdebug
     - docker-php-ext-enable xdebug
+    # =========================================================
+    # COMPOSER
+    # =========================================================
     - curl -sS https://getcomposer.org/installer | php
+    # =========================================================
+    # SYMFONY CLI
+    # =========================================================
     - curl -sS https://get.symfony.com/cli/installer | bash
     - export PATH="$HOME/.symfony5/bin:$PATH"
+    # =========================================================
+    # PHP CONFIG
+    # =========================================================
     - echo "xdebug.mode=develop,coverage,debug" >> /usr/local/etc/php/php.ini
-    - echo "memory_limit = -1;" >> /usr/local/etc/php/php.ini
+    - echo "memory_limit=-1" >> /usr/local/etc/php/php.ini
+    # =========================================================
+    # COMPOSER INSTALL
+    # =========================================================
     - symfony composer install
+    # =========================================================
+    # TEST DATABASE CONNECTION
+    # =========================================================
+    - echo "======================================"
+    - echo "Testing Symfony database connection"
+    - echo "======================================"
+    - php bin/console doctrine:query:sql "SELECT 1"
+    # =========================================================
+    # DATABASE
+    # =========================================================
     - php bin/console doctrine:database:drop --force
     - php bin/console doctrine:database:create
     - php bin/console doctrine:migrations:migrate --no-interaction
     - php bin/console doctrine:fixtures:load --no-interaction
+    # =========================================================
+    # SYMFONY SERVER
+    # =========================================================
     - symfony server:ca:install
     - symfony serve -d
   script:
