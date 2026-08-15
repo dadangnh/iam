@@ -391,7 +391,7 @@ release_job:
     ref: '$CI_COMMIT_TAG'
 
 include:
-  - template: Jobs/Build.gitlab-ci.yml
+#  - template: Jobs/Build.gitlab-ci.yml
   - template: Jobs/Test.gitlab-ci.yml
   - template: Jobs/Code-Quality.gitlab-ci.yml
   - template: Jobs/Code-Intelligence.gitlab-ci.yml
