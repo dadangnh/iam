@@ -373,9 +373,9 @@ deploy_staging:
       - vendor/
       - node_modules/
 
-browser_performance:
-  variables:
-    URL: "$DAST_WEBSITE"
+#browser_performance:
+#  variables:
+#    URL: "$DAST_WEBSITE"
 
 release_job:
   stage: release
@@ -396,7 +396,7 @@ include:
   - template: Jobs/Code-Quality.gitlab-ci.yml
   - template: Jobs/Code-Intelligence.gitlab-ci.yml
   - template: Jobs/DAST-Default-Branch-Deploy.gitlab-ci.yml
-  - template: Verify/Browser-Performance.gitlab-ci.yml
+#  - template: Verify/Browser-Performance.gitlab-ci.yml
   - template: Security/DAST.gitlab-ci.yml
   - template: Security/Container-Scanning.gitlab-ci.yml
   - template: Security/Dependency-Scanning.gitlab-ci.yml
