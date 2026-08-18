@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 3.4.9 (current stable)
+## Version 3.4.10 (current stable)
+* add klas attribute in office entity
+
+## Version 3.4.9
 * bug fix in endpoint get atasan/pyb eselon2 non Tenaga Pengkaji
 
 ## Version 3.4.8
