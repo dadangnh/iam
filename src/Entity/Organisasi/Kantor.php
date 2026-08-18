@@ -607,6 +607,18 @@ class Kantor
     )]
     private ?string $namaEng = null;
 
+    #[ORM\Column(
+        length: 255,
+        nullable: true
+    )]
+    #[Groups(
+        groups: [
+            'kantor:read',
+            'kantor:write'
+        ]
+    )]
+    private ?string $klas = null;
+
     public function __construct()
     {
         $this->id = Uuid::v4();
@@ -1092,6 +1104,18 @@ class Kantor
     public function setNamaEng(?string $namaEng): static
     {
         $this->namaEng = $namaEng;
+
+        return $this;
+    }
+
+    public function getKlas(): ?string
+    {
+        return $this->klas;
+    }
+
+    public function setKlas(?string $klas): static
+    {
+        $this->klas = $klas;
 
         return $this;
     }
