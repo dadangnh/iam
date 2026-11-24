@@ -726,98 +726,104 @@ class PegawaiController extends AbstractController
     private function getArrayPegawaiInfo($doctrine, $jabatanPegawais): array
     {
         foreach ($jabatanPegawais as $jabatanPegawai) {
-            //get level unit
-            $levelUnit      = $jabatanPegawai->getUnit()->getLevel();
-            //get role by jabatan pegawai object
-            $rolesJabatan   = RoleHelper::getPlainRolesNameFromJabatanPegawai(
-                $doctrine->getManager(),
-                $jabatanPegawai
-            );
+            #cek end date
+            if ($jabatanPegawai->getTanggalMulai() <= new DateTimeImmutable('now')
+                && ($jabatanPegawai->getTanggalSelesai() >= new DateTimeImmutable('now')
+                    || null === $jabatanPegawai->getTanggalSelesai())
+            ) {
+                //get level unit
+                $levelUnit      = $jabatanPegawai->getUnit()->getLevel();
+                //get role by jabatan pegawai object
+                $rolesJabatan   = RoleHelper::getPlainRolesNameFromJabatanPegawai(
+                    $doctrine->getManager(),
+                    $jabatanPegawai
+                );
 
-            //get role by user id
-            $rolesUser      = $jabatanPegawai->getPegawai()->getUser()->getDirectRoles();
-            // merge role
-            $rolesNya       = array_merge($rolesJabatan, $rolesUser);
+                //get role by user id
+                $rolesUser      = $jabatanPegawai->getPegawai()->getUser()->getDirectRoles();
+                // merge role
+                $rolesNya       = array_merge($rolesJabatan, $rolesUser);
 
-            // Set the default template
-            $jp = [
-                'jabatanId'             => $jabatanPegawai->getJabatan()->getId(),
-                'jabatanName'           => $jabatanPegawai->getJabatan()->getNama(),
-                'jenisJabatan'          => $jabatanPegawai->getJabatan()->getJenis(),
-                'jabatanLegacyCode'     => $jabatanPegawai->getJabatan()->getLegacyKode(),
-                'jabatanType'           => $jabatanPegawai->getTipe()->getNama(),
-                'levelJabatan'          => $jabatanPegawai->getJabatan()->getLevel(),
-                'kantorId'              => $jabatanPegawai->getKantor()->getId(),
-                'kantorName'            => $jabatanPegawai->getKantor()->getNama(),
-                'kantorLegacyCode'      => $jabatanPegawai->getKantor()->getLegacyKode(),
-                'levelKantor'           => $jabatanPegawai->getKantor()->getLevel(),
-                'kantorParentId'        => $jabatanPegawai->getKantor()->getParent()->getId(),
-                'kantorParentName'      => $jabatanPegawai->getKantor()->getParent()->getNama(),
-                'kantorParentLegacyCode'=> $jabatanPegawai->getKantor()->getParent()->getLegacyKode(),
-                'levelKantorParent'     => $jabatanPegawai->getKantor()->getParent()->getLevel(),
-                'legacyKodeKpp'         => $jabatanPegawai->getKantor()->getLegacyKodeKpp(),
-                'legacyKodeKanwil'      => $jabatanPegawai->getKantor()->getLegacyKodeKanwil(),
-                'jenisKantorId'         => $jabatanPegawai->getKantor()->getJenisKantor()->getId(),
-                'jenisKantorName'       => $jabatanPegawai->getKantor()->getJenisKantor()->getNama(),
-                'jenisKantorType'       => $jabatanPegawai->getKantor()->getJenisKantor()->getTipe(),
-                'klasifikasiKantor'     => $jabatanPegawai->getKantor()->getJenisKantor()->getKlasifikasi(),
-                'unitId'                => $jabatanPegawai->getUnit()->getId(),
-                'unitName'              => $jabatanPegawai->getUnit()->getNama(),
-                'unitLegacyCode'        => $jabatanPegawai->getUnit()->getLegacyKode(),
-                'levelUnit'             => $levelUnit,
-                'potitionInformation'   => $jabatanPegawai->getKeteranganJabatan(),
-            ];
+                // Set the default template
+                $jp = [
+                    'jabatanId'             => $jabatanPegawai->getJabatan()->getId() ?? null,
+                    'jabatanName'           => $jabatanPegawai->getJabatan()->getNama() ?? null,
+                    'jenisJabatan'          => $jabatanPegawai->getJabatan()->getJenis() ?? null,
+                    'jabatanLegacyCode'     => $jabatanPegawai->getJabatan()->getLegacyKode() ?? null,
+                    'jabatanType'           => $jabatanPegawai->getTipe()->getNama() ?? null,
+                    'levelJabatan'          => $jabatanPegawai->getJabatan()->getLevel() ?? null,
+                    'kantorId'              => $jabatanPegawai->getKantor()->getId() ?? null,
+                    'kantorName'            => $jabatanPegawai->getKantor()->getNama() ?? null,
+                    'kantorLegacyCode'      => $jabatanPegawai->getKantor()->getLegacyKode() ?? null,
+                    'levelKantor'           => $jabatanPegawai->getKantor()->getLevel() ?? null,
+                    'kantorParentId'        => $jabatanPegawai->getKantor()->getParent()->getId() ?? null,
+                    'kantorParentName'      => $jabatanPegawai->getKantor()->getParent()->getNama() ?? null,
+                    'kantorParentLegacyCode'=> $jabatanPegawai->getKantor()->getParent()->getLegacyKode() ?? null,
+                    'levelKantorParent'     => $jabatanPegawai->getKantor()->getParent()->getLevel() ?? null,
+                    'legacyKodeKpp'         => $jabatanPegawai->getKantor()->getLegacyKodeKpp() ?? null,
+                    'legacyKodeKanwil'      => $jabatanPegawai->getKantor()->getLegacyKodeKanwil() ?? null,
+                    'jenisKantorId'         => $jabatanPegawai->getKantor()->getJenisKantor()->getId() ?? null,
+                    'jenisKantorName'       => $jabatanPegawai->getKantor()->getJenisKantor()->getNama() ?? null,
+                    'jenisKantorType'       => $jabatanPegawai->getKantor()->getJenisKantor()->getTipe() ?? null,
+                    'klasifikasiKantor'     => $jabatanPegawai->getKantor()->getJenisKantor()->getKlasifikasi() ?? null,
+                    'unitId'                => $jabatanPegawai->getUnit()->getId() ?? null,
+                    'unitName'              => $jabatanPegawai->getUnit()->getNama() ?? null,
+                    'unitLegacyCode'        => $jabatanPegawai->getUnit()->getLegacyKode() ?? null,
+                    'levelUnit'             => $levelUnit ?? null,
+                    'potitionInformation'   => $jabatanPegawai->getKeteranganJabatan() ?? null,
+                ];
 
-            switch ($levelUnit) {
-                case 2:
-                    $jp += [
-                        'unitEs4Id'         => null,
-                        'unitEs4Name'       => null,
-                        'unitEs4LegacyCode' => null,
-                        'unitEs3Id'         => null,
-                        'unitEs3Name'       => null,
-                        'unitEs3LegacyCode' => null,
-                    ];
-                    $jp += $this->getUnitEsArray($jabatanPegawai->getUnit(),2);
-                    break;
-
-                case 3:
-                    $jp += [
-                        'unitEs4Id'         => null,
-                        'unitEs4Name'       => null,
-                        'unitEs4LegacyCode' => null,
-                    ];
-                    $jp += $this->getUnitEsArray($jabatanPegawai->getUnit(),3);
-                    $parent = $jabatanPegawai->getUnit()->getParent();
-                    $jp += ($parent && $parent->getLevel() == 2)
-                        ? $this->getUnitEsArray($parent,2)
-                        : ['unitEs2Id' => null, 'unitEs2Name' => null, 'unitEs2LegacyCode' => null];
-                    break;
-
-                case 4:
-                    $unit   = $jabatanPegawai->getUnit();
-                    $parent = $unit->getParent();
-                    $jp += $this->getUnitEsArray($unit,4);
-
-                    if ($parent && $parent->getLevel() == 3) {
-                        $jp += $this->getUnitEsArray($parent,3);
-                        $grandParent = $parent->getParent();
-                        $jp += ($grandParent && $grandParent->getLevel() == 2)
-                            ? $this->getUnitEsArray($grandParent,2)
-                            : ['unitEs2Id' => null, 'unitEs2Name' => null, 'unitEs2LegacyCode' => null];
-                    } else {
+                switch ($levelUnit) {
+                    case 2:
                         $jp += [
-                            'unitEs3Id' => null,
-                            'unitEs3Name' => null,
+                            'unitEs4Id'         => null,
+                            'unitEs4Name'       => null,
+                            'unitEs4LegacyCode' => null,
+                            'unitEs3Id'         => null,
+                            'unitEs3Name'       => null,
                             'unitEs3LegacyCode' => null,
                         ];
-                        $jp += $this->getUnitEsArray($parent,2);
-                    }
-                    break;
-            }
+                        $jp += $this->getUnitEsArray($jabatanPegawai->getUnit(),2);
+                        break;
 
-            $jp['roles']    = $rolesNya;
-            $output[]       = $jp;
+                    case 3:
+                        $jp += [
+                            'unitEs4Id'         => null,
+                            'unitEs4Name'       => null,
+                            'unitEs4LegacyCode' => null,
+                        ];
+                        $jp += $this->getUnitEsArray($jabatanPegawai->getUnit(),3);
+                        $parent = $jabatanPegawai->getUnit()->getParent();
+                        $jp += ($parent && $parent->getLevel() == 2)
+                            ? $this->getUnitEsArray($parent,2)
+                            : ['unitEs2Id' => null, 'unitEs2Name' => null, 'unitEs2LegacyCode' => null];
+                        break;
+
+                    case 4:
+                        $unit   = $jabatanPegawai->getUnit();
+                        $parent = $unit->getParent();
+                        $jp += $this->getUnitEsArray($unit,4);
+
+                        if ($parent && $parent->getLevel() == 3) {
+                            $jp += $this->getUnitEsArray($parent,3);
+                            $grandParent = $parent->getParent();
+                            $jp += ($grandParent && $grandParent->getLevel() == 2)
+                                ? $this->getUnitEsArray($grandParent,2)
+                                : ['unitEs2Id' => null, 'unitEs2Name' => null, 'unitEs2LegacyCode' => null];
+                        } else {
+                            $jp += [
+                                'unitEs3Id' => null,
+                                'unitEs3Name' => null,
+                                'unitEs3LegacyCode' => null,
+                            ];
+                            $jp += $this->getUnitEsArray($parent,2);
+                        }
+                        break;
+                }
+
+                $jp['roles']    = $rolesNya;
+                $output[]       = $jp;
+            }
         }
 
         return $output;
