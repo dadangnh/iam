@@ -1,6 +1,9 @@
 # IAM Changelog
 
-## Version 3.4.10 (current stable)
+## Version 3.4.11 (current stable)
+* bug fix endpoint api/pegawais/v3/info/from-iam-token
+
+## Version 3.4.10
 * add klas attribute in office entity
 
 ## Version 3.4.9
