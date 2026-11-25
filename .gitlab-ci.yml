@@ -126,7 +126,9 @@ test:
     - docker-php-ext-enable xdebug
     - curl -sS https://getcomposer.org/installer | php
     - curl -sS https://get.symfony.com/cli/installer | bash
-    - export PATH="$HOME/.symfony5/bin:$PATH"
+    # - export PATH="$HOME/.symfony5/bin:$PATH"
+    - export PATH="$HOME/.config/symfony-cli/bin:$PATH"
+    - symfony version
     - echo "xdebug.mode=develop,coverage,debug" >> /usr/local/etc/php/php.ini
     - echo "memory_limit = -1;" >> /usr/local/etc/php/php.ini
     - symfony composer install
